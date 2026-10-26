@@ -4,7 +4,7 @@ Priority order. Effort: S = under 30 min, M = about 1-2 h.
 | # | Tool | Fixes | Effort |
 |---|---|---|---|
 | 1 | DONE 2026-10-26: `read` skill installed in `.claude/skills/read/` (find-contract, cut-diff, plus save-page, redact) | Guessed body shape; eyeballed counts | S |
-| 2 | PARTLY DONE: `scripts/redact.mjs --check` exists; the git pre-commit hook that runs it is not installed yet | Secrets reaching the repo | S |
+| 2 | DONE 2026-10-26: `hooks/pre-commit` runs `redact.mjs --check --stdin` on staged files | Secrets reaching the repo | S |
 | 3 | `tools/mega.mjs`: login, fetch page, POST with auto-log and redaction | Rewriting a script per step; manual log; tokens in logs | M |
 | 4 | Persistent headless profile for the course (reuse session cookie) | Magic link for every session; link pasted twice | S |
 | 5 | `/mega` slash command or skill: mega-start, list, startPoint, step messages, debrief | Re-deriving the flow each day | M |

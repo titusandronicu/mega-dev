@@ -9,3 +9,4 @@
 - Overnight job scheduled for 27 Oct 05:12 (session-only). Headless browser session `mega` was closed by mistake at ~15:00; the job re-signs in through Gmail.
 - Tracked all work in context/: archive (bootstrap, S01E01, read skill), changes (overnight job, cloud routine, hook, deck cards), foundation/environment.md.
 - Added solving scripts (challenges/S01E01/scripts), debrief-submitted.json and an updated docs/tools.md.
+- Pre-commit hook installed (hooks/pre-commit, core.hooksPath=hooks); redact.mjs gained --stdin. Lesson: never `git reset --hard` for test cleanup.

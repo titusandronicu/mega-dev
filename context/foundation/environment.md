@@ -5,3 +5,4 @@
 - Headless browser: `~/.claude/skills/browser-automation/browser.mjs --session mega` (throwaway profile, closed when done).
 - Course MCP `mega-challenge` is configured locally; cloud routines cannot use it.
 - Session-only items that vanish when Claude Code closes: the overnight cron job, the `caffeinate` process.
+- Git hook: `git config core.hooksPath hooks` (local setting; repeat it on a new clone). `hooks/pre-commit` blocks tokens.

@@ -3,6 +3,7 @@
 //
 //   node redact.mjs <file>            print the file with tokens replaced
 //   node redact.mjs --check <file>... exit 1 and list line numbers if a token is still in a file
+//   node redact.mjs --check --stdin   same, for text piped in (used by the pre-commit hook)
 //   node redact.mjs --self-test
 //
 // It replaces:
@@ -56,6 +57,11 @@ function selfTest() {
 function main(argv) {
   if (argv.includes('--self-test')) return selfTest();
   const check = argv.includes('--check');
+  if (check && argv.includes('--stdin')) {
+    const lines = leaks(readFileSync(0, 'utf8'));
+    if (lines.length) console.log(`token or magic link on line ${lines.join(', ')}`);
+    return lines.length ? 1 : 0;
+  }
   const files = argv.filter((a) => !a.startsWith('--'));
   if (files.length === 0 || (!check && files.length !== 1)) {
     throw new Error('usage: node redact.mjs <file> | --check <file>... | --self-test');

@@ -8,3 +8,4 @@
 7. See docs/playbook.md for the checklist to run at the start of each challenge.
 8. Creating a cloud routine attached all 11 claude.ai connectors by default (Gmail, Drive, Notion...) although none were requested. Always check mcp_connections in the create reply and clear them (clear_mcp_connections) for agents that read the web.
 9. Test a claim on the real page before writing it down: I first said the schema was a plain link; the real page declares it in a <link rel=service-desc>, and the original script already found it.
+10. Clean up test commits with path-limited commands. `git reset --hard` also discards uncommitted edits (it wiped my redact.mjs change once).
