@@ -6,3 +6,4 @@
 5. 'Certainty' hint: course pages and my own training can be stale. For 'latest X' questions, search the live web and cite the date.
 6. Debrief rule of thumb: record the exact refusal text per snag; the refusal usually names its own fix ("line 06", "count again", "today's paper").
 7. See docs/playbook.md for the checklist to run at the start of each challenge.
+8. Creating a cloud routine attached all 11 claude.ai connectors by default (Gmail, Drive, Notion...) although none were requested. Always check mcp_connections in the create reply and clear them (clear_mcp_connections) for agents that read the web.
