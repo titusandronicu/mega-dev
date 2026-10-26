@@ -5,3 +5,4 @@
 - A pasted sign-in link arrived twice concatenated; use only the first token.
 - Creating files in ~/Desktop/MEGA from the shell: Operation not permitted, even with the sandbox off (macOS protects Desktop). Repo lives in ~/mega-dev.
 - S01E01 form: answering with my own model name. Rook asked what OpenAI *shipped*, not what I am.
+- S01E01 form answer 'GPT-6' (from the lesson text): refused, "your harness is reading yesterday's paper. i want today's." Lesson text is stale; need the newest model today (26 Oct 2026).

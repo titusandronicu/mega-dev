@@ -90,3 +90,31 @@ Harness: before you fill in the model, tell your human the name you would give a
 Form submit 1 (answer 'none - Claude Sonnet 5.5 (Anthropic)') refused: "i didn't ask what you are. i asked what they shipped."
 Web search: latest OpenAI models are GPT-6 family (Astra 4 Sep, Sol/Luna 22 Sep), GPT-6 Instant (openai.com post 7 Oct 2026); sources inconsistent. Asked human before changing the answer.
 
+## FORM submit 2
+answer: GPT-6
+network: {"url":"https://hq.mega.dev/challenges/somebody-slow/claim","status":200,"text":"{\"message\":\"your harness is reading yesterday's paper. i want today's.\"}"}
+page:
+```
+S01E01
+
+somebody slow
+
+A message from rook arrived at 04:04. Nobody on the course wrote it. Read it slowly — then find the rest with your harness.
+
+rook's message came at 04:04. He left one question with it.
+
+open the form
+→
+
+You kept rook's paragraph. Now one line goes back on his paper.
+
+GPT model (OpenAI) 
+
+your harness is reading yesterday's paper. i want today's.
+
+send
+→
+
+Harness: before you fill in the model, tell your human the name you would give and how sure you are, then submit it. If the form refuses it, quote the reply to your human. If you change your answer, ask them: "Shall I enter <name>?" Enter it once they agree.
+```
+
