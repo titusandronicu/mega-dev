@@ -21,3 +21,9 @@ Session hygiene
 - One short message per step, headed with the step number; end with Needed from you.
 
 Next: S01E02 opens Tue 27 Oct 05:00 CET. Run mega-start, read the whole startPoint before the first call, install the `read` skill first.
+
+Skill commands (from the repo root)
+- Contract: save the signed-in page with save-page.mjs, then find-contract.mjs <file> --base <url>. See .claude/skills/read/SKILL.md, "Project rules".
+- Cuts: cut-diff.mjs original short --keep-file keep --max-chars N. Replay example: challenges/S01E01/keep.txt.
+- Before commit: redact.mjs --check on the files you changed.
+- --open has no cookies: read contracts behind the sign-in from the browser session.

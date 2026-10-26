@@ -2,3 +2,6 @@
 .env
 *.token
 auth.json
+# saved course pages can hold sign-in tokens
+page.html
+*.page.html
