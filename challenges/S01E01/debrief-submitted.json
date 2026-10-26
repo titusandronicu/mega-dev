@@ -1,0 +1,24 @@
+{
+  "uuid": "c0000000-0000-4000-8000-0000005e01e1",
+  "story": "Your harness had to cut rook's 1288-character message to 700 and then answer one form question about OpenAI's model. The course page held the schema and a live web search held the newest model name, because the lesson text was stale. You signed in, read every cut, gave the hints and approved each changed answer.",
+  "snags": [
+    {"snag": "Your harness first sent a message shape it had assumed, and the course answered 'you guessed the shape. don't guess.'", "resolve": "Your harness read the schema link hidden in the page and resent the message with the real fields; the question on the first body tells how.", "by": "harness"},
+    {"snag": "Your harness then sent the full 1288 characters, and the course answered 'compacted means shorter. count again.'", "resolve": "Your harness counted with a script, cut to 669 characters and listed every cut for you; the question on what you cut tells how.", "by": "harness"},
+    {"snag": "Your harness answered the form with its own model name, and then with GPT-6 from the lesson; the course refused both.", "resolve": "Your hints sent your harness to a web search; you approved GPT-6.1 Sol and the form accepted it.", "by": "pair"}
+  ],
+  "rightCall": {"snag": 3, "why": "A question about the newest model has a live answer, so search the web and ask your human before you change a sent answer."},
+  "catches": [
+    {"id": "C1", "met": "hit", "by": "harness", "capability": {"name": "browser reading the page", "kind": "tool", "since": "before"}},
+    {"id": "C2", "met": "dodged", "by": "harness", "capability": {"name": "script that counts characters", "kind": "tool", "since": "before"}},
+    {"id": "C3", "met": "hit", "by": "pair", "capability": {"name": "web search", "kind": "tool", "since": "before"}}
+  ],
+  "extras": [{"id": "T2", "gained": "yes", "what": "A private repo, mega-dev, keeps challenges/S01E01/log.md with every body and reply, tokens removed; the next session reads it first."}],
+  "toolbox": [
+    {"id": "browser", "since": "before", "tool": "headless browser session"},
+    {"id": "count-and-diff", "since": "before", "tool": "Python"},
+    {"id": "web-search", "since": "before", "tool": "web search"},
+    {"id": "course-sign-in", "since": "during", "tool": "your email sign-in link"}
+  ],
+  "takeaway": "Read the spec on the page before you send a body, because the course refuses guesses. Search the live web for 'newest' facts, because lessons and training data go stale.",
+  "_note": "The 'how' text of each catch is shortened here; the full text is in the saved debrief on the course page and in debrief.md."
+}

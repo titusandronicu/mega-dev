@@ -1,5 +1,6 @@
 # S01E01 "somebody slow" (solved 2026-10-26)
 Result: solved after 5 refused tries. Final form answer: GPT-6.1 Sol (human-approved).
+Also in the challenge folder: scripts/ (the scripts as run), debrief-submitted.json, keep.txt (replay of the cut check).
 Details: `challenges/S01E01/` (log.md, debrief.md, rook-message-*.txt, keep.txt).
 
 | # | Snag | Fix |
