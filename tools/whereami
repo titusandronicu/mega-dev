@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Usage: tools/whereami
+# Prints which environment you are in, so a failure can be tied to a place.
+# Paste the output into the log when something behaves differently on one machine.
+set -uo pipefail
+root=$(git rev-parse --show-toplevel 2>/dev/null || echo "(not in a git repo)")
+if [ -f /.dockerenv ] || grep -qE 'docker|containerd|kubepods' /proc/1/cgroup 2>/dev/null; then kind=container; else kind=host; fi
+echo "host:      $(hostname)"
+echo "kind:      $kind"
+echo "user:      $(id -un)"
+echo "os:        $(. /etc/os-release 2>/dev/null && echo "$PRETTY_NAME" || uname -sr)"
+echo "cwd:       $PWD"
+echo "repo:      $root"
+[ "$root" != "(not in a git repo)" ] && echo "branch:    $(git -C "$root" branch --show-current) @ $(git -C "$root" rev-parse --short HEAD)"
+for t in node ffmpeg claude gh docker; do echo "tool $t: $(command -v $t || echo MISSING)"; done
+for f in tools/retro-check tools/speech-offsets tools/check-handoff tools/transcribe; do
+  [ -x "$root/$f" ] && echo "script $f: ok" || echo "script $f: MISSING"
+done
+[ -d "$root/challenges/S01E02/media" ] && echo "media S01E02: present" || echo "media S01E02: absent (gitignored, host only)"
