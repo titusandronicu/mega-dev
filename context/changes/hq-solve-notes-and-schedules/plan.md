@@ -463,11 +463,11 @@ All migrations are additive (new columns, new tables, one widened CHECK) and sor
 
 #### Automated
 
-- [x] 3.1 The script parses and allows only the one tool: `bash -n tools/spike-headless-mega-start && grep -c "mcp__mega-challenge__mega-start" tools/spike-headless-mega-start`
+- [x] 3.1 The script parses and allows only the one tool: `bash -n tools/spike-headless-mega-start && grep -c "mcp__mega-challenge__mega-start" tools/spike-headless-mega-start` — 0e1fd1f
 
 #### Manual
 
-- [x] 3.2 Run on the UGREEN: first call result recorded in `spike-login.md`.
+- [x] 3.2 Run on the UGREEN: first call result recorded in `spike-login.md`. — 0e1fd1f
 - [ ] 3.3 Re-run from a new process and again after 24 hours; both results recorded.
 - [ ] 3.4 The owner reads the result and confirms `go` or `no-go` in `spike-login.md`.
 
@@ -475,9 +475,9 @@ All migrations are additive (new columns, new tables, one widened CHECK) and sor
 
 #### Automated
 
-- [ ] 4.1 pgTAP (`supabase/tests/database/08_runs_schedules.test.sql`: anon/stranger denied, direct writes denied for `authenticated` and `service_role`, RPCs owner-only, constraints for kinds, one-shot vs recurring, `challenge_code` rule, `next_slot` computed in Warsaw time including a DST date) passes: `make test`
-- [ ] 4.2 Web lint, typecheck and unit tests pass: `cd web && npm run lint && npm run typecheck && npm test`
-- [ ] 4.3 Stub tests and Playwright pass, including the axe check of `/runs/` in light and dark: `cd web && npm run e2e`
+- [x] 4.1 pgTAP (`supabase/tests/database/08_runs_schedules.test.sql`: anon/stranger denied, direct writes denied for `authenticated` and `service_role`, RPCs owner-only, constraints for kinds, one-shot vs recurring, `challenge_code` rule, `next_slot` computed in Warsaw time including a DST date) passes: `make test`
+- [x] 4.2 Web lint, typecheck and unit tests pass: `cd web && npm run lint && npm run typecheck && npm test`
+- [x] 4.3 Stub tests and Playwright pass, including the axe check of `/runs/` in light and dark: `cd web && npm run e2e`
 
 #### Manual
 
