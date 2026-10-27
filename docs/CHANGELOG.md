@@ -10,3 +10,4 @@
 - Tracked all work in context/: archive (bootstrap, S01E01, read skill), changes (overnight job, cloud routine, hook, deck cards), foundation/environment.md.
 - Added solving scripts (challenges/S01E01/scripts), debrief-submitted.json and an updated docs/tools.md.
 - Pre-commit hook installed (hooks/pre-commit, core.hooksPath=hooks); redact.mjs gained --stdin. Lesson: never `git reset --hard` for test cleanup.
+- 2026-10-27: overnight S01E02 run stopped at step 2 because the mega-challenge MCP needed re-authorization. Nothing sent. See challenges/S01E02/overnight.md.
