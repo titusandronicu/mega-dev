@@ -15,3 +15,4 @@
 - Mapped mega-hq (repo-map): no risk zones; watch items listed in context/changes/2026-10-27-hq-pipeline.md.
 - Course MCP works again. Lesson S01E02 and both challenges loaded into HQ; proposer `claude-mac` created (3 tools, cap 20/day). Deck page still needs a course session (403 and 429 on sign-in from the UGREEN).
 - `read` artifact installed on the UGREEN (`~/.claude/skills/read`). Added context/foundation/hq.md, context/changes/2026-10-27-hq-pipeline.md, tools and lessons updates.
+- 2026-10-27: plan for splitting work across Mac mini, UGREEN and Grok Bot (context/changes/2026-10-27-tooling-split.md). mega-dev cloned to /home/Funky/Dev/mega-dev on the UGREEN.
