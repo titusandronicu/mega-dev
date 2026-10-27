@@ -11,8 +11,8 @@ Goal: have the course lessons, challenges (tasks) and cards visible in the HQ ap
 ## Blocked / open
 - Deck page: https://hq.mega.dev/deck needs a course session. See `pending-deck-cards.md`.
 - No cards exist in HQ yet (`list_cards` returns `[]`).
-- S01E02 not started. It stops halfway: the human opens a new session and pastes a prompt.
+- S01E02 first session done (2026-10-27): audio and video reports and the record accepted. Waiting for the new-session claim; see `challenges/S01E02/log.md`.
 - Dispatch window / task board: not built. Options: Grok Bot gateway (homelab-2 ADR 0012) or a Tasks screen in HQ.
 
 ## Next step
-Human decides: start S01E02, propose cards from the lessons, or build dispatch. Move this file to `context/archive/` when HQ shows lessons, tasks and cards and dispatch is decided.
+Owner opens a new session on the UGREEN and pastes the resume prompt (receipts are in `~/.config/mega-hq/s01e02-receipts.json`, valid until 2026-11-10). Then record the solve, the artifact and the debrief here. Human decides: start S01E02, propose cards from the lessons, or build dispatch. Move this file to `context/archive/` when HQ shows lessons, tasks and cards and dispatch is decided.

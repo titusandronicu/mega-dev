@@ -15,3 +15,5 @@
 | `mega-hq/ingest/ingest.mjs` | load lessons and challenges into HQ | needs `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OWNER_EMAIL`, `OWNER_PASSWORD` in the environment |
 | `mega-challenge` `artifact` | files unlocked by a solved challenge | S01E01 -> `read` skill; call without `answer` to see the offer |
 | Gmail connector (claude.ai) | read the sign-in email | the link only works in the browser that requested it |
+| Gemini API (key held by Mother Console, owner-approved use) | transcribe course audio with timestamps | no tools attached; send only the audio; model names from `/v1beta/models` (`gemini-flash-latest` worked, `gemini-2.5-pro` returned 404) |
+| `ffmpeg` (silencedetect) | check speech start times | models' own timestamps disagreed |

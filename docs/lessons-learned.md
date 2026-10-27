@@ -14,3 +14,6 @@
 13. A first load can look done and still show an empty screen (Task screen with no steps). Open the consuming screen's data columns before calling it loaded.
 14. Check which machine you are on (`hostname`, `ip`, running containers) before saying "this machine is not the server".
 15. After a 429, stop. Each extra request can extend the block.
+16. Model timestamps for speech were unreliable (the same sentence at 19.7 s, 64.9 s and 119.6 s depending on the model). Confirm offsets with `ffmpeg silencedetect`; take word content by majority across several runs.
+17. A bot told "read-only, no shell" still ran shell commands when launched with `--yolo`. Do not rely on a prompt as a guardrail; do not give that worker untrusted input.
+18. Read a secret out of another service only with the owner's explicit OK for that secret, hold it in memory, and never write it down.
