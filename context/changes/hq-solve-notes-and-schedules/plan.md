@@ -435,29 +435,29 @@ All migrations are additive (new columns, new tables, one widened CHECK) and sor
 
 #### Automated
 
-- [x] 1.1 Migration applies and the new pgTAP file (`supabase/tests/database/07_solve_notes.test.sql`: anon denied, stranger sees nothing, owner CRUD, check constraints, `service_role` write denied) passes: `make test`
-- [x] 1.2 Ingest tests pass, including table parsing, summary extraction, secret refusal and dry-run output: `make test-node`
-- [x] 1.3 Web lint, typecheck and unit tests pass: `cd web && npm run lint && npm run typecheck && npm test`
-- [x] 1.4 Playwright passes, including the axe check of `/task/?code=S01E01` in light and dark: `cd web && npm run e2e`
-- [x] 1.5 The rule and tool docs exist in `mega-dev`: `grep -n "solve-notes" CLAUDE.md docs/tools.md`
+- [x] 1.1 Migration applies and the new pgTAP file (`supabase/tests/database/07_solve_notes.test.sql`: anon denied, stranger sees nothing, owner CRUD, check constraints, `service_role` write denied) passes: `make test` — e0b6dda
+- [x] 1.2 Ingest tests pass, including table parsing, summary extraction, secret refusal and dry-run output: `make test-node` — e0b6dda
+- [x] 1.3 Web lint, typecheck and unit tests pass: `cd web && npm run lint && npm run typecheck && npm test` — e0b6dda
+- [x] 1.4 Playwright passes, including the axe check of `/task/?code=S01E01` in light and dark: `cd web && npm run e2e` — e0b6dda
+- [x] 1.5 The rule and tool docs exist in `mega-dev`: `grep -n "solve-notes" CLAUDE.md docs/tools.md` — e0b6dda
 
 #### Manual
 
-- [x] 1.6 Dry-run on `challenges/S01E01/debrief.md` reports 3 snags and no secret hits.
+- [x] 1.6 Dry-run on `challenges/S01E01/debrief.md` reports 3 snags and no secret hits. — e0b6dda
 - [x] 1.7 After the real run, the Task screen for S01E01 on the phone shows the summary, the 3 snag rows, the debrief link and any approved learning cards; S01E02 (no notes) shows no empty sections.
 
 ### Phase 2: Agent read tools in /mcp
 
 #### Automated
 
-- [ ] 2.1 Deno tests pass, including the contract test and tool tests for the three read tools: `make test`
-- [ ] 2.2 Node and web suites pass: `make test-node` and `cd web && npm run lint && npm run typecheck && npm test`
+- [x] 2.1 Deno tests pass, including the contract test and tool tests for the three read tools: `make test`
+- [x] 2.2 Node and web suites pass: `make test-node` and `cd web && npm run lint && npm run typecheck && npm test`
 
 #### Manual
 
-- [ ] 2.3 `make smoke` passes against the local stack.
-- [ ] 2.4 A token created in Settings with only `get_challenge` can fetch S01E01 and is refused `propose_card`; the picker shows the read tools unticked by default.
-- [ ] 2.5 A `get_lesson` result is labeled untrusted and shows `truncated` for a long lesson.
+- [x] 2.3 `make smoke` passes against the local stack.
+- [x] 2.4 A token created in Settings with only `get_challenge` can fetch S01E01 and is refused `propose_card`; the picker shows the read tools unticked by default.
+- [x] 2.5 A `get_lesson` result is labeled untrusted and shows `truncated` for a long lesson.
 
 ### Phase 3: Headless login spike (go/no-go)
 
