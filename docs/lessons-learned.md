@@ -17,3 +17,6 @@
 16. Model timestamps for speech were unreliable (the same sentence at 19.7 s, 64.9 s and 119.6 s depending on the model). Confirm offsets with `ffmpeg silencedetect`; take word content by majority across several runs.
 17. A bot told "read-only, no shell" still ran shell commands when launched with `--yolo`. Do not rely on a prompt as a guardrail; do not give that worker untrusted input.
 18. Read a secret out of another service only with the owner's explicit OK for that secret, hold it in memory, and never write it down.
+19. PostgREST connects as a role with `pg_safeupdate` preloaded, so an `UPDATE` or `DELETE` without a `WHERE` fails there ('UPDATE requires a WHERE clause') but passes local pgTAP, which runs as `postgres`. Give single-row updates a real predicate, and keep the migration lint test (`shared/migrations-where.test.mjs` in mega-hq).
+20. When two screens show the same number, put the rule in one helper. Today printed the stored step count while Task counted a solved challenge as fully done, so a solved S01E02 read 0 / 6 on one screen and 6 / 6 on the other (`web/src/lib/progress.ts`).
+21. Check a deployment's claims against the running thing, not only the tests: a live read showed S01E01 with no notes after a 'done', and a served-bundle grep showed the web container still on the old build.
