@@ -444,30 +444,30 @@ All migrations are additive (new columns, new tables, one widened CHECK) and sor
 #### Manual
 
 - [x] 1.6 Dry-run on `challenges/S01E01/debrief.md` reports 3 snags and no secret hits. — e0b6dda
-- [x] 1.7 After the real run, the Task screen for S01E01 on the phone shows the summary, the 3 snag rows, the debrief link and any approved learning cards; S01E02 (no notes) shows no empty sections.
+- [x] 1.7 After the real run, the Task screen for S01E01 on the phone shows the summary, the 3 snag rows, the debrief link and any approved learning cards; S01E02 (no notes) shows no empty sections. — b102861
 
 ### Phase 2: Agent read tools in /mcp
 
 #### Automated
 
-- [x] 2.1 Deno tests pass, including the contract test and tool tests for the three read tools: `make test`
-- [x] 2.2 Node and web suites pass: `make test-node` and `cd web && npm run lint && npm run typecheck && npm test`
+- [x] 2.1 Deno tests pass, including the contract test and tool tests for the three read tools: `make test` — b102861
+- [x] 2.2 Node and web suites pass: `make test-node` and `cd web && npm run lint && npm run typecheck && npm test` — b102861
 
 #### Manual
 
-- [x] 2.3 `make smoke` passes against the local stack.
-- [x] 2.4 A token created in Settings with only `get_challenge` can fetch S01E01 and is refused `propose_card`; the picker shows the read tools unticked by default.
-- [x] 2.5 A `get_lesson` result is labeled untrusted and shows `truncated` for a long lesson.
+- [x] 2.3 `make smoke` passes against the local stack. — b102861
+- [x] 2.4 A token created in Settings with only `get_challenge` can fetch S01E01 and is refused `propose_card`; the picker shows the read tools unticked by default. — b102861
+- [x] 2.5 A `get_lesson` result is labeled untrusted and shows `truncated` for a long lesson. — b102861
 
 ### Phase 3: Headless login spike (go/no-go)
 
 #### Automated
 
-- [ ] 3.1 The script parses and allows only the one tool: `bash -n tools/spike-headless-mega-start && grep -c "mcp__mega-challenge__mega-start" tools/spike-headless-mega-start`
+- [x] 3.1 The script parses and allows only the one tool: `bash -n tools/spike-headless-mega-start && grep -c "mcp__mega-challenge__mega-start" tools/spike-headless-mega-start`
 
 #### Manual
 
-- [ ] 3.2 Run on the UGREEN: first call result recorded in `spike-login.md`.
+- [x] 3.2 Run on the UGREEN: first call result recorded in `spike-login.md`.
 - [ ] 3.3 Re-run from a new process and again after 24 hours; both results recorded.
 - [ ] 3.4 The owner reads the result and confirms `go` or `no-go` in `spike-login.md`.
 
