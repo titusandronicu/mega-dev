@@ -19,3 +19,4 @@
 - 2026-10-27: S01E02 first session done: audio and video reports and the record accepted (UTC 02:38 / local+2h 04:38). Waiting for the new-session claim.
 - 2026-10-27: toolbox filled: `tools/transcribe` (local faster-whisper, small model, sentence times), hand-off template + `tools/check-handoff`, `source-reader` subagent, CLAUDE.md. Venv is Python 3.11 because `av` has no wheel for 3.15.
 - 2026-10-27: HQ solve notes: `mega-hq/ingest/solve-notes.mjs` loads `challenges/<code>/debrief.md` (summary + snag table) into HQ; the Task screen shows HOW IT WAS SOLVED and LESSONS. CLAUDE.md now asks for it after the debrief; documented in docs/tools.md.
+- 2026-10-27: retro loop (RETRO-TEMPLATE, tools/retro-check, tools/speech-offsets, CLAUDE.md rules); S01E02 retro findings applied.

@@ -18,3 +18,5 @@
 | Gmail connector (claude.ai) | read the sign-in email | the link only works in the browser that requested it |
 | Gemini API (key held by Mother Console, owner-approved use) | transcribe course audio with timestamps | no tools attached; send only the audio; model names from `/v1beta/models` (`gemini-flash-latest` worked, `gemini-2.5-pro` returned 404) |
 | `ffmpeg` (silencedetect) | check speech start times | models' own timestamps disagreed |
+| `tools/speech-offsets <file> [dB] [min-s]` | speech start times after pauses, via silencedetect | wraps the line above; prints seconds, one per line |
+| `tools/retro-check <retro.md>` | checks evidence, fix and status tags on retro findings | see `challenges/RETRO-TEMPLATE.md` |

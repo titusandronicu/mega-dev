@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Usage: tools/speech-offsets <media-file> [noise-dB] [min-silence-s]
+# Prints each time speech starts after a pause (seconds), from ffmpeg silencedetect.
+# Use it to confirm a sentence offset; model timestamps for speech disagreed (S01E02).
+set -euo pipefail
+[ $# -ge 1 ] || { echo "usage: tools/speech-offsets <media-file> [noise-dB] [min-silence-s]" >&2; exit 2; }
+ffmpeg -hide_banner -nostats -i "$1" -af "silencedetect=noise=${2:--35}dB:d=${3:-0.4}" -vn -f null - 2>&1 \
+  | awk '/silence_end/ { for (i = 1; i <= NF; i++) if ($i == "silence_end:") print $(i + 1) }'

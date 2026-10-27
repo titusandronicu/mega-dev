@@ -28,3 +28,8 @@
 
 ## 2026-10-27, solve-notes tool
 - `mega-hq/ingest/solve-notes.mjs` now exists (see docs/tools.md). S01E02 has no `debrief.md` yet, so nothing was loaded for it; run the tool after the debrief is written.
+
+## 2026-10-27, retro loop
+- Added `challenges/RETRO-TEMPLATE.md`, `tools/retro-check`, a CLAUDE.md rule and a first `challenges/S01E02/retro.md` (4 proposed findings, none applied).
+
+- Retro findings approved and applied: playbook "Recording challenges", CLAUDE.md `--yolo` rule, new `tools/speech-offsets`.
