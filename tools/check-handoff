@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Usage: tools/check-handoff <handoff.md>
+# Fails if a line under "## Facts" has no [source: ...] tag.
+set -euo pipefail
+[ $# -eq 1 ] || { echo "usage: tools/check-handoff <handoff.md>" >&2; exit 2; }
+awk '
+  /^## /          { in_facts = ($0 == "## Facts"); next }
+  in_facts && /^- / && $0 !~ /\[source: [^]]+\]/ { printf "%s:%d: fact has no source tag: %s\n", FILENAME, NR, $0; bad = 1 }
+  END { exit bad }
+' "$1"
