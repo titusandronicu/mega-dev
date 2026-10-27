@@ -25,3 +25,11 @@
 - Ambiguous words settled by majority vote: "u t c" (spelled), "and" in 1870, "secret scan" (one of six runs said "secrets scan").
 - Receipts live in `~/.config/mega-hq/s01e02-receipts.json` (0600), valid 14 days. They are not in this repo.
 - Course rule: this session stops here. The claim comes from a new session with the prompt below.
+
+## 2026-10-27, solve-notes tool
+- `mega-hq/ingest/solve-notes.mjs` now exists (see docs/tools.md). S01E02 has no `debrief.md` yet, so nothing was loaded for it; run the tool after the debrief is written.
+
+## 2026-10-27, retro loop
+- Added `challenges/RETRO-TEMPLATE.md`, `tools/retro-check`, a CLAUDE.md rule and a first `challenges/S01E02/retro.md` (4 proposed findings, none applied).
+
+- Retro findings approved and applied: playbook "Recording challenges", CLAUDE.md `--yolo` rule, new `tools/speech-offsets`.

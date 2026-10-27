@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Usage: tools/retro-check <retro.md>
+# Fails if a line under "## Findings" lacks an [evidence: ...], [fix: ...] or [status: ...] tag.
+set -euo pipefail
+[ $# -eq 1 ] || { echo "usage: tools/retro-check <retro.md>" >&2; exit 2; }
+awk '
+  /^## /          { in_f = ($0 == "## Findings"); next }
+  in_f && /^- / {
+    if ($0 !~ /\[evidence: [^]]+\]/) { printf "%s:%d: no evidence tag: %s\n", FILENAME, NR, $0; bad = 1 }
+    if ($0 !~ /\[fix: (playbook|claude-md|tool|skill|none)\]/) { printf "%s:%d: bad fix tag: %s\n", FILENAME, NR, $0; bad = 1 }
+    if ($0 !~ /\[status: (proposed|approved|applied|rejected)\]/) { printf "%s:%d: bad status tag: %s\n", FILENAME, NR, $0; bad = 1 }
+  }
+  END { exit bad }
+' "$1"

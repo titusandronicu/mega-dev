@@ -14,6 +14,11 @@ Facts that change (newest model, version, price)
 2. Course lesson text can be stale. Trust a dated live source over it.
 3. Ask the human before changing an answer already sent.
 
+Recording challenges (from S01E02)
+1. Start with `tools/transcribe <file>` (local, no key). Do not ask for an API key before trying it.
+2. Confirm any sentence offset with `tools/speech-offsets <file>`; never take a model's own timestamp. Take words by majority across several runs.
+3. Answer only the event asked. Recordings say decoy times aloud (scheduled, started, first report) next to the real one.
+
 Session hygiene
 - Keep the log in the repo, tokens redacted. One log file per challenge.
 - Browser: headless session via browser-automation skill; magic link opened once; use refs for clicks.
