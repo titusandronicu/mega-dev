@@ -11,3 +11,10 @@
 - Added solving scripts (challenges/S01E01/scripts), debrief-submitted.json and an updated docs/tools.md.
 - Pre-commit hook installed (hooks/pre-commit, core.hooksPath=hooks); redact.mjs gained --stdin. Lesson: never `git reset --hard` for test cleanup.
 - 2026-10-27: overnight S01E02 run stopped at step 2 because the mega-challenge MCP needed re-authorization. Nothing sent. See challenges/S01E02/overnight.md.
+## 2026-10-27 (UGREEN session)
+- Mapped mega-hq (repo-map): no risk zones; watch items listed in context/changes/2026-10-27-hq-pipeline.md.
+- Course MCP works again. Lesson S01E02 and both challenges loaded into HQ; proposer `claude-mac` created (3 tools, cap 20/day). Deck page still needs a course session (403 and 429 on sign-in from the UGREEN).
+- `read` artifact installed on the UGREEN (`~/.claude/skills/read`). Added context/foundation/hq.md, context/changes/2026-10-27-hq-pipeline.md, tools and lessons updates.
+- 2026-10-27: plan for splitting work across Mac mini, UGREEN and Grok Bot (context/changes/2026-10-27-tooling-split.md). mega-dev cloned to /home/Funky/Dev/mega-dev on the UGREEN.
+- 2026-10-27: S01E02 first session done: audio and video reports and the record accepted (UTC 02:38 / local+2h 04:38). Waiting for the new-session claim.
+- 2026-10-27: toolbox filled: `tools/transcribe` (local faster-whisper, small model, sentence times), hand-off template + `tools/check-handoff`, `source-reader` subagent, CLAUDE.md. Venv is Python 3.11 because `av` has no wheel for 3.15.

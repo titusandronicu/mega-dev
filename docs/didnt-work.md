@@ -6,3 +6,7 @@
 - Creating files in ~/Desktop/MEGA from the shell: Operation not permitted, even with the sandbox off (macOS protects Desktop). Repo lives in ~/mega-dev.
 - S01E01 form: answering with my own model name. Rook asked what OpenAI *shipped*, not what I am.
 - S01E01 form answer 'GPT-6' (from the lesson text): refused, "your harness is reading yesterday's paper. i want today's." Lesson text is stale; need the newest model today (26 Oct 2026).
+- 2026-10-27: pressing the sign-in button with a link requested from another machine: HTTP 403 (twice).
+- 2026-10-27: requesting a sign-in link from the UGREEN right after the human's own request: HTTP 429 (twice).
+- 2026-10-27: `create_proposer` with lesson tools: check constraint `proposers_allowed_tools_check` rejected the row.
+- 2026-10-27: Tailnet URL for HQ from the UGREEN itself timed out; the local port 18790 works.

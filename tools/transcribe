@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Usage: tools/transcribe <audio-or-video-file> [model]   (default model: small)
+# Prints JSON: {"source": <file name>, "model": ..., "sentences": [{"start", "end", "text"}]}
+set -euo pipefail
+here="$(cd "$(dirname "$0")" && pwd)"
+[ $# -ge 1 ] || { echo "usage: tools/transcribe <file> [model]" >&2; exit 2; }
+export HF_HOME="$here/models"
+exec "$here/.venv/bin/python" -I "$here/transcribe.py" "$1" "${2:-small}"

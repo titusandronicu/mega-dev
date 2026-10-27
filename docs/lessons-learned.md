@@ -9,3 +9,11 @@
 8. Creating a cloud routine attached all 11 claude.ai connectors by default (Gmail, Drive, Notion...) although none were requested. Always check mcp_connections in the create reply and clear them (clear_mcp_connections) for agents that read the web.
 9. Test a claim on the real page before writing it down: I first said the schema was a plain link; the real page declares it in a <link rel=service-desc>, and the original script already found it.
 10. Clean up test commits with path-limited commands. `git reset --hard` also discards uncommitted edits (it wiped my redact.mjs change once).
+11. A sign-in link belongs to the browser that asked for it. A machine that did not ask gets 403; ask from the machine that needs the session.
+12. Check the real constraint before you grant things: the HQ `proposers.allowed_tools` check allows three tools only, so the first token request failed. Read the migration first.
+13. A first load can look done and still show an empty screen (Task screen with no steps). Open the consuming screen's data columns before calling it loaded.
+14. Check which machine you are on (`hostname`, `ip`, running containers) before saying "this machine is not the server".
+15. After a 429, stop. Each extra request can extend the block.
+16. Model timestamps for speech were unreliable (the same sentence at 19.7 s, 64.9 s and 119.6 s depending on the model). Confirm offsets with `ffmpeg silencedetect`; take word content by majority across several runs.
+17. A bot told "read-only, no shell" still ran shell commands when launched with `--yolo`. Do not rely on a prompt as a guardrail; do not give that worker untrusted input.
+18. Read a secret out of another service only with the owner's explicit OK for that secret, hold it in memory, and never write it down.
