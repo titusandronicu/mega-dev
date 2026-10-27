@@ -10,3 +10,4 @@
 - Tracked all work in context/: archive (bootstrap, S01E01, read skill), changes (overnight job, cloud routine, hook, deck cards), foundation/environment.md.
 - Added solving scripts (challenges/S01E01/scripts), debrief-submitted.json and an updated docs/tools.md.
 - Pre-commit hook installed (hooks/pre-commit, core.hooksPath=hooks); redact.mjs gained --stdin. Lesson: never `git reset --hard` for test cleanup.
+- 2026-10-27: prep agent drafted challenges/2026-10-27/prep.md; hq.mega.dev unreachable (403/DNS), no content read.
