@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Usage: tools/claim-ready <code>
+#
+# The one gate to run, and see exit 0, immediately before every
+# claim-challenge call (CLAUDE.md). Runs tools/preflight (environment is
+# actually usable) and tools/pre-claim-gate <code> (a non-solved prior reply
+# has a fresh live-page recheck - lessons 32-34). On success, writes
+# challenges/<code>/.claim-ready: an ISO8601 timestamp plus the sha256 of
+# claim-log.jsonl and live-recheck.log at that moment. tools/record-claim
+# requires this file, freshly written after the previous claim, before it
+# will record a new reply - that is what actually enforces "run the gate
+# every time," not just "the gate exists."
+#
+# On failure, prints what preflight/pre-claim-gate reported is missing and
+# exits 1. Exit 2 is a usage error.
+set -euo pipefail
+[ $# -eq 1 ] || { echo "usage: tools/claim-ready <code>" >&2; exit 2; }
+code="$1"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+dir="challenges/$code"
+
+echo "== tools/preflight =="
+if ! "$script_dir/preflight"; then
+  echo >&2
+  echo "claim-ready: preflight failed - fix the above before claiming $code." >&2
+  exit 1
+fi
+
+echo
+echo "== tools/pre-claim-gate $code =="
+if ! "$script_dir/pre-claim-gate" "$code"; then
+  echo >&2
+  echo "claim-ready: pre-claim-gate failed - see above before claiming $code." >&2
+  exit 1
+fi
+
+mkdir -p "$dir"
+
+sha_or_absent() {
+  if [ -f "$1" ]; then
+    sha256sum "$1" | awk '{print $1}'
+  else
+    echo absent
+  fi
+}
+
+at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+claim_sha="$(sha_or_absent "$dir/claim-log.jsonl")"
+recheck_sha="$(sha_or_absent "$dir/live-recheck.log")"
+
+{
+  echo "at: $at"
+  echo "claim_log_sha256: $claim_sha"
+  echo "live_recheck_sha256: $recheck_sha"
+} > "$dir/.claim-ready"
+
+echo
+echo "claim-ready: ok at $at - $dir/.claim-ready written, safe to call claim-challenge now."

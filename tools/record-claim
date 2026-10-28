@@ -1,37 +1,112 @@
 #!/usr/bin/env bash
-# Usage: tools/record-claim <code> <claim-reply.json>
+# Usage: tools/record-claim [--force-unguarded] <code> <claim-reply.json>
 #
 # Appends a normalized line to challenges/<code>/claim-log.jsonl from a raw
 # claim-challenge reply, and prints the right next action for its status -
 # claim-challenge has at least 3 (solved / rejected / progress), not a
 # solved-or-rejected binary (lesson 29). Run this right after every
 # claim-challenge call, before deciding what to do next.
+#
+# Refuses (exit 3) to record unless challenges/<code>/.claim-ready exists
+# and is newer than the previous claim-log.jsonl entry (or there is no
+# previous entry) and still matches what tools/claim-ready hashed - that is
+# how this detects "claim-challenge was called without running the gate
+# first," not just "the gate script exists somewhere in history." A used
+# .claim-ready is consumed (removed) on a guarded record, so the next claim
+# needs a fresh one. --force-unguarded records anyway and marks the line
+# "unguarded": true instead of refusing - an explicit, visible escape hatch,
+# not a silent one.
+#
+# Exit codes: 0 solved, 10 progress, 20 rejected, 1 unknown status,
+# 2 usage error, 3 refused (no fresh gate, and --force-unguarded not given).
 set -euo pipefail
-[ $# -eq 2 ] || { echo "usage: tools/record-claim <code> <claim-reply.json>" >&2; exit 2; }
-code="$1"; reply="$2"
+
+force=0
+args=()
+for a in "$@"; do
+  case "$a" in
+    --force-unguarded) force=1 ;;
+    *) args+=("$a") ;;
+  esac
+done
+[ "${#args[@]}" -eq 2 ] || { echo "usage: tools/record-claim [--force-unguarded] <code> <claim-reply.json>" >&2; exit 2; }
+code="${args[0]}"; reply="${args[1]}"
 [ -f "$reply" ] || { echo "no such file: $reply" >&2; exit 2; }
 dir="challenges/$code"
 mkdir -p "$dir"
+claim_log="$dir/claim-log.jsonl"
+ready_file="$dir/.claim-ready"
+
+sha_or_absent() {
+  if [ -f "$1" ]; then
+    sha256sum "$1" | awk '{print $1}'
+  else
+    echo absent
+  fi
+}
+
+prev_at=""
+if [ -s "$claim_log" ]; then
+  prev_at="$(tail -n 1 "$claim_log" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("at",""))')"
+fi
+
+guarded=0
+if [ -f "$ready_file" ]; then
+  ready_at="$(awk -F': ' '$1=="at"{print $2}' "$ready_file")"
+  ready_claim_sha="$(awk -F': ' '$1=="claim_log_sha256"{print $2}' "$ready_file")"
+  ready_recheck_sha="$(awk -F': ' '$1=="live_recheck_sha256"{print $2}' "$ready_file")"
+  if [ -n "$ready_at" ] && { [ -z "$prev_at" ] || [ "$ready_at" \> "$prev_at" ]; }; then
+    if [ "$ready_claim_sha" = "$(sha_or_absent "$claim_log")" ] && \
+       [ "$ready_recheck_sha" = "$(sha_or_absent "$dir/live-recheck.log")" ]; then
+      guarded=1
+    fi
+  fi
+fi
+
+if [ "$guarded" -ne 1 ] && [ "$force" -ne 1 ]; then
+  cat >&2 <<EOF
+REFUSED: no fresh challenges/$code/.claim-ready on record for this reply.
+Run tools/claim-ready $code and see it exit 0 before calling claim-challenge
+(lesson: a claim made without the gate is exactly what this refuses to log
+as if it were fine). Use --force-unguarded only with an explicit human call
+to record anyway - the line will be marked "unguarded": true.
+EOF
+  exit 3
+fi
+
+unguarded="false"
+if [ "$guarded" -ne 1 ] && [ "$force" -eq 1 ]; then
+  unguarded="true"
+fi
 
 python3 -c "
 import json, datetime, sys
 d = json.load(open(sys.argv[1], encoding='utf-8'))
 at = d.get('solvedAt') or datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 line = {'at': at, 'status': d.get('status', 'unknown'), 'message': d.get('message'), 'desk': d.get('desk')}
+if sys.argv[2] == 'true':
+    line['unguarded'] = True
 print(json.dumps(line))
-" "$reply" >> "$dir/claim-log.jsonl"
+" "$reply" "$unguarded" >> "$claim_log"
+
+if [ "$guarded" -eq 1 ]; then
+  rm -f "$ready_file"
+fi
 
 status="$(python3 -c "import json,sys; print(json.load(open(sys.argv[1],encoding='utf-8')).get('status','unknown'))" "$reply")"
 
 case "$status" in
   solved)
     echo "recorded: solved. Next: call debrief once (see its probes in the reply), then stop."
+    exit 0
     ;;
   rejected)
-    echo "recorded: rejected. Next: run tools/pre-claim-gate $code before claiming again - it will require a live-page recheck first."
+    echo "recorded: rejected. Next: run tools/claim-ready $code before claiming again - it will require a live-page recheck first."
+    exit 20
     ;;
   progress)
-    echo "recorded: progress - accepted a step, NOT solved. Do exactly what the reply's 'next'/'message' say, then run tools/pre-claim-gate $code before claiming again."
+    echo "recorded: progress - accepted a step, NOT solved. Do exactly what the reply's 'next'/'message' say, then run tools/claim-ready $code before claiming again."
+    exit 10
     ;;
   *)
     echo "recorded: unrecognized status '$status'. Do not assume solved or rejected - read the reply's own 'message'/'next' fields by hand." >&2
