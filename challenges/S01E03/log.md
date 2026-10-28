@@ -94,3 +94,43 @@
   the GitHub CLI at all; it had to be installed from the official release tarball into
   `~/.local/bin` with no root. Being authenticated with Claude Code and other tools said
   nothing about whether `gh` itself was even present.
+
+## 2026-10-28, console (Phase 3a — public repo, secret scan, issues filed)
+- Phase 2b `2ba748762b6d`: ran `causes.ts`/`locales.ts` unmodified via `vite-node`, matched the
+  given snapshot exactly; read all 412 bodies and confirmed the 5 one-day-move ids as a
+  distinct symptom; drafted 3 issues; built and signed the kb page; rendered it via a
+  throwaway SvelteKit+mdsvex build and verified the desk ref, no stale banner, and the
+  numbers; left #4471's own page untouched (see that job's report for the reasoning).
+- Phase 3a `9e8d4b958d19`: full-history secret scan of `mega-dev` (gitleaks v8.30.1, 0 commits
+  leaked across 30; manual pattern sweep, all false positives — `desk-`/`risk-` words, a
+  pre-existing `redact.mjs` self-test fixture, already-redacted placeholders; confirmed the
+  real `<ticket>` appears nowhere via exact-match and `git log -S` pickaxe). Kamil then made
+  `mega-dev` **public**. Filed 3 draft issues as GitHub issues, label `desk-ticket`: fixed a
+  cross-link risk first (the drafts referenced each other and #4471 as bare `#1`/`#2`/`#3`,
+  and `#2` would have autolinked to mega-dev's own unrelated tracking issue #2 — rewrote all
+  self-references as "desk ticket #4471" / descriptive text before filing).
+  Filed: [#6 parser](https://github.com/titusandronicu/mega-dev/issues/6) (374),
+  [#7 booking-v3 hint](https://github.com/titusandronicu/mega-dev/issues/7) (33),
+  [#8 day/timezone boundary](https://github.com/titusandronicu/mega-dev/issues/8) (5).
+  Re-read all three via `gh issue view` to confirm the body rendered correctly. Prepared (not
+  committed) the real signed page locally, pending confirmation since pushing it makes
+  `<ticket>` public.
+
+## 2026-10-28, console (Phase 3b — page committed, claim rejected)
+- This job: verified by script (no echo) that `<ticket>` occurs **only** in
+  `challenges/S01E03/page/4471-split.svx`'s frontmatter, nowhere else in the working tree, and
+  that neither rendered HTML file contains it (`RenderStamp` only renders the derived desk ref,
+  never the raw signature). Committed and pushed the page deliverable
+  (`4471-split.svx`, `BreakdownTable.svelte`, `rendered/4471-split.html`, `rendered/4471.html`,
+  `README.md`); verified present on GitHub via `gh api repos/.../contents/challenges/S01E03/page`.
+- Called `claim-challenge` once with `{repo: "titusandronicu/mega-dev"}` and the `ticket`
+  receipt. **Rejected.** Desk hint: *"Two of yours are the same problem."* Full reply (ticket
+  not present in it) in `s01e03/claim-1.json`.
+- Analysis (`s01e03/claim-1-analysis.md`): #6 (parser) and #7 (booking-v3 hint) are the
+  duplicate pair — same user-visible symptom, same root problem ("nobody asks the tenant's
+  date convention," wrong in two code paths), and we'd independently written the same
+  suggested-fix sentence for both, which should have been the tell. #8 (day/timezone
+  boundary) stays distinct — confirmed textually unrelated to the other two.
+  **Proposed fix** (not yet applied, pending confirmation): merge #6 and #7 into one issue
+  (407 reports, both code paths named), keep #8 as its own issue, then retry the claim. No
+  retry attempted this job; no issue edited or closed.
