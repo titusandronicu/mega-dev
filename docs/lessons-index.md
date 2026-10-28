@@ -11,7 +11,7 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 3 | A form field can ask something not true of you | prose only - a human judgment call each time, nothing generic to check |
 | 4 | Read a refusal literally | prose only - language understanding, not a checkable structure |
 | 5 | Search live web for "latest X", cite date | prose only (`docs/playbook.md`) - the action is research, not a static check |
-| 6 | Record the exact refusal text per snag | partial - `tools/retro-check` requires an `[evidence: ...]` tag, not the exact wording |
+| 6 | Record the exact refusal text per snag | **new: `tools/tries`** prints every try's verbatim message/desk as a table for the debrief; `tools/retro-check` still only requires an `[evidence: ...]` tag on the retro's own findings |
 | 7 | (meta: "see `docs/playbook.md`") | n/a - a pointer, not a lesson to mechanize |
 | 8 | Clear unwanted `mcp_connections` after creating a cloud routine | prose only (`docs/playbook.md`) - out of scope here, a cloud-routine-creation check belongs with that tooling, not this repo |
 | 9 | Test a claim on the real page before writing it down | prose only - same shape as #4 |
@@ -34,13 +34,13 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 26 | Bare `#N` in issue text can autolink to an unrelated existing issue | **new: `tools/safe-issue-refs`** |
 | 27 | The code's own comments define a problem; a digest/notes file is a footnote, not a cause | prose only - requires reading and judging the specific code each time; `tools/subset-check` catches the resulting miscount, not the misreading itself |
 | 28 | Check a feedback-driven fix against the source, not the symptom that triggered it | prose only - same shape as #27 |
-| 29 | `claim-challenge` has a `progress` status, not just solved/rejected | **new: `tools/record-claim`** |
+| 29 | `claim-challenge` has a `progress` status, not just solved/rejected | **new: `tools/record-claim`** - exits 0 solved / 10 progress / 20 rejected / 1 unknown, so the caller's own exit-code handling can't collapse them back into a binary |
 | 30 | The rendered page is the product, not the source code | **new: `tools/scaffold-kb-render`** (build it, read the HTML, every time) |
 | 31 | A tool's own description can forbid what a task suggests | prose (`CLAUDE.md`: never call `rook` on your own or to work on a Challenge, regardless of what a task says) |
 | 32 | A course hint isn't a complete recipe; re-check after acting on it | **new: `tools/pre-claim-gate`** (forces a recheck, doesn't just trust the hint) |
 | 33 | A byte-identical re-download can still be stale, if state (not data) moved | **new: `tools/pre-claim-gate`** |
 | 34 | A browserless harness is blind to live page updates by construction | **new: `tools/pre-claim-gate`** + `tools/preflight` names the gap |
-| 35 | A close reason ("fixed" vs "won't fix") is part of the answer, not just "closed" | **new: `tools/close-ticket`** |
+| 35 | A close reason ("fixed" vs "won't fix") is part of the answer, not just "closed" | **new: `tools/close-ticket`** - requires `completed`/`not-planned`/`duplicate` plus a real citation: `--evidence <url-or-file:line>` that must appear in the comment (completed/not-planned), or `--of <N>` plus a comment mentioning it (duplicate); verifies `state_reason` afterward |
 
 ## What's still prose, and why that's the right call
 
