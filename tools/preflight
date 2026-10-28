@@ -1,44 +1,137 @@
 #!/usr/bin/env bash
-# Usage: tools/preflight
+# Usage: tools/preflight [--json]
 #
-# Checks the tools a Challenge session actually needs before relying on
-# them, instead of discovering a gap mid-task (lesson 24: "logged in
-# everywhere" didn't mean gh was even installed). Exits nonzero if any
-# required tool is missing, printing the exact fix.
+# Checks the tools and auth a Challenge session actually needs before
+# relying on them, instead of discovering a gap mid-task (lesson 24:
+# "logged in everywhere" didn't mean gh was even installed - lesson 22:
+# an OAuth loopback callback needs a human hand-off, every time).
+# Every probe reports one of ok / missing / needs-auth and, on anything
+# but ok, the exact fix - never a secret value.
+#
+# Every external binary a probe shells out to can be overridden via env,
+# so tests can point probes at stub binaries instead of the real tools:
+# PREFLIGHT_GH, PREFLIGHT_CLAUDE, PREFLIGHT_NODE, PREFLIGHT_PYTHON3,
+# PREFLIGHT_GIT (each defaults to the plain command name on PATH).
+#
+# --json prints one JSON object per probe ({"name", "status", "fix"}) as
+# a JSON array instead of the human-readable lines, and nothing else.
 set -uo pipefail
 case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
 
+gh_bin="${PREFLIGHT_GH:-gh}"
+claude_bin="${PREFLIGHT_CLAUDE:-claude}"
+node_bin="${PREFLIGHT_NODE:-node}"
+python_bin="${PREFLIGHT_PYTHON3:-python3}"
+git_bin="${PREFLIGHT_GIT:-git}"
+
+json_mode=0
+[ "${1:-}" = "--json" ] && json_mode=1
+
 bad=0
-check() {
-  local name="$1" cmd="$2" fix="$3"
-  if command -v "$cmd" >/dev/null 2>&1; then
-    echo "ok   - $name ($cmd)"
-  else
-    echo "MISSING - $name ($cmd). Fix: $fix"
-    bad=1
+names=()
+statuses=()
+fixes=()
+
+probe() {
+  # probe <name> <status> <fix> [advisory]
+  names+=("$1"); statuses+=("$2"); fixes+=("$3")
+  [ "$2" = "ok" ] || [ "${4:-}" = "advisory" ] || bad=1
+  if [ "$json_mode" -eq 0 ]; then
+    if [ "$2" = "ok" ]; then
+      echo "ok   - $1"
+    else
+      echo "${2^^} - $1. Fix: $3"
+    fi
   fi
 }
 
-check "GitHub CLI"      gh   "download the release tarball for your arch from github.com/cli/cli/releases into ~/.local/bin, no root needed"
-check "git"             git  "install git"
-check "node"            node "install Node.js (full ICU build - see the ICU check below)"
-check "python3"         python3 "install python3"
-
-if command -v node >/dev/null 2>&1; then
-  icu="$(node -e "console.log(new Intl.DateTimeFormat('pl-PL',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(Date.UTC(2026,0,2,12))))" 2>/dev/null || true)"
-  if [ "$icu" = "02.01.2026" ]; then
-    echo "ok   - node has full ICU (pl-PL formatted day-first)"
+check() {
+  local name="$1" cmd="$2" fix="$3"
+  if command -v "$cmd" >/dev/null 2>&1; then
+    probe "$name" ok ""
   else
-    echo "MISSING - node's ICU data looks reduced (pl-PL gave '$icu', not '02.01.2026'). Fix: install a full-icu Node build; a day-order check (dayFirst()-style code) will silently misread every locale otherwise."
-    bad=1
+    probe "$name" missing "$fix"
+  fi
+}
+
+check "GitHub CLI"      "$gh_bin"   "download the release tarball for your arch from github.com/cli/cli/releases into ~/.local/bin, no root needed"
+check "git"             "$git_bin"  "install git"
+check "node"            "$node_bin" "install Node.js (full ICU build - see the ICU check below)"
+check "python3"         "$python_bin" "install python3"
+
+if command -v "$node_bin" >/dev/null 2>&1; then
+  icu="$("$node_bin" -e "console.log(new Intl.DateTimeFormat('pl-PL',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(Date.UTC(2026,0,2,12))))" 2>/dev/null || true)"
+  if [ "$icu" = "02.01.2026" ]; then
+    probe "node full ICU" ok ""
+  else
+    probe "node full ICU" missing "install a full-icu Node build; a day-order check (dayFirst()-style code) will silently misread every locale otherwise (got '$icu', not '02.01.2026')"
   fi
 fi
 
-echo
-echo "NOT CHECKED (no automated test for these - this harness cannot drive a browser):"
-echo "  - a signed-in browser for the course. If a Challenge needs the live challenge page"
-echo "    re-read (see tools/pre-claim-gate), that step needs a human with one, every time -"
-echo "    this script cannot tell you whether that's available right now."
+# -- gh authed: exit code only, never the token --
+if command -v "$gh_bin" >/dev/null 2>&1; then
+  if "$gh_bin" auth status >/dev/null 2>&1; then
+    probe "gh authed" ok ""
+  else
+    probe "gh authed" needs-auth "run tools/auth-relay (or 'gh auth login') - see docs/playbook.md"
+  fi
+else
+  probe "gh authed" missing "GitHub CLI isn't installed - see the GitHub CLI check above"
+fi
 
-[ "$bad" -eq 0 ] && echo && echo "preflight: all checked tools present"
+# -- push access to titusandronicu/mega-dev --
+if command -v "$gh_bin" >/dev/null 2>&1; then
+  push="$("$gh_bin" api repos/titusandronicu/mega-dev --jq .permissions.push 2>/dev/null)"
+  if [ "$push" = "true" ]; then
+    probe "push access to titusandronicu/mega-dev" ok ""
+  elif [ "$push" = "false" ]; then
+    probe "push access to titusandronicu/mega-dev" missing "the authenticated account can read but not push this repo - ask the owner for write access"
+  else
+    probe "push access to titusandronicu/mega-dev" needs-auth "could not read repo permissions - run tools/auth-relay (or 'gh auth login') first"
+  fi
+else
+  probe "push access to titusandronicu/mega-dev" missing "GitHub CLI isn't installed - see the GitHub CLI check above"
+fi
+
+# -- mega-challenge MCP connected: status word only, never the URL/token --
+if command -v "$claude_bin" >/dev/null 2>&1; then
+  mcp_line="$("$claude_bin" mcp list 2>/dev/null | grep "^mega-challenge:" || true)"
+  if [ -z "$mcp_line" ]; then
+    probe "mega-challenge MCP connected" missing "mega-challenge isn't configured as an MCP server - see CLAUDE.md"
+  elif printf '%s' "$mcp_line" | grep -qi "needs authentication"; then
+    probe "mega-challenge MCP connected" needs-auth "run tools/auth-relay start mega-challenge and hand the URL to Bishop"
+  else
+    probe "mega-challenge MCP connected" ok ""
+  fi
+else
+  probe "mega-challenge MCP connected" missing "the claude CLI isn't on PATH"
+fi
+
+# -- browser: this harness never has one, by construction (lesson 22, 34) --
+# Advisory: this harness never has a browser, by construction (lesson
+# 22, 34) - reported so it's never a silent gap, but it doesn't fail
+# preflight's own exit code the way a fixable gap does.
+probe "browser available" missing "no - Bishop must relay live pages, see tools/pre-claim-gate" advisory
+
+if [ "$json_mode" -eq 1 ]; then
+  "$python_bin" - "${names[@]}" --SEP-- "${statuses[@]}" --SEP-- "${fixes[@]}" <<'PYEOF'
+import json
+import sys
+
+args = sys.argv[1:]
+i = args.index("--SEP--")
+names, rest = args[:i], args[i + 1:]
+j = rest.index("--SEP--")
+statuses, fixes = rest[:j], rest[j + 1:]
+print(json.dumps([{"name": n, "status": s, "fix": f} for n, s, f in zip(names, statuses, fixes)], indent=2))
+PYEOF
+else
+  echo
+  echo "NOT CHECKED (no automated test for these - this harness cannot drive a browser):"
+  echo "  - a signed-in browser for the course. If a Challenge needs the live challenge page"
+  echo "    re-read (see tools/pre-claim-gate), that step needs a human with one, every time -"
+  echo "    this script cannot tell you whether that's available right now."
+  [ "$bad" -eq 0 ] && echo && echo "preflight: all checked tools present"
+fi
+
 exit "$bad"

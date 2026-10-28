@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# Usage:
+#   tools/auth-relay start <mcp-server>
+#   tools/auth-relay deliver <url>
+#
+# Promotes the scratch setup-auth.sh/check-auth.sh into the repo (lesson
+# 22: an OAuth loopback callback needs a human hand-off, every time - this
+# container has no browser, so the redirect URL has to be relayed back by
+# hand). Never logs a code/state query value in any echo.
+#
+# 'start <mcp-server>': runs `claude mcp login --no-browser <mcp-server>`,
+# which prints the authorize URL and then waits for the redirect URL to be
+# pasted back. Prints the instruction: open the authorize URL in the SAME
+# browser/profile as the magic link, approve, then paste back the FULL
+# address-bar URL of the page that failed to load
+# (http://localhost:<port>/...) when this script asks for it.
+#
+# 'deliver <url>': validates <url> is exactly http://localhost:<port>/...
+# (refuses anything else - https, a non-localhost host, or a bare path),
+# then curls it from inside the container (where the CLI's own listener
+# actually is) and prints only the HTTP status code. Idempotent: curling
+# the same URL twice is safe, it's a read-only status check from here.
+set -uo pipefail
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
+
+claude_bin="${PREFLIGHT_CLAUDE:-claude}"
+curl_bin="${PREFLIGHT_CURL:-curl}"
+
+redact() {
+  # Strip any query string before it's ever echoed.
+  printf '%s\n' "$1" | sed -E 's/\?.*$/?<redacted>/'
+}
+
+case "${1:-}" in
+  start)
+    [ $# -eq 2 ] || { echo "usage: tools/auth-relay start <mcp-server>" >&2; exit 2; }
+    server="$2"
+    cat <<EOF
+This container has no browser. 'claude mcp login --no-browser $server' is
+about to print an authorize URL. Steps:
+  1. Open that URL in a browser on YOUR OWN computer (not this container).
+  2. Sign in there. The course sends a magic link by email: open that link
+     in the SAME browser/profile where you opened the authorize URL.
+  3. Approve. Your browser will try to load http://localhost:<port>/...
+     and fail (nothing listens on your machine's own localhost - the
+     CLI's listener is inside this container). That failure is expected.
+  4. Copy the FULL failed address-bar URL and hand it to Bishop, who runs:
+       tools/auth-relay deliver '<that url>'
+     from inside this container.
+EOF
+    "$claude_bin" mcp login --no-browser "$server"
+    ;;
+  deliver)
+    [ $# -eq 2 ] || { echo "usage: tools/auth-relay deliver <url>" >&2; exit 2; }
+    url="$2"
+    case "$url" in
+      http://localhost:*|http://localhost/*)
+        ;;
+      *)
+        echo "refused: '$(redact "$url")' is not http://localhost:<port>/... - only the container's own OAuth loopback callback is relayed here" >&2
+        exit 2
+        ;;
+    esac
+    echo "delivering $(redact "$url") ..."
+    status="$("$curl_bin" -s -o /dev/null -w '%{http_code}' "$url" 2>/dev/null)"
+    [ -n "$status" ] || status="000"
+    echo "HTTP status: $status"
+    [ "$status" != "000" ]
+    ;;
+  *)
+    echo "usage: tools/auth-relay start <mcp-server>" >&2
+    echo "       tools/auth-relay deliver <url>" >&2
+    exit 2
+    ;;
+esac

@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+# Usage: tools/preflight.test
+#
+# Stub gh/claude binaries on PATH via PREFLIGHT_GH/PREFLIGHT_CLAUDE (never
+# the real network) covering: all-ok, gh missing, gh unauthed,
+# mega-challenge needing auth, and the --json shape.
+set -euo pipefail
+repo_root="$(pwd)"
+pass=0
+
+ok()   { echo "ok   - $1"; pass=$((pass + 1)); }
+fail() { echo "FAIL - $1"; exit 1; }
+
+preflight="$repo_root/tools/preflight"
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+mkbin() {
+  # mkbin <path> <body>
+  cat > "$1" <<EOF2
+#!/usr/bin/env bash
+$2
+EOF2
+  chmod +x "$1"
+}
+
+# === all-ok: authed gh with push, connected mega-challenge ===
+mkbin "$tmp/gh-ok" '
+case "$1" in
+  auth) exit 0 ;;
+  api) echo "true" ;;
+esac
+'
+mkbin "$tmp/claude-ok" 'echo "mega-challenge: connected"'
+
+set +e
+out="$(PREFLIGHT_GH="$tmp/gh-ok" PREFLIGHT_CLAUDE="$tmp/claude-ok" "$preflight" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 0 ] || fail "all-ok fixture should exit 0:\n$out"
+printf '%s' "$out" | grep -q "^ok   - gh authed" || fail "all-ok: gh authed should be ok:\n$out"
+printf '%s' "$out" | grep -q "^ok   - push access to titusandronicu/mega-dev" || fail "all-ok: push access should be ok:\n$out"
+printf '%s' "$out" | grep -q "^ok   - mega-challenge MCP connected" || fail "all-ok: mcp should be ok:\n$out"
+printf '%s' "$out" | grep -q "MISSING - browser available" || fail "all-ok: browser should always be missing:\n$out"
+ok "all-ok fixture: every probe ok except browser (always missing)"
+
+# === gh missing entirely ===
+set +e
+out="$(PREFLIGHT_GH="$tmp/no-such-gh-binary" PREFLIGHT_CLAUDE="$tmp/claude-ok" "$preflight" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "gh-missing fixture should exit nonzero:\n$out"
+printf '%s' "$out" | grep -q "MISSING - GitHub CLI" || fail "gh-missing: GitHub CLI should be MISSING:\n$out"
+printf '%s' "$out" | grep -q "MISSING - gh authed" || fail "gh-missing: gh authed should be MISSING (no binary):\n$out"
+ok "gh binary missing: reported MISSING, not crashed"
+
+# === gh present but not authed ===
+mkbin "$tmp/gh-unauthed" '
+case "$1" in
+  auth) exit 1 ;;
+  api) exit 1 ;;
+esac
+'
+set +e
+out="$(PREFLIGHT_GH="$tmp/gh-unauthed" PREFLIGHT_CLAUDE="$tmp/claude-ok" "$preflight" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "gh-unauthed fixture should exit nonzero:\n$out"
+printf '%s' "$out" | grep -q "NEEDS-AUTH - gh authed" || fail "gh-unauthed: gh authed should be needs-auth:\n$out"
+printf '%s' "$out" | grep -q "NEEDS-AUTH - push access" || fail "gh-unauthed: push access should be needs-auth:\n$out"
+ok "gh present but unauthed: needs-auth, not a crash or a false ok"
+
+# === mega-challenge needs auth ===
+mkbin "$tmp/claude-needs-auth" 'echo "mega-challenge: needs authentication"'
+set +e
+out="$(PREFLIGHT_GH="$tmp/gh-ok" PREFLIGHT_CLAUDE="$tmp/claude-needs-auth" "$preflight" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "mcp-needs-auth fixture should exit nonzero:\n$out"
+printf '%s' "$out" | grep -q "NEEDS-AUTH - mega-challenge MCP connected" || fail "mcp-needs-auth: expected needs-auth:\n$out"
+printf '%s' "$out" | grep -q "tools/auth-relay start mega-challenge" || fail "mcp-needs-auth: fix should point at auth-relay:\n$out"
+ok "mega-challenge MCP needing auth: needs-auth, with the auth-relay fix"
+
+# === --json shape ===
+set +e
+out="$(PREFLIGHT_GH="$tmp/gh-ok" PREFLIGHT_CLAUDE="$tmp/claude-ok" "$preflight" --json 2>&1)"
+rc=$?
+set -e
+echo "$out" | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+assert isinstance(data, list) and data, 'expected a non-empty JSON array'
+for p in data:
+    assert set(p.keys()) == {'name', 'status', 'fix'}, p
+    assert p['status'] in ('ok', 'missing', 'needs-auth'), p
+names = [p['name'] for p in data]
+for want in ('gh authed', 'push access to titusandronicu/mega-dev', 'mega-challenge MCP connected', 'browser available'):
+    assert want in names, f'missing probe: {want}'
+print('json shape ok, %d probes' % len(data))
+" || fail "--json output did not parse/validate:\n$out"
+ok "--json: valid array of {name,status,fix}, all 4 new probes present"
+
+echo
+echo "all preflight.test checks passed ($pass ok)"
