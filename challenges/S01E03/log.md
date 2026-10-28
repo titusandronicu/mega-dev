@@ -212,3 +212,31 @@
   Things moved since your first submit."* Full reply in `s01e03/claim-3.json` (no ticket in
   it). **Stopped per instructions — no retry, no further issue edits, no debrief** (status is
   `rejected`, not `solved`).
+
+## 2026-10-28, console (Phase 7 — closed the way the desk would, solved, job `9fd1351df5d8` then this job)
+- New evidence: the coordinator (Bishop) read the live challenge page in their own browser
+  (this harness's console still has none) and found a "DESK UPDATE": engineering closed desk
+  ticket #4471 on 05 Oct — parser **fixed** (`fix(dates): parse dd/mm for eu locales`), hint
+  **won't fix** (`booking-v3` form retired). Re-downloaded kb export was byte-identical
+  (same sha256): the data/counts hadn't changed, only the desk's own state had, and this
+  harness had no way to see that on its own.
+- Reopened #7, commented "Won't fix: the booking-v3 form was retired...", closed
+  `--reason "not planned"`. Commented on #6 "Fixed upstream: fix(dates): parse dd/mm for eu
+  locales..." (already `completed` from Phase 6, left as-is). Verified via
+  `gh api .../issues/{6,7,8}`: #6 `closed`/`completed`, #7 `closed`/`not_planned`, #8
+  `closed`/`not_planned`. #2 untouched.
+- Updated `4471.svx`: `status: known→closed`; Callout rewritten to state the close reasons
+  with ticket links; `4471-split.svx`'s "What to do" section (still phrased as a pending
+  action — "File the hint reports as their own ticket") rewritten to "What happened," past
+  tense, matching the closed state. Re-rendered: status pill `closed`, `CauseTable`'s own sum
+  line "412 reports merged into #4471 · 2 causes", table 379/33, footnote "5 ... filed under
+  parser", desk ref `DR-AA5T-RE14` on both pages, no stale banner. Ticket re-scanned: present
+  only in the two `.svx` frontmatters. Pushed: `bc08e23`.
+- Called `claim-challenge` a fourth time (same receipts). **`status: "solved"`**, accepted on
+  this try after 2 rejections (`solvedAt: 2026-10-28T09:50:32.000Z`). Full reply in
+  `s01e03/claim-4.json` (no ticket in it).
+- Called `debrief` once, per its probes (C1 "the rendered view," C2 "the desk's update," T1–T3
+  on the render setup / ticket routine / claim sourcing). Saved the course's returned sheet to
+  `~/work/mega-s01e03/s01e03/debrief.md` and the course's own link
+  (https://hq.mega.dev/challenges/what-it-shows#debrief); a compiled, S01E02-style version is
+  `challenges/S01E03/debrief.md` in this repo.
