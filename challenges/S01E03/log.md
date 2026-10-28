@@ -134,3 +134,36 @@
   **Proposed fix** (not yet applied, pending confirmation): merge #6 and #7 into one issue
   (407 reports, both code paths named), keep #8 as its own issue, then retry the claim. No
   retry attempted this job; no issue edited or closed.
+
+## 2026-10-28, console (Phase 4 — fix per claim-1, claim-2 "progress")
+- Kamil rejected the merge proposal (10:20) and pointed at `causes.ts` itself. Re-read it:
+  - lines 37–39: *"The shared parser reads every date month first. A day-first tenant's dates
+    come out flipped: that is `parser`. Through booking-v3's form the tenant's people type
+    what the hint tells them, month first, and the form reads it the tenant's way: that is
+    `hint`, a different bug."* — `parser` and `hint` are explicitly two bugs, so #6/#7 are
+    correctly separate; the previous job's merge proposal was wrong.
+  - lines 93–96: *"Reports the desk read differently from their cause (desk-notes.json):
+    counted where they're filed, footnoted under it."* (comment on `readAs()`) — the 5
+    one-day-move ids are **parser** reports (assigned by tenant + channel, same as the other
+    374), just read differently by the desk; they're a footnote, not a separate cause. So #8
+    duplicated #6, not the other way round.
+- Fixed: edited #6 to 379 (includes the 5, with a new "Read as one-day moves" section quoting
+  `readAs()`'s comment and removing the "separate bug" claim); commented on and closed #8 as a
+  duplicate of #6 (`gh issue close 8 --reason "not planned"`); #7 needed no edit (never
+  referenced #8 or a 3-way split). `BreakdownTable.svelte` no longer subtracts the 5 into a
+  third row — it now shows 2 rows (parser 379, hint 33) plus a footnote line, mirroring
+  `CauseTable`'s own `readAs()` behaviour; page prose and links updated to 2 tickets. Re-built
+  via the throwaway SvelteKit site and checked: 379/33, footnote "5 reports read as a one-day
+  move; filed under `parser` by tenant," desk ref unchanged (`DR-AA5T-RE14`), no stale banner.
+  Ticket-scanned (only in the `.svx` frontmatter) before committing/pushing
+  (`4fb3dbd`).
+- Called `claim-challenge` again (same receipts). **Status: `progress`**, not `solved` and not
+  `rejected` — a third state the earlier task framing didn't cover. Message: *"Step one
+  passed: the course accepted your tickets. Not solved yet. When the work on #4471 is done,
+  close your tickets, then send the repo again."* Desk: *"Two tickets, both real. The desk
+  isn't done with #4471 yet. When it is, close yours and submit again."* Full reply in
+  `s01e03/claim-2.json` (no ticket in it).
+- **Stopped here, did not close #6/#7 or resubmit.** Closing real GitHub issues and claiming
+  again on "work is done" needs a human call on what "done" means in this challenge (there is
+  no real parser code to patch here — only the ticket-filing/documentation work this challenge
+  actually asked for) before acting on it. See the report for the open question to Kamil.
