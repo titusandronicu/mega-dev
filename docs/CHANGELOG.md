@@ -24,3 +24,4 @@
 - 2026-10-27: plan for the Grok bot communication loop (context/changes/2026-10-27-grok-comms-loop.md): runs queue as the bus, `/remote-control` for the owner.
 - 2026-10-27: `tools/whereami` and `docs/environments.md` track which place runs what (host, containers, Mac).
 - 2026-10-27: repo maps of mega-dev and mega-hq (context/map/), health check of mega-hq (context/foundation/health-check-mega-hq.md), agent background index (context/foundation/agent-background.md).
+- 2026-10-28: daily prep draft challenges/2026-10-28/prep.md (hq.mega.dev not reachable from the routine: host not in allowed network domains).
