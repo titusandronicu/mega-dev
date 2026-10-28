@@ -9,46 +9,49 @@
 		<link href="../../_app/immutable/chunks/5drts7bL.js" rel="modulepreload">
 		<link href="../../_app/immutable/chunks/CQWEYE6T.js" rel="modulepreload">
 		<link href="../../_app/immutable/chunks/iH6W69QQ.js" rel="modulepreload">
-		<link href="../../_app/immutable/entry/app.BZ_2ZLDl.js" rel="modulepreload">
+		<link href="../../_app/immutable/entry/app.CsXg4u9o.js" rel="modulepreload">
 		<link href="../../_app/immutable/nodes/0.DHW0Ihcp.js" rel="modulepreload">
 		<link href="../../_app/immutable/chunks/DK3Fl9T5.js" rel="modulepreload">
-		<link href="../../_app/immutable/nodes/5.pyrF_C8J.js" rel="modulepreload">
-		<link href="../../_app/immutable/chunks/pdOCIxyI.js" rel="modulepreload">
+		<link href="../../_app/immutable/nodes/5.BQtc7d_V.js" rel="modulepreload">
+		<link href="../../_app/immutable/chunks/7Ip0yc7j.js" rel="modulepreload">
 		<link href="../../_app/immutable/chunks/U_XjOHUE.js" rel="modulepreload">
 		<link href="../../_app/immutable/chunks/CVBzP17p.js" rel="modulepreload">
 		<link href="../../_app/immutable/chunks/B8lD24w5.js" rel="modulepreload">
 		<!--e2jw2j--><!----><title>#4471, split · what it actually held · support kb</title>
 		<link href="../../_app/immutable/assets/runbook.COyw0cbZ.css" rel="stylesheet">
 		<link href="../../_app/immutable/assets/Callout.AbLv9dM_.css" rel="stylesheet">
-		<link href="../../_app/immutable/assets/_page.DfKGFxIE.css" rel="stylesheet">
+		<link href="../../_app/immutable/assets/_page.B29P7sRE.css" rel="stylesheet">
   </head>
   <body data-sveltekit-preload-data="hover">
     <div style="display: contents"><!--[--><!--[--><!--[0--><!--[--><!--[--><!--[-1--><!--[--><div class="kb svelte-e2jw2j"><header><a class="crumb svelte-e2jw2j" href="/kb">support desk · kb</a> <h1 class="svelte-e2jw2j">#4471, split · what it actually held</h1> <p class="meta svelte-e2jw2j"><span>owner <b>titusandronicu</b></span> <span class="status known svelte-e2jw2j">known</span> <span class="svelte-e2jw2j">reviewed 2026-10-28 · 0 days ago</span></p></header> <!--[-1--><!--]--> <main><p><a href="/kb/incidents/4471">#4471</a> merged every date-swap report into one ticket and called it known:
-one parser bug, one fix queued. Reading every merged report’s body shows that’s three problems,
+one parser bug, one fix queued. Reading every merged report’s body shows that’s two problems,
 not one.</p> <aside class="warn svelte-17bri61"><!---->#4471's own cause table already renders this: the <code>hint</code> row shows "not this ticket
-— no ticket of its own." This page adds the third problem the mechanical grouping cannot see.<!----></aside><!----> <h2>What #4471 actually holds</h2> <table><thead><tr><th>problem</th><th>reports</th><th>tenants</th><th>ticket</th></tr></thead><tbody><!--[--><tr class="svelte-19vtsve"><td class="svelte-19vtsve"><code>parser</code></td><td class="svelte-19vtsve">374</td><td class="svelte-19vtsve">11</td><td class="svelte-19vtsve">#4471</td></tr><tr class="svelte-19vtsve wrong"><td class="svelte-19vtsve"><code>hint</code></td><td class="svelte-19vtsve">33</td><td class="svelte-19vtsve">3</td><td class="svelte-19vtsve">not this ticket — no ticket of its own</td></tr><!--]--><!--[0--><tr class="wrong svelte-19vtsve"><td class="svelte-19vtsve"><code>day/timezone boundary</code></td><td class="svelte-19vtsve">5</td><td class="svelte-19vtsve">—</td><td class="svelte-19vtsve">not this ticket — no ticket of its own</td></tr><!--]--></tbody></table><!----> <ul><li><strong>parser</strong> — the shared parser reads every date month first; day-first tenants (by <code>Intl.DateTimeFormat</code>, see <code>causes.ts: dayFirst()</code>) get it flipped. This is #4471’s real bug.</li> <li><strong>hint</strong> — <code>booking-v3</code>’s own <code>MM/DD</code> hint causes the opposite flip on day-first tenants who
-type what the hint tells them. Same user-visible symptom, different code path, no ticket.</li> <li><strong>day/timezone boundary</strong> — five reports (<code>desk-notes.json: oneDayMove</code>) read, body by body,
-as a one-day or cross-timezone shift: “every booking in June is one day off,” two attendees
-in different cities seeing different weekdays for the same meeting, an invite that “arrived
-before I made the booking.” None of the five mention a swapped day/month pair. <code>causeOf()</code> never reads report text, so it files all five under <code>parser</code> by tenant+channel; they are not
-that bug.</li></ul> <h2>Why this matters</h2> <p>A ticket that is “known” because its headline count and its biggest cause agree can still hide
-a second cause with no ticket, and a third with no cause bucket at all. The numbers above are
-computed from the same <code>reports-4471.json</code>/<code>desk-notes.json</code> this export shipped with — nothing
-here is typed into the page.</p> <h2>What to do</h2> <p>File the <code>hint</code> and <code>day/timezone boundary</code> reports as their own tickets; leave #4471 as the
-parser ticket it actually is, now at its real count.</p> <!--[0--><p class="stamp svelte-1280m42">desk ref <b class="svelte-1280m42">DR-AA5T-RE14</b></p><!--]--><!----><!----></main> <footer class="svelte-e2jw2j">Pages are written by people. Tables and charts are built from data at render time.</footer></div><!--]--><!--]--><!--]--><!----><!--]--><!--]--><!--]--><!----> <!--[-1--><!--]--><!--]-->
+— no ticket of its own." This page just spells out what to do about it.<!----></aside><!----> <h2>What #4471 actually holds</h2> <table><thead><tr><th>problem</th><th>reports</th><th>tenants</th><th>ticket</th></tr></thead><tbody><!--[--><tr class="svelte-19vtsve"><td class="svelte-19vtsve"><code>parser</code></td><td class="svelte-19vtsve">379</td><td class="svelte-19vtsve">11</td><td class="svelte-19vtsve">#4471</td></tr><tr class="svelte-19vtsve wrong"><td class="svelte-19vtsve"><code>hint</code></td><td class="svelte-19vtsve">33</td><td class="svelte-19vtsve">3</td><td class="svelte-19vtsve">not this ticket — no ticket of its own</td></tr><!--]--></tbody></table> <!--[--><!--[0--><p class="note svelte-19vtsve">5 reports read as a one-day move; filed under <code>parser</code> by tenant.</p><!--]--><!--[-1--><!--]--><!--]--><!----> <ul><li><strong>parser</strong> — the shared parser reads every date month first; day-first tenants (by <code>Intl.DateTimeFormat</code>, see <code>causes.ts: dayFirst()</code>) get it flipped. This is #4471’s real bug,
+at its real count: 379, including the 5 reports the desk read as a one-day move rather than
+a month/day swap. <code>causeOf()</code> assigns cause by tenant + channel only, and <code>causes.ts</code>’s own
+comment on <code>readAs()</code> says those 5 are “counted where they’re filed, footnoted under it” —
+parser reports, read differently, not a different bug. The footnote above says so.</li> <li><strong>hint</strong> — <code>booking-v3</code>’s own <code>MM/DD</code> hint causes the opposite flip on day-first tenants who
+type what the hint tells them. Same user-visible symptom, different code path. <code>causes.ts</code>’s
+own comment calls this “a different bug” from the parser — that’s why it’s a second ticket,
+not folded into the first.</li></ul> <h2>Why this matters</h2> <p>A ticket that is “known” because its headline count and its biggest cause agree can still hide
+a second cause with no ticket of its own. The numbers above are computed from the same <code>reports-4471.json</code>/<code>desk-notes.json</code> this export shipped with — nothing here is typed into
+the page. (An earlier pass here also split the one-day-read reports into a third, separate
+problem; the kb’s own code and comments say that’s wrong — they’re parser reports, filed and
+footnoted, not a new cause.)</p> <h2>What to do</h2> <p>File the <code>hint</code> reports as their own ticket; leave #4471 as the parser ticket it actually is,
+now at its real count of 379. Filed as <a href="https://github.com/titusandronicu/mega-dev/issues/6" rel="nofollow">#6 (parser, 379)</a> and <a href="https://github.com/titusandronicu/mega-dev/issues/7" rel="nofollow">#7 (hint, 33)</a>.</p> <!--[0--><p class="stamp svelte-1280m42">desk ref <b class="svelte-1280m42">DR-AA5T-RE14</b></p><!--]--><!----><!----></main> <footer class="svelte-e2jw2j">Pages are written by people. Tables and charts are built from data at render time.</footer></div><!--]--><!--]--><!--]--><!----><!--]--><!--]--><!--]--><!----> <!--[-1--><!--]--><!--]-->
 			
 			<script>
 				{
-					__sveltekit_1wkdjld = {
+					__sveltekit_ayw06s = {
 						base: new URL("../..", location).pathname.slice(0, -1),
-						version: "1793176794839"
+						version: "1793179377265"
 					};
 
 					const element = document.currentScript.parentElement;
 
 					import("../../_app/immutable/entry/start.BF28K5A7.js").then(async (kit) => {
-						kit.init(__sveltekit_1wkdjld);
-						const app = await import("../../_app/immutable/entry/app.BZ_2ZLDl.js");
+						kit.init(__sveltekit_ayw06s);
+						const app = await import("../../_app/immutable/entry/app.CsXg4u9o.js");
 						kit.start(app, element, {
 							node_ids: [0, 5],
 							data: [null,null],

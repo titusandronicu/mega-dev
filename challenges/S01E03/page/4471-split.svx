@@ -14,12 +14,12 @@ signature: "v1.eyJzdWIiOiI4MzEiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhd
 </script>
 
 [#4471](/kb/incidents/4471) merged every date-swap report into one ticket and called it known:
-one parser bug, one fix queued. Reading every merged report's body shows that's three problems,
+one parser bug, one fix queued. Reading every merged report's body shows that's two problems,
 not one.
 
 <Callout kind="warn">
 #4471's own cause table already renders this: the <code>hint</code> row shows "not this ticket
-— no ticket of its own." This page adds the third problem the mechanical grouping cannot see.
+— no ticket of its own." This page just spells out what to do about it.
 </Callout>
 
 ## What #4471 actually holds
@@ -27,26 +27,29 @@ not one.
 <BreakdownTable ticket={4471} />
 
 - **parser** — the shared parser reads every date month first; day-first tenants (by
-  `Intl.DateTimeFormat`, see `causes.ts: dayFirst()`) get it flipped. This is #4471's real bug.
+  `Intl.DateTimeFormat`, see `causes.ts: dayFirst()`) get it flipped. This is #4471's real bug,
+  at its real count: 379, including the 5 reports the desk read as a one-day move rather than
+  a month/day swap. `causeOf()` assigns cause by tenant + channel only, and `causes.ts`'s own
+  comment on `readAs()` says those 5 are "counted where they're filed, footnoted under it" —
+  parser reports, read differently, not a different bug. The footnote above says so.
 - **hint** — `booking-v3`'s own `MM/DD` hint causes the opposite flip on day-first tenants who
-  type what the hint tells them. Same user-visible symptom, different code path, no ticket.
-- **day/timezone boundary** — five reports (`desk-notes.json: oneDayMove`) read, body by body,
-  as a one-day or cross-timezone shift: "every booking in June is one day off," two attendees
-  in different cities seeing different weekdays for the same meeting, an invite that "arrived
-  before I made the booking." None of the five mention a swapped day/month pair. `causeOf()`
-  never reads report text, so it files all five under `parser` by tenant+channel; they are not
-  that bug.
+  type what the hint tells them. Same user-visible symptom, different code path. `causes.ts`'s
+  own comment calls this "a different bug" from the parser — that's why it's a second ticket,
+  not folded into the first.
 
 ## Why this matters
 
 A ticket that is "known" because its headline count and its biggest cause agree can still hide
-a second cause with no ticket, and a third with no cause bucket at all. The numbers above are
-computed from the same `reports-4471.json`/`desk-notes.json` this export shipped with — nothing
-here is typed into the page.
+a second cause with no ticket of its own. The numbers above are computed from the same
+`reports-4471.json`/`desk-notes.json` this export shipped with — nothing here is typed into
+the page. (An earlier pass here also split the one-day-read reports into a third, separate
+problem; the kb's own code and comments say that's wrong — they're parser reports, filed and
+footnoted, not a new cause.)
 
 ## What to do
 
-File the `hint` and `day/timezone boundary` reports as their own tickets; leave #4471 as the
-parser ticket it actually is, now at its real count.
+File the `hint` reports as their own ticket; leave #4471 as the parser ticket it actually is,
+now at its real count of 379. Filed as [#6 (parser, 379)](https://github.com/titusandronicu/mega-dev/issues/6)
+and [#7 (hint, 33)](https://github.com/titusandronicu/mega-dev/issues/7).
 
 <RenderStamp {signature} />

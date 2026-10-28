@@ -1,8 +1,9 @@
 <script lang="ts">
-  // Splits a ticket's merged reports into the problems they really hold: the mechanical
-  // cause groups causes.ts already computes, plus the reports desk-notes.json flags as a
-  // different symptom (a one-day/timezone-boundary shift, not a date swap) pulled back out
-  // of whichever cause group they mechanically landed in. Numbers are computed here, not typed.
+  // The problems #4471's merge actually holds: the cause groups causes.ts computes (parser,
+  // hint), each at its full count. A report the desk read as a one-day move is still counted
+  // under its computed cause (causeOf looks at tenant + channel only) and only footnoted below
+  // (causes.ts: readAs — "counted where they're filed, footnoted under it"), never pulled out
+  // into a cause of its own. Numbers are computed here, not typed.
   import reports from '#lib/data/reports-4471.json';
   import notes from '#lib/data/desk-notes.json';
   import { groupByCause, readAs, ticketCause, uniqueById, type Report } from '#lib/kb/causes';
@@ -13,18 +14,15 @@
   const merged = $derived(uniqueById(reports as Report[]).filter((r) => r.mergedInto === ticket));
   const groups = $derived(groupByCause(merged, tenantOf));
   const owner = $derived(ticketCause(groups, ticket));
-  const oneDayCount = $derived(groups.reduce((n, g) => n + readAs(g, notes.oneDayMove), 0));
 
   const rows = $derived(
-    groups.map((g) => {
-      const rest = g.reports.filter((r) => !notes.oneDayMove.includes(r.id));
-      return {
-        label: g.cause,
-        count: rest.length,
-        isOwner: g.cause === owner,
-        tenants: new Set(rest.map((r) => r.tenant)).size,
-      };
-    }),
+    groups.map((g) => ({
+      label: g.cause,
+      count: g.reports.length,
+      isOwner: g.cause === owner,
+      tenants: g.tenants,
+      movedCount: readAs(g, notes.oneDayMove),
+    })),
   );
 </script>
 
@@ -41,18 +39,17 @@
         <td>{r.isOwner ? `#${ticket}` : 'not this ticket — no ticket of its own'}</td>
       </tr>
     {/each}
-    {#if oneDayCount}
-      <tr class="wrong">
-        <td><code>day/timezone boundary</code></td>
-        <td>{oneDayCount}</td>
-        <td>—</td>
-        <td>not this ticket — no ticket of its own</td>
-      </tr>
-    {/if}
   </tbody>
 </table>
+
+{#each rows as r (r.label)}
+  {#if r.movedCount}
+    <p class="note">{r.movedCount} reports read as a one-day move; filed under <code>{r.label}</code> by tenant.</p>
+  {/if}
+{/each}
 
 <style>
   .wrong td { background: var(--warn-bg); }
   .wrong td:last-child { color: var(--warn); font-weight: 600; }
+  .note { color: var(--muted); font-size: 0.85em; }
 </style>
