@@ -4,7 +4,7 @@ title: '#4471, split · what it actually held'
 owner: titusandronicu
 status: known
 reviewed: 2026-10-28
-signature: "<ticket from start-challenge>"
+signature: "v1.eyJzdWIiOiI4MzEiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdCI6MTc5MzE3NDQwNSwiZXhwIjoxNzkzMjYwODA1fQ.dsO4zW4oZ3kGsBNl4gmoPOWPmlJnI5z98kW2cyUW2sw"
 ---
 
 <script>
