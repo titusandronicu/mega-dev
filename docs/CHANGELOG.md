@@ -24,3 +24,7 @@
 - 2026-10-27: plan for the Grok bot communication loop (context/changes/2026-10-27-grok-comms-loop.md): runs queue as the bus, `/remote-control` for the owner.
 - 2026-10-27: `tools/whereami` and `docs/environments.md` track which place runs what (host, containers, Mac).
 - 2026-10-27: repo maps of mega-dev and mega-hq (context/map/), health check of mega-hq (context/foundation/health-check-mega-hq.md), agent background index (context/foundation/agent-background.md).
+## 2026-10-28
+- S01E03 ("what it shows") started from the UGREEN console: mega-challenge re-authenticated via a manual OAuth callback relay; `gh` installed from scratch (missing from the base image); kb export moved as checksummed base64 chunks, sha256-verified and extracted.
+- S01E03 analysis: ran the kb's own causes.ts/locales.ts (vite-node) on the export — matched the given snapshot exactly (412 unique, parser 374 + 5 one-day-moves, hint 33, 38 tag mismatches). Read all 412 report bodies programmatically; confirmed the 5 one-day-move ids are a distinct timezone/day-boundary bug, not the parser's date swap.
+- S01E03: drafted 3 issues (not filed) and a signed kb page (`kb/incidents/4471-split`, new `BreakdownTable.svelte`), left the original #4471 page untouched, rendered through a throwaway SvelteKit+mdsvex build and checked the output (desk ref, no stale banner, numbers match). mega-dev confirmed private — stays documentation-only; public tickets repo pending Kamil's choice. See challenges/S01E03/.

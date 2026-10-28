@@ -1,0 +1,52 @@
+---
+layout: runbook
+title: '#4471, split · what it actually held'
+owner: titusandronicu
+status: known
+reviewed: 2026-10-28
+signature: "<ticket from start-challenge>"
+---
+
+<script>
+  import BreakdownTable from '#lib/kb/BreakdownTable.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) merged every date-swap report into one ticket and called it known:
+one parser bug, one fix queued. Reading every merged report's body shows that's three problems,
+not one.
+
+<Callout kind="warn">
+#4471's own cause table already renders this: the <code>hint</code> row shows "not this ticket
+— no ticket of its own." This page adds the third problem the mechanical grouping cannot see.
+</Callout>
+
+## What #4471 actually holds
+
+<BreakdownTable ticket={4471} />
+
+- **parser** — the shared parser reads every date month first; day-first tenants (by
+  `Intl.DateTimeFormat`, see `causes.ts: dayFirst()`) get it flipped. This is #4471's real bug.
+- **hint** — `booking-v3`'s own `MM/DD` hint causes the opposite flip on day-first tenants who
+  type what the hint tells them. Same user-visible symptom, different code path, no ticket.
+- **day/timezone boundary** — five reports (`desk-notes.json: oneDayMove`) read, body by body,
+  as a one-day or cross-timezone shift: "every booking in June is one day off," two attendees
+  in different cities seeing different weekdays for the same meeting, an invite that "arrived
+  before I made the booking." None of the five mention a swapped day/month pair. `causeOf()`
+  never reads report text, so it files all five under `parser` by tenant+channel; they are not
+  that bug.
+
+## Why this matters
+
+A ticket that is "known" because its headline count and its biggest cause agree can still hide
+a second cause with no ticket, and a third with no cause bucket at all. The numbers above are
+computed from the same `reports-4471.json`/`desk-notes.json` this export shipped with — nothing
+here is typed into the page.
+
+## What to do
+
+File the `hint` and `day/timezone boundary` reports as their own tickets; leave #4471 as the
+parser ticket it actually is, now at its real count.
+
+<RenderStamp {signature} />
