@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 · dates parse mm/dd in eu locales'
 owner: support desk
-status: split
+status: closed
 reviewed: 2026-10-28
 signature: "v1.eyJzdWIiOiI4MzEiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdCI6MTc5MzE3NDQwNSwiZXhwIjoxNzkzMjYwODA1fQ.dsO4zW4oZ3kGsBNl4gmoPOWPmlJnI5z98kW2cyUW2sw"
 ---
@@ -16,13 +16,16 @@ signature: "v1.eyJzdWIiOiI4MzEiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhd
 
 Since April, people have told us their bookings land on the wrong day: a month flipped. The
 desk merged every report of it into this one ticket and called it known. It wasn't one issue.
+Engineering closed #4471 on 05 Oct.
 
 <Callout kind="warn">
-Split into two tickets: the shared parser's month-first read
-(<a href="https://github.com/titusandronicu/mega-dev/issues/6">desk ticket #6</a>, 379 reports)
-and <code>booking-v3</code>'s own date hint reading the opposite way
-(<a href="https://github.com/titusandronicu/mega-dev/issues/7">desk ticket #7</a>, 33 reports).
-Full breakdown and how we found the second one: <a href="/kb/incidents/4471-split">#4471, split</a>.
+Closed as two tickets, not one fix: the shared parser's month-first read, fixed
+(<a href="https://github.com/titusandronicu/mega-dev/issues/6">desk ticket #6</a>, 379 reports —
+<code>fix(dates): parse dd/mm for eu locales</code>), and <code>booking-v3</code>'s own date
+hint reading the opposite way, won't fix
+(<a href="https://github.com/titusandronicu/mega-dev/issues/7">desk ticket #7</a>, 33 reports —
+the <code>booking-v3</code> form was retired). Full breakdown and how we found the second one:
+<a href="/kb/incidents/4471-split">#4471, split</a>.
 </Callout>
 
 ## What was merged

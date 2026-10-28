@@ -46,10 +46,11 @@ the page. (An earlier pass here also split the one-day-read reports into a third
 problem; the kb's own code and comments say that's wrong — they're parser reports, filed and
 footnoted, not a new cause.)
 
-## What to do
+## What happened
 
-File the `hint` reports as their own ticket; leave #4471 as the parser ticket it actually is,
-now at its real count of 379. Filed as [#6 (parser, 379)](https://github.com/titusandronicu/mega-dev/issues/6)
-and [#7 (hint, 33)](https://github.com/titusandronicu/mega-dev/issues/7).
+Filed as [#6 (parser, 379)](https://github.com/titusandronicu/mega-dev/issues/6) and
+[#7 (hint, 33)](https://github.com/titusandronicu/mega-dev/issues/7). Engineering closed #4471
+on 05 Oct: #6 fixed (`fix(dates): parse dd/mm for eu locales`); #7 won't fix — the `booking-v3`
+form was retired. See [#4471](/kb/incidents/4471) for the desk's own closed page.
 
 <RenderStamp {signature} />
