@@ -4,8 +4,8 @@ title: "A day/timezone-boundary shift, footnoted under parser but not a date swa
 
 ## Problem
 
-Five reports merged into #4471 describe a symptom that is **not** a month/day swap, read body
-by body (`s01e03/analysis.md`, `s01e03/bodies-classified.json`):
+Five reports merged into desk ticket #4471 describe a symptom that is **not** a month/day swap,
+read body by body (`s01e03/analysis.md`, `s01e03/bodies-classified.json`):
 
 - R-41202, R-41620: same month, specific date off by exactly **one day**.
 - R-41209: "Every booking in June is one day off. Only June." — systemic, one month only.
@@ -39,7 +39,8 @@ inconsistency is between two *renderings* of the same instant.
 
 Bodies quoted above; tenants: kettle.books, alder.physio, nine.lanterns, pale.harbour,
 lantern.row — spans both `parser`-cause and (by locale) would-be-`hint`-cause tenants, another
-sign this isn't the same mechanism as either #1 or #2.
+sign this isn't the same mechanism as either the parser or hint issues filed alongside this
+one.
 
 ## Suggested fix
 
@@ -49,5 +50,5 @@ near midnight (or a DST transition) accounts for the June-specific and cross-tim
 
 ## See also
 
-#4471 — these 5 are currently inside #4471's merge and footnoted, not re-ticketed; this issue
-is the re-ticketing.
+desk ticket #4471 — these 5 are currently inside its merge and footnoted, not re-ticketed; this
+issue is the re-ticketing.

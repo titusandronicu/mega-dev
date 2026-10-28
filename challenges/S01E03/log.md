@@ -240,3 +240,40 @@
   `~/work/mega-s01e03/s01e03/debrief.md` and the course's own link
   (https://hq.mega.dev/challenges/what-it-shows#debrief); a compiled, S01E02-style version is
   `challenges/S01E03/debrief.md` in this repo.
+
+## 2026-10-28, console (Phase 8 — turn the lessons into mechanisms, this job)
+- Grouped `docs/lessons-learned.md` #1-#35 into recurring patterns: stale live state vs
+  cached data (#30, #32-#34), overlapping/duplicate tickets (#25, #27-#28), close-reason
+  semantics (#35), autolink collisions (#26), browserless/manual auth hand-offs (#11, #22-#24,
+  #34), claim status not binary (#29).
+- Built, under `tools/`, and tested each against real history or real repo state:
+  - `pre-claim-gate` (+ `pre-claim-gate.test`): refuses a claim after a non-solved reply until
+    a human has logged a live-page recheck since. Replayed S01E03's real `claim-log.jsonl`
+    (reconstructed here with approximate timestamps for claims 1-3, exact `solvedAt` for
+    claim 4) at each checkpoint: fails before claims 2, 3 and 4 with no recheck logged, passes
+    once the one real recheck (before claim 4) is added - i.e. it would have forced the
+    browser check 2 attempts earlier than it actually happened.
+  - `safe-issue-refs`: while testing it against the already-committed issue drafts, found a
+    real, still-present bug - `challenges/S01E03/issues/01-03*.md` here were never
+    re-synced after the bare-`#N` fix was applied locally before filing (the real GitHub
+    issues #6-#8 are correct; this repo's copies were the stale pre-fix text, with exactly
+    the `#2`-autolink risk lesson 26 describes). Fixed by re-copying the correct local files.
+  - `close-ticket` (`--check` mode verified, not re-mutated): confirmed #6/#7's real
+    `state_reason` and correctly flagged a fabricated wrong-expectation case.
+  - `preflight`: run for real in this session - all checks pass (gh, full ICU already fixed
+    in earlier phases); prints the exact fix command for each if they weren't.
+  - `record-claim`: tested against the real `claim-2.json` (progress), appended a normalized
+    line and printed the right next step instead of assuming solved/rejected.
+  - `scaffold-kb-render`: tested against a **fresh**, unmodified copy of the kb export (not
+    the already-built `site/`) - `npm install` + `npx vite build` succeeded from scratch.
+  - `subset-check`: run against the real `counts.json`, correctly flags
+    `oneDayMoveIds ⊆ groups[cause=parser].reportIds` - the actual mechanism of the real
+    claim-1 duplicate (not, as first guessed, similar fix-text between #6 and #7).
+- **Correction, not just addition**: lesson #25's original diagnosis doesn't hold up under
+  remeasurement - the two "nearly identical" fix paragraphs it blamed are only 33% similar by
+  string distance. Dropped the tool that would have tested that false premise
+  (`duplicate-fix-check`, never committed) in favor of `subset-check`, which demonstrably
+  catches the real mechanism. Corrected the lesson's text in place, dated, rather than quietly
+  rewriting history.
+- Added `docs/lessons-index.md` (every lesson → mechanism, or "prose only" with why), updated
+  `CLAUDE.md` and `docs/playbook.md` with the new tools, one `CHANGELOG.md` entry.

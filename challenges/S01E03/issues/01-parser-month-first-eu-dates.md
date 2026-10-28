@@ -7,7 +7,7 @@ title: "Date parser reads EU day-first dates month-first"
 The shared booking-date parser reads every date month first. Tenants whose locale writes the
 day first (confirmed via `Intl.DateTimeFormat`, not hand-typed — see `causes.ts: dayFirst()`)
 get their day and month swapped on every booking that enters through a channel other than the
-booking-v3 form's own month-first hint field (see issue #2 for that split).
+booking-v3 form's own month-first hint field (see the booking-v3 hint issue filed alongside this one).
 
 ## Count
 
@@ -16,8 +16,9 @@ booking-v3 form's own month-first hint field (see issue #2 for that split).
 - grouping by computed cause, not by the browser-guessed `intakeTag` (`groupByCause`/`causeOf`
   in `causes.ts`), which gives 379 for this mechanical group,
 - then excluding the 5 reports that are a different symptom entirely (one-day/timezone
-  boundary shift, not a month/day swap — see issue #3) and are currently only footnoted under
-  this group by `readAs()`, not actually caused by this bug.
+  boundary shift, not a month/day swap — see the day/timezone-boundary issue filed alongside
+  this one) and are currently only footnoted under this group by `readAs()`, not actually
+  caused by this bug.
 
 374 = 379 − 5.
 
@@ -44,6 +45,7 @@ Make the parser locale-aware: ask the tenant's locale (same `Intl.DateTimeFormat
 
 ## See also
 
-#4471 (the ticket these are currently merged into — this is #4471's majority/owning cause per
-`ticketCause()`, so it correctly stays there; issues #2 and #3 are reports from the same ticket
-that are a *different* bug and don't belong under #4471's "known" story).
+desk ticket #4471 (the ticket these are currently merged into — this is desk ticket #4471's
+majority/owning cause per `ticketCause()`, so it correctly stays there; the booking-v3 hint and
+day/timezone-boundary issues filed alongside this one are reports from the same desk ticket
+that are a *different* bug and don't belong under its "known" story).

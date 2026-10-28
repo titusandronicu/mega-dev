@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Usage: tools/pre-claim-gate <code>
+#
+# Fails a claim attempt that follows a non-solved reply unless a human has
+# since recorded reading the LIVE challenge page (not just re-downloaded an
+# export - lesson 33: a byte-identical export does not mean the page is
+# unchanged). Run this before every claim-challenge call after the first.
+#
+# Reads:
+#   challenges/<code>/claim-log.jsonl   one JSON object per line, appended
+#       after every claim-challenge call: {"at": "<ISO8601>", "status": "...",
+#       "message": "...", "desk": "..."}
+#   challenges/<code>/live-recheck.log  one line per human page-read:
+#       "<ISO8601> <what was found>"
+#   challenges/<code>/challenge-url.txt (optional) the Challenge's startPoint
+#
+# Exit 0 = may claim. Exit 1 = must not claim yet; prints the exact human
+# step needed. Exit 2 = usage error.
+set -euo pipefail
+[ $# -eq 1 ] || { echo "usage: tools/pre-claim-gate <code>" >&2; exit 2; }
+code="$1"
+dir="challenges/$code"
+claim_log="$dir/claim-log.jsonl"
+recheck_log="$dir/live-recheck.log"
+url_file="$dir/challenge-url.txt"
+
+if [ ! -s "$claim_log" ]; then
+  echo "gate passed: no prior claim on record for $code; nothing to check."
+  exit 0
+fi
+
+last_claim="$(tail -n 1 "$claim_log")"
+status="$(printf '%s' "$last_claim" | python3 -c 'import json,sys; print(json.load(sys.stdin)["status"])')"
+at="$(printf '%s' "$last_claim" | python3 -c 'import json,sys; print(json.load(sys.stdin)["at"])')"
+
+if [ "$status" = "solved" ]; then
+  echo "gate passed: last claim for $code (at $at) was solved; nothing left to check."
+  exit 0
+fi
+
+last_recheck_date=""
+if [ -s "$recheck_log" ]; then
+  last_recheck_date="$(tail -n 1 "$recheck_log" | awk '{print $1}')"
+fi
+
+if [ -n "$last_recheck_date" ] && [ "$last_recheck_date" \> "$at" ]; then
+  echo "gate passed: live page re-checked at $last_recheck_date, after the last claim ($status, at $at)."
+  exit 0
+fi
+
+url="the Challenge's startPoint (see list-challenges if you don't have it on hand)"
+[ -s "$url_file" ] && url="$(cat "$url_file")"
+
+cat >&2 <<EOF
+GATE FAILED for $code.
+Last claim-challenge reply was "$status" at $at, not solved.
+Before claiming again, Bishop (or whoever has a browser) must:
+  1. Open $url in a real browser signed in as the student.
+  2. Read the WHOLE page again, not just re-download any export - a
+     byte-identical checksum does not mean the page is unchanged (lesson 33).
+  3. Append one line to $recheck_log:
+       <ISO8601 date>  <what was found, in one line>
+     dated after $at.
+This run will not proceed without that line.
+EOF
+exit 1

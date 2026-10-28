@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# Usage: tools/scaffold-kb-render <kb-root-dir>
+#
+# Writes the minimal SvelteKit + mdsvex + adapter-static scaffold needed to
+# actually render a kb export's .svx pages, instead of trusting a page's
+# computed numbers without ever looking at the rendered HTML (lesson: "the
+# rendered page is the product, not the source code" - S01E03 debrief, C1).
+#
+# <kb-root-dir> must already contain src/lib/... and src/routes/... (an
+# export in the shape support-kb/README.md describes). This only adds the
+# build plumbing around it; it does not npm install or build.
+#
+# After running: cd <kb-root-dir> && npm install -D svelte @sveltejs/kit \
+#   @sveltejs/adapter-static @sveltejs/vite-plugin-svelte mdsvex vite
+# then: npx vite build
+set -euo pipefail
+[ $# -eq 1 ] || { echo "usage: tools/scaffold-kb-render <kb-root-dir>" >&2; exit 2; }
+root="$1"
+[ -d "$root/src/lib" ] || { echo "no $root/src/lib - is this a kb export root?" >&2; exit 2; }
+
+mkdir -p "$root/src/routes"
+
+cat > "$root/vite.config.js" <<'EOF'
+import { sveltekit } from '@sveltejs/kit/vite';
+import adapter from '@sveltejs/adapter-static';
+import { mdsvex } from 'mdsvex';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = path.dirname(fileURLToPath(import.meta.url));
+
+export default {
+  plugins: [
+    sveltekit({
+      extensions: ['.svelte', '.svx'],
+      preprocess: [
+        mdsvex({
+          extensions: ['.svx'],
+          // mdsvex's generated layout-wrapper code uses legacy $$props by
+          // default; that collides with any page that itself uses $props().
+          // Also: don't manually destructure frontmatter fields with
+          // $props() in a page's own <script> - mdsvex already injects
+          // `const { ...keys } = metadata;`, so e.g. {signature} is already
+          // in scope without declaring it yourself.
+          layoutPropForwarding: 'runes',
+          layout: {
+            runbook: path.resolve(root, 'src/lib/layouts/runbook.svelte'),
+          },
+        }),
+      ],
+      adapter: adapter({ fallback: undefined, strict: true }),
+      alias: {
+        '#lib': 'src/lib',
+        '#lib/*': 'src/lib/*',
+      },
+      prerender: { entries: ['*'] },
+    }),
+  ],
+};
+EOF
+
+cat > "$root/src/app.html" <<'EOF'
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    %sveltekit.head%
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">%sveltekit.body%</div>
+  </body>
+</html>
+EOF
+
+cat > "$root/src/routes/+layout.js" <<'EOF'
+export const prerender = true;
+EOF
+
+cat > "$root/src/routes/+layout.svelte" <<'EOF'
+<script>
+  let { children } = $props();
+</script>
+
+{@render children()}
+EOF
+
+cat > "$root/package.json" <<'EOF'
+{
+  "name": "kb-render-scaffold",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "vite build" }
+}
+EOF
+
+echo "scaffold written under $root."
+echo "next: cd $root && npm install -D svelte @sveltejs/kit @sveltejs/adapter-static @sveltejs/vite-plugin-svelte mdsvex vite"
+echo "then: npx vite build   # output in $root/build/, read the HTML, don't just trust the component code"

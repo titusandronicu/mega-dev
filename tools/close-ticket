@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# Usage:
+#   tools/close-ticket <owner/repo> <issue> <completed|not-planned> <comment-file>
+#   tools/close-ticket --check <owner/repo> <issue> <completed|not-planned>
+#
+# Closes an issue with an EXPLICIT reason (no default - lesson 35: "closed"
+# alone isn't enough, the course checks whether it's "fixed" or "won't fix")
+# and then re-reads the issue to confirm state_reason actually matches what
+# was asked for, failing loudly on any mismatch instead of trusting the
+# close call succeeded.
+#
+# --check only verifies the current state_reason against what you expect;
+# it does not comment or close anything. Use it to audit without mutating.
+set -euo pipefail
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
+
+normalize() {
+  case "$1" in
+    completed) echo "completed" ;;
+    not-planned) echo "not_planned" ;;
+    *) echo "bad reason '$1': must be 'completed' or 'not-planned'" >&2; exit 2 ;;
+  esac
+}
+
+if [ "${1:-}" = "--check" ]; then
+  [ $# -eq 4 ] || { echo "usage: tools/close-ticket --check <owner/repo> <issue> <completed|not-planned>" >&2; exit 2; }
+  repo="$2"; issue="$3"; want="$(normalize "$4")"
+  got="$(gh api "repos/$repo/issues/$issue" --jq .state_reason)"
+  if [ "$got" = "$want" ]; then
+    echo "ok: $repo#$issue state_reason is '$got', matches expected '$want'"
+    exit 0
+  else
+    echo "MISMATCH: $repo#$issue state_reason is '$got', expected '$want'" >&2
+    exit 1
+  fi
+fi
+
+[ $# -eq 4 ] || { echo "usage: tools/close-ticket <owner/repo> <issue> <completed|not-planned> <comment-file>" >&2; exit 2; }
+repo="$1"; issue="$2"; reason_arg="$3"; comment_file="$4"
+reason_api="$(normalize "$reason_arg")"
+reason_cli="completed"; [ "$reason_arg" = "not-planned" ] && reason_cli="not planned"
+
+[ -s "$comment_file" ] || { echo "comment file '$comment_file' is missing or empty - write the close reason as a comment before closing" >&2; exit 2; }
+
+gh issue comment "$issue" --repo "$repo" --body-file "$comment_file"
+gh issue close "$issue" --repo "$repo" --reason "$reason_cli"
+
+got="$(gh api "repos/$repo/issues/$issue" --jq .state_reason)"
+if [ "$got" != "$reason_api" ]; then
+  echo "CLOSE FAILED VERIFICATION: $repo#$issue state_reason is '$got' after closing, expected '$reason_api'. Check by hand." >&2
+  exit 1
+fi
+echo "ok: $repo#$issue closed with state_reason '$got'"

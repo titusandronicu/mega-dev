@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Usage: tools/subset-check <counts.json>
+#
+# Fails if any named id-set in <counts.json> (a "groups[].reportIds" entry,
+# or "oneDayMoveIds") is a subset of another - that's two tickets about to
+# be filed for overlapping reports, which the course will reject as "the
+# same problem" (S01E03's real claim-1 duplicate: oneDayMoveIds (5) was a
+# subset of groups[cause=parser].reportIds (379) - not, as first guessed,
+# the parser/hint tickets sharing similar wording. Check the computed id
+# sets, not how similar two "Suggested fix" paragraphs read.)
+#
+# counts.json is whatever reproducible analysis script output has named id
+# lists for the problems you're about to file - see
+# challenges/S01E03/counts.json for the shape this expects.
+set -euo pipefail
+[ $# -eq 1 ] || { echo "usage: tools/subset-check <counts.json>" >&2; exit 2; }
+file="$1"
+[ -f "$file" ] || { echo "no such file: $file" >&2; exit 2; }
+
+python3 -c "
+import json, sys
+
+d = json.load(open(sys.argv[1], encoding='utf-8'))
+sets = {}
+for g in d.get('groups', []):
+    sets[f\"groups[cause={g['cause']}].reportIds\"] = set(g.get('reportIds', []))
+if 'oneDayMoveIds' in d:
+    sets['oneDayMoveIds'] = set(d['oneDayMoveIds'])
+
+names = list(sets)
+bad = False
+for i in range(len(names)):
+    for j in range(len(names)):
+        if i == j:
+            continue
+        a, b = sets[names[i]], sets[names[j]]
+        if a and a.issubset(b) and a != b:
+            print(f'{names[i]} ({len(a)} ids) is a subset of {names[j]} ({len(b)} ids) - '
+                  f'filing these as two separate, non-overlapping tickets double-counts reports. '
+                  f'Either fold {names[i]} into {names[j]} as a footnote, or exclude its ids from '
+                  f'{names[j]} before filing both.', file=sys.stderr)
+            bad = True
+
+if not bad:
+    print(f'ok: no id-set in {sys.argv[1]} is a subset of another ({len(names)} sets checked)')
+sys.exit(1 if bad else 0)
+" "$file"

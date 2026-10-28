@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Usage: tools/pre-claim-gate.test
+#
+# Replays S01E03's real claim-log.jsonl through tools/pre-claim-gate at each
+# checkpoint (before claim 2, 3 and 4), in a scratch copy, to show the gate
+# would have forced a live-page recheck before claim 2 - two attempts
+# earlier than it actually happened (claim 4) - and passes once the one
+# real recheck (before claim 4) is in place. See docs/lessons-learned.md
+# #33-#34.
+set -euo pipefail
+src=challenges/S01E03
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+mkdir -p "$tmp/challenges/S01E03"
+cp "$src/challenge-url.txt" "$tmp/challenges/S01E03/"
+
+run() {
+  local label="$1" claim_lines="$2" recheck_lines="$3" want="$4"
+  head -n "$claim_lines" "$src/claim-log.jsonl" > "$tmp/challenges/S01E03/claim-log.jsonl"
+  if [ "$recheck_lines" -gt 0 ]; then
+    head -n "$recheck_lines" "$src/live-recheck.log" > "$tmp/challenges/S01E03/live-recheck.log"
+  else
+    : > "$tmp/challenges/S01E03/live-recheck.log"
+  fi
+  set +e
+  out="$(cd "$tmp" && "$OLDPWD/tools/pre-claim-gate" S01E03 2>&1)"
+  rc=$?
+  set -e
+  got="pass"; [ "$rc" -ne 0 ] && got="fail"
+  if [ "$got" = "$want" ]; then
+    echo "ok   - $label: gate $got (expected $want)"
+  else
+    echo "FAIL - $label: gate $got, expected $want"
+    echo "$out" | sed 's/^/       /'
+    exit 1
+  fi
+}
+
+run "before claim 2 (after claim 1 rejected, no recheck logged)"  1 0 fail
+run "before claim 3 (after claim 2 progress, still no recheck)"   2 0 fail
+run "before claim 4 (after claim 3 rejected, no recheck yet)"     3 0 fail
+run "before claim 4, with the real recheck in place"              3 1 pass
+
+echo "all pre-claim-gate replay checks passed"

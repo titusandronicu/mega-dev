@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Usage: tools/preflight
+#
+# Checks the tools a Challenge session actually needs before relying on
+# them, instead of discovering a gap mid-task (lesson 24: "logged in
+# everywhere" didn't mean gh was even installed). Exits nonzero if any
+# required tool is missing, printing the exact fix.
+set -uo pipefail
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
+
+bad=0
+check() {
+  local name="$1" cmd="$2" fix="$3"
+  if command -v "$cmd" >/dev/null 2>&1; then
+    echo "ok   - $name ($cmd)"
+  else
+    echo "MISSING - $name ($cmd). Fix: $fix"
+    bad=1
+  fi
+}
+
+check "GitHub CLI"      gh   "download the release tarball for your arch from github.com/cli/cli/releases into ~/.local/bin, no root needed"
+check "git"             git  "install git"
+check "node"            node "install Node.js (full ICU build - see the ICU check below)"
+check "python3"         python3 "install python3"
+
+if command -v node >/dev/null 2>&1; then
+  icu="$(node -e "console.log(new Intl.DateTimeFormat('pl-PL',{year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(Date.UTC(2026,0,2,12))))" 2>/dev/null || true)"
+  if [ "$icu" = "02.01.2026" ]; then
+    echo "ok   - node has full ICU (pl-PL formatted day-first)"
+  else
+    echo "MISSING - node's ICU data looks reduced (pl-PL gave '$icu', not '02.01.2026'). Fix: install a full-icu Node build; a day-order check (dayFirst()-style code) will silently misread every locale otherwise."
+    bad=1
+  fi
+fi
+
+echo
+echo "NOT CHECKED (no automated test for these - this harness cannot drive a browser):"
+echo "  - a signed-in browser for the course. If a Challenge needs the live challenge page"
+echo "    re-read (see tools/pre-claim-gate), that step needs a human with one, every time -"
+echo "    this script cannot tell you whether that's available right now."
+
+[ "$bad" -eq 0 ] && echo && echo "preflight: all checked tools present"
+exit "$bad"

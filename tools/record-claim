@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Usage: tools/record-claim <code> <claim-reply.json>
+#
+# Appends a normalized line to challenges/<code>/claim-log.jsonl from a raw
+# claim-challenge reply, and prints the right next action for its status -
+# claim-challenge has at least 3 (solved / rejected / progress), not a
+# solved-or-rejected binary (lesson 29). Run this right after every
+# claim-challenge call, before deciding what to do next.
+set -euo pipefail
+[ $# -eq 2 ] || { echo "usage: tools/record-claim <code> <claim-reply.json>" >&2; exit 2; }
+code="$1"; reply="$2"
+[ -f "$reply" ] || { echo "no such file: $reply" >&2; exit 2; }
+dir="challenges/$code"
+mkdir -p "$dir"
+
+python3 -c "
+import json, datetime, sys
+d = json.load(open(sys.argv[1], encoding='utf-8'))
+at = d.get('solvedAt') or datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+line = {'at': at, 'status': d.get('status', 'unknown'), 'message': d.get('message'), 'desk': d.get('desk')}
+print(json.dumps(line))
+" "$reply" >> "$dir/claim-log.jsonl"
+
+status="$(python3 -c "import json,sys; print(json.load(open(sys.argv[1],encoding='utf-8')).get('status','unknown'))" "$reply")"
+
+case "$status" in
+  solved)
+    echo "recorded: solved. Next: call debrief once (see its probes in the reply), then stop."
+    ;;
+  rejected)
+    echo "recorded: rejected. Next: run tools/pre-claim-gate $code before claiming again - it will require a live-page recheck first."
+    ;;
+  progress)
+    echo "recorded: progress - accepted a step, NOT solved. Do exactly what the reply's 'next'/'message' say, then run tools/pre-claim-gate $code before claiming again."
+    ;;
+  *)
+    echo "recorded: unrecognized status '$status'. Do not assume solved or rejected - read the reply's own 'message'/'next' fields by hand." >&2
+    exit 1
+    ;;
+esac

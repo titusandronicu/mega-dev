@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Usage: tools/safe-issue-refs <file> <owner/repo>
+#
+# Fails if <file> contains a bare "#<number>" reference (outside backticks)
+# that is not already written as "desk ticket #<number>" (case-insensitive)
+# AND resolves to a real, existing issue in <owner/repo> - that's an
+# autolink collision risk: GitHub will silently link it to whatever that
+# number already is, not to the thing you meant (lesson 26).
+#
+# A reference already written as "desk ticket #N" is left alone - that's
+# the safe, intentional form.
+set -euo pipefail
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
+[ $# -eq 2 ] || { echo "usage: tools/safe-issue-refs <file> <owner/repo>" >&2; exit 2; }
+file="$1"; repo="$2"
+[ -f "$file" ] || { echo "no such file: $file" >&2; exit 2; }
+
+# Strip inline code spans (`...`) so refs inside them aren't flagged.
+stripped="$(python3 -c "
+import re, sys
+text = open(sys.argv[1], encoding='utf-8').read()
+text = re.sub(r'\`[^\`]*\`', '', text)
+print(text)
+" "$file")"
+
+bad=0
+while IFS= read -r m; do
+  [ -z "$m" ] && continue
+  num="${m#\#}"
+  state=""
+  state="$(gh api "repos/$repo/issues/$num" --jq .state 2>/dev/null)" || state=""
+  if [ -n "$state" ]; then
+    echo "$file: bare $m resolves to an existing issue in $repo (state: $state) - write it as \"desk ticket $m\" or it will autolink there." >&2
+    bad=1
+  fi
+done < <(printf '%s' "$stripped" | grep -ioP '(?<!ticket )#[0-9]+' || true)
+
+[ "$bad" -eq 0 ] && echo "ok: no unsafe bare issue refs in $file against $repo"
+exit "$bad"

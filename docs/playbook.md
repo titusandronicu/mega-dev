@@ -25,6 +25,16 @@ Session hygiene
 - Brave profile and ~/Desktop are not writable from the shell; work in ~/mega-dev.
 - One short message per step, headed with the step number; end with Needed from you.
 
+Filing and closing tickets, rendering a kb (from S01E03)
+1. `tools/preflight` at the start of the session, before relying on `gh`/node's ICU.
+2. Before filing more than one ticket from one analysis: `tools/subset-check <counts.json>` on the id-sets - two tickets whose ids overlap are one problem filed twice, and that's what a "the same problem" rejection means, not similar-sounding fix text.
+3. Before filing each draft: `tools/safe-issue-refs <draft.md> <owner/repo>` - a bare `#N` can silently autolink to an unrelated existing issue.
+4. If the brief asks for a rendered page, not just source: `tools/scaffold-kb-render <kb-root-dir>`, then build and read the actual HTML. The rendered page is the product; a computed number you never looked at in the browser isn't checked yet.
+5. After every `claim-challenge` call: `tools/record-claim <code> <reply.json>` first (status can be `progress`, not just solved/rejected), then act on exactly what it tells you.
+6. Before any `claim-challenge` call after the first: `tools/pre-claim-gate <code>`. It will refuse until a human has re-read the challenge's live page since the last non-solved reply - a byte-identical re-download does not mean the page is unchanged.
+7. Closing a ticket: `tools/close-ticket <owner/repo> <issue> <completed|not-planned> <comment-file>` - never close without an explicit reason; the course checks "fixed" vs "won't fix", not just "closed".
+8. Never call `rook` yourself, or to work on a Challenge - its own tool description forbids both.
+
 Next: S01E02 opens Tue 27 Oct 05:00 CET. Run mega-start, read the whole startPoint before the first call, install the `read` skill first.
 
 Skill commands (from the repo root)
