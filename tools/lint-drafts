@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# Usage: tools/lint-drafts <issues-dir> [--source-root <dir>]
+#
+# Every draft (*.md, except one starting "00-not-filing" - a deliberate
+# "not filing this" decision has nothing to cite) must have a
+# 'basis: <path>:<line>' line (front-matter or a plain header line)
+# pointing at the challenge's own source - code, schema or spec in the kb
+# export, e.g. `src/lib/kb/causes.ts:40` - not a desk reading or notes file
+# (`desk-notes*`, `*notes.json`) and not the incident's own prose page
+# (`*.svx`). Those are footnotes on the problem, not the cause (lessons 27,
+# 28: the code's own comments define the problem; a digest/notes file, or
+# the prose page summarizing it, is not where that definition lives).
+#
+# Fails if a draft has no basis line, the cited path doesn't exist under
+# --source-root, the cited line doesn't exist in that file, or the basis
+# is one of the excluded kinds above. For every basis that checks out,
+# prints the comment block directly above the cited line, so a reviewer
+# sees what the code itself says - not a paraphrase of it.
+#
+# If <issues-dir>'s parent has a counts.json next to it (the shape
+# tools/subset-check expects), also runs that - two drafts about to be
+# filed as separate tickets over overlapping id-sets is the same class of
+# mistake as a draft with no real basis (lesson 25).
+set -euo pipefail
+
+issues_dir=""
+source_root=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --source-root) source_root="${2:-}"; shift 2 ;;
+    *) issues_dir="$1"; shift ;;
+  esac
+done
+[ -n "$issues_dir" ] || { echo "usage: tools/lint-drafts <issues-dir> [--source-root <dir>]" >&2; exit 2; }
+[ -d "$issues_dir" ] || { echo "no such directory: $issues_dir" >&2; exit 2; }
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+bad=0
+checked=0
+
+print_comment_above() {
+  # $1 = file, $2 = 1-based line number
+  python3 - "$1" "$2" <<'PY'
+import sys
+path, line = sys.argv[1], int(sys.argv[2])
+lines = open(path, encoding="utf-8").read().splitlines()
+i = line - 1
+block = []
+j = i - 1
+while j >= 0:
+    s = lines[j].strip()
+    if s == "":
+        j -= 1
+        continue
+    if s.startswith("//") or s.startswith("*") or s.startswith("/*"):
+        block.insert(0, lines[j])
+        j -= 1
+        continue
+    break
+cited = lines[i] if 0 <= i < len(lines) else "<out of range>"
+if block:
+    print(f"      comment above {path}:{line}:")
+    for l in block:
+        print(f"        {l}")
+else:
+    print(f"      (no comment directly above {path}:{line})")
+print(f"      cited line {line}: {cited.strip()}")
+PY
+}
+
+for f in "$issues_dir"/*.md; do
+  [ -e "$f" ] || continue
+  base="$(basename "$f")"
+  case "$base" in
+    00-not-filing*)
+      echo "skip - $base (marked not-filing, nothing to cite)"
+      continue
+      ;;
+  esac
+  checked=$((checked + 1))
+
+  basis_line="$(grep -m1 -E '^basis:[[:space:]]*"?[^"[:space:]]+:[0-9]+"?[[:space:]]*$' "$f" || true)"
+  if [ -z "$basis_line" ]; then
+    echo "FAIL - $base: no 'basis: <path>:<line>' line (front-matter or header)" >&2
+    bad=1
+    continue
+  fi
+  spec="$(printf '%s\n' "$basis_line" | sed -E 's/^basis:[[:space:]]*"?([^"[:space:]]+:[0-9]+)"?[[:space:]]*$/\1/')"
+  bpath="${spec%:*}"
+  bline="${spec##*:}"
+
+  case "$bpath" in
+    *desk-notes*|*notes.json|*.svx)
+      echo "FAIL - $base: basis '$spec' is a desk reading / notes file or the incident's own prose page, not the challenge's source (lessons 27, 28)" >&2
+      bad=1
+      continue
+      ;;
+  esac
+
+  if [ -z "$source_root" ]; then
+    echo "FAIL - $base: basis '$spec' given but no --source-root to resolve it against" >&2
+    bad=1
+    continue
+  fi
+
+  full="$source_root/$bpath"
+  if [ ! -f "$full" ]; then
+    echo "FAIL - $base: basis file does not exist under --source-root: $full" >&2
+    bad=1
+    continue
+  fi
+
+  total_lines="$(python3 -c "import sys; print(len(open(sys.argv[1], encoding='utf-8').read().splitlines()))" "$full")"
+  if [ "$bline" -lt 1 ] || [ "$bline" -gt "$total_lines" ]; then
+    echo "FAIL - $base: basis line $bline does not exist in $full ($total_lines lines)" >&2
+    bad=1
+    continue
+  fi
+
+  echo "ok   - $base: basis $spec"
+  print_comment_above "$full" "$bline"
+done
+
+counts="$(dirname "$issues_dir")/counts.json"
+if [ -f "$counts" ]; then
+  echo
+  echo "== tools/subset-check $counts =="
+  if ! "$script_dir/subset-check" "$counts"; then
+    bad=1
+  fi
+fi
+
+echo
+if [ "$bad" -eq 0 ]; then
+  echo "lint-drafts: ok ($checked draft(s) checked, all have a valid, real basis)"
+else
+  echo "lint-drafts: FAILED - see above" >&2
+fi
+exit "$bad"
