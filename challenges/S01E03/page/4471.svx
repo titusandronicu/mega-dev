@@ -1,0 +1,55 @@
+---
+layout: runbook
+title: '#4471 · dates parse mm/dd in eu locales'
+owner: support desk
+status: split
+reviewed: 2026-10-28
+signature: "v1.eyJzdWIiOiI4MzEiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdCI6MTc5MzE3NDQwNSwiZXhwIjoxNzkzMjYwODA1fQ.dsO4zW4oZ3kGsBNl4gmoPOWPmlJnI5z98kW2cyUW2sw"
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+Since April, people have told us their bookings land on the wrong day: a month flipped. The
+desk merged every report of it into this one ticket and called it known. It wasn't one issue.
+
+<Callout kind="warn">
+Split into two tickets: the shared parser's month-first read
+(<a href="https://github.com/titusandronicu/mega-dev/issues/6">desk ticket #6</a>, 379 reports)
+and <code>booking-v3</code>'s own date hint reading the opposite way
+(<a href="https://github.com/titusandronicu/mega-dev/issues/7">desk ticket #7</a>, 33 reports).
+Full breakdown and how we found the second one: <a href="/kb/incidents/4471-split">#4471, split</a>.
+</Callout>
+
+## What was merged
+
+<CauseTable ticket={4471} />
+
+The <code>hint</code> row above still reads "not this ticket — no ticket of its own" — that's
+`ticketCause()` naming which cause owns *this* ticket's number, not whether a ticket exists for
+it. It does now: desk ticket #7. 5 of the parser reports were read by the desk as a one-day
+move rather than a month/day swap (the note below the table, from `desk-notes.json` via
+`readAs()`); they're still parser reports, just footnoted — not a third cause, see
+[#4471, split](/kb/incidents/4471-split) for why.
+
+## Since April
+
+<QueueTimeline ticket={4471} />
+
+## Lessons
+
+- Merging by subject (decision 0001) finds reports that are the same wording; it doesn't check
+  they're the same bug. Two different bugs can produce the same complaint ("wrong day") and
+  land in one ticket. Merge by subject to triage fast, then check cause before calling it one
+  issue.
+- Dedupe by `id` before you count anything — the export reused 15 ids across pages. "412
+  reports" was never typed here again after that was found; the table above computes it.
+- Write the page while the queue is still in your head, and come back to it when the real
+  breakdown changes — a known ticket that's actually two tickets is a stale page, not a closed
+  one.
+
+<RenderStamp {signature} />
