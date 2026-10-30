@@ -12,4 +12,8 @@ done
 if [ "$status" -ne 0 ]; then
   echo "pre-commit: blocked. Redact with: node $CHECK <file> > clean, or unstage the file." >&2
 fi
+# Advisory: the other repo checks. They report but do not block yet (exit status stays as above).
+if [ -x tools/check-all ]; then
+  tools/check-all --quiet >&2 || echo "pre-commit: tools/check-all reported problems (advisory, commit not blocked)." >&2
+fi
 exit $status

@@ -1,4 +1,6 @@
 # Environment (facts that live outside this repo)
+> OUTDATED: this describes the Mac setup of 2026-10-26 (paths `~/mega-dev`, `~/Desktop/MEGA`). For where things run now, read `docs/environments.md` and run `tools/whereami`.
+
 - GitHub account: titusandronicu. Repo: https://github.com/titusandronicu/mega-dev (private).
 - Local repo `~/mega-dev`. `~/Desktop/MEGA` is not writable from the shell (macOS).
 - Claude Code memory (not in the repo): `~/.claude/projects/-Users-kamilnowosad-Desktop-MEGA/memory/` holds the playbook and repo notes.

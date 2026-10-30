@@ -4,7 +4,7 @@
 set -euo pipefail
 [ $# -eq 1 ] || { echo "usage: tools/check-handoff <handoff.md>" >&2; exit 2; }
 awk '
-  /^## /          { in_facts = ($0 == "## Facts"); next }
+  /^## /          { in_facts = ($0 == "## Facts"); if (in_facts) seen = 1; next }
   in_facts && /^- / && $0 !~ /\[source: [^]]+\]/ { printf "%s:%d: fact has no source tag: %s\n", FILENAME, NR, $0; bad = 1 }
-  END { exit bad }
+  END { if (!seen) { printf "%s: no \"## Facts\" heading, nothing was checked\n", FILENAME; bad = 1 } exit bad }
 ' "$1"
