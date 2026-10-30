@@ -3,11 +3,14 @@
 # Checks the staged content (not the working tree). Install: git config core.hooksPath hooks
 CHECK=".claude/skills/read/scripts/redact.mjs"
 SELF="$CHECK"
+ALLOW="hooks/token-allowlist"
+# A file listed in $ALLOW may carry a course signature ticket on its `signature:` line (and only there).
+staged() { if [ -f "$ALLOW" ] && grep -qxF "$1" "$ALLOW"; then git show ":$1" | grep -v '^signature: '; else git show ":$1"; fi; }
 status=0
 for f in $(git diff --cached --name-only --diff-filter=ACM); do
   [ "$f" = "$SELF" ] && continue            # the script contains sample tokens for its own self-test
   case "$f" in *.png|*.jpg|*.jpeg|*.gif|*.pdf|*.zip) continue;; esac
-  out=$(git show ":$f" | node "$CHECK" --check --stdin 2>&1) || { echo "pre-commit: $f: $out"; status=1; }
+  out=$(staged "$f" | node "$CHECK" --check --stdin 2>&1) || { echo "pre-commit: $f: $out"; status=1; }
 done
 if [ "$status" -ne 0 ]; then
   echo "pre-commit: blocked. Redact with: node $CHECK <file> > clean, or unstage the file." >&2
