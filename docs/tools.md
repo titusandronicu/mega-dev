@@ -4,6 +4,7 @@
 | `mega-challenge` MCP | list/start challenges, debrief, artifact, rook | configured locally; cloud routines cannot use it |
 | browser-automation skill (`--session`) | headless, signed-in course browser | Brave is not scriptable here; its profile folder is permission-denied. Close the session only when done: it holds the sign-in |
 | `.claude/skills/read` (from rook, adapted) | find-contract, cut-diff, save-page, redact | self-tests: `node .claude/skills/read/scripts/<name>.mjs --self-test` |
+| `.claude/skills/mega-notes` | drafts the owner's Notion page for an episode from local records, checks it, shows it, and publishes only after a yes | `node .claude/skills/mega-notes/scripts/check-notes.mjs --self-test`; the check blocks tokens, private strings, missing sections and long quotes; result comes from `list-challenges`, never from logs |
 | WebSearch | live "newest" facts | sources can disagree; cite the maker's page and date |
 | `gh` | create/push the private repo | logged in as `titusandronicu` |
 | Python 3 (`-I`) | count characters, redact logs | count with a tool, never by eye |
