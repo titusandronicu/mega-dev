@@ -54,6 +54,7 @@ out=""
 for t in tools/*; do
   [ -f "$t" ] && [ -x "$t" ] || continue
   n=$(basename "$t")
+  case "$n" in *.test) continue;; esac   # a test sits next to its tool, which is the one that must be named
   grep -qF "$n" docs/tools.md CLAUDE.md || out+="tools/$n is not named in docs/tools.md or CLAUDE.md"$'\n'
 done
 [ -z "$out" ] && report "tools are documented" ok || report "tools are documented" fail "${out%$'\n'}"
