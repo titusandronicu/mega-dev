@@ -21,9 +21,22 @@ Recording challenges (from S01E02)
 
 Session hygiene
 - Keep the log in the repo, tokens redacted. One log file per challenge.
+- One working folder per challenge: `challenges/<code>/` in this repo, with the course debrief copied in as `debrief.md`. A folder elsewhere (S01E03 was in mother-console-home) is invisible to `tools/check-all` and `solve-notes`.
+- Put "Tries used / left" at the top of `log.md` and in `handoff.md`, and update it after every refused submit. A count is what a summary drops (S01E01 burned 5 tries).
 - Browser: headless session via browser-automation skill; magic link opened once; use refs for clicks.
-- Brave profile and ~/Desktop are not writable from the shell; work in ~/mega-dev.
+- Brave profile and ~/Desktop are not writable from the shell (Mac, 2026-10-26). The repo is /home/Funky/Dev/mega-dev on the UGREEN; see docs/environments.md.
 - One short message per step, headed with the step number; end with Needed from you.
+
+After a refusal or rejection (from S01E03)
+1. A download is a dated copy. Before the next try, re-read the live challenge page and any update since your last submit; log the date you read it. A rejection that says things moved means the source moved, not that your repo is wrong.
+2. When the deliverable is a rendered page, every number you report comes from the built page, cross-checked against the source another way. Raw content is for the AI, the rendered view is for you.
+3. When a human points at the code's own comment to settle a split or merge, follow the code, not the shared symptom.
+4. This host has no browser the agent can drive signed in as the human (decision 2026-10-30, S01E03 retro). Ask the human to open the live page and paste what changed; do not treat the first export as the only live source. Revisit if a signed-in browser is set up.
+
+Knowledge-base challenges (from S01E03)
+1. Before you classify rows, read how the source's own code or comments say they are counted. A footnoted subset counts under its parent, and a shared symptom is not a shared cause.
+2. Look at the rendered pages: `tools/scaffold-kb-render <kb-root-dir>` writes the build plumbing into an export that already has `src/`; `tools/kb-render <export-dir> <out-dir> [--build]` builds a copy elsewhere. Building runs the export's own code, so do it in the console or a container, not where secrets are.
+3. Tickets: use the tools in the next section. Each issue states its count and how it was counted, with a code path; log every call.
 
 Filing and closing tickets, rendering a kb (from S01E03)
 1. `tools/preflight` at the start of the session, before relying on `gh`/node's ICU.
@@ -34,8 +47,6 @@ Filing and closing tickets, rendering a kb (from S01E03)
 6. Before any `claim-challenge` call after the first: `tools/pre-claim-gate <code>`. It will refuse until a human has re-read the challenge's live page since the last non-solved reply - a byte-identical re-download does not mean the page is unchanged.
 7. Closing a ticket: `tools/close-ticket <owner/repo> <issue> <completed|not-planned> <comment-file>` - never close without an explicit reason; the course checks "fixed" vs "won't fix", not just "closed".
 8. Never call `rook` yourself, or to work on a Challenge - its own tool description forbids both.
-
-Next: S01E02 opens Tue 27 Oct 05:00 CET. Run mega-start, read the whole startPoint before the first call, install the `read` skill first.
 
 Skill commands (from the repo root)
 - Contract: save the signed-in page with save-page.mjs, then find-contract.mjs <file> --base <url>. See .claude/skills/read/SKILL.md, "Project rules".

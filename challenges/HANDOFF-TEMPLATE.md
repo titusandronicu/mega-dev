@@ -6,6 +6,7 @@ Copy to `challenges/<code>/handoff.md`. A new session reads this first. Every fa
 - <recording or file name>: <what it is, its clock, e.g. "UTC">
 
 ## Facts
+- Tries used / left: <n> / <n> [source: <course reply or log.md line>]
 - <fact> [source: <name>, <track>, <offset>]
 
 ## Decisions
