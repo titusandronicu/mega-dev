@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# Usage: tools/kb-render <export-dir> <out-dir> [--build]
+# Recipe from S01E03: turn a course knowledge-base export (a Vite project with src/ and .svx pages) into a
+# throwaway SvelteKit + mdsvex + adapter-static site, so you can read the rendered HTML and not only the source.
+# Copies <export-dir>/src to <out-dir>/src and adds the files the export lacks (config, app.html, layout).
+# With --build it also runs `npm install --ignore-scripts` and `vite build`; pages land in <out-dir>/build/.
+# The export is lesson data and its components are code that the build RUNS: use the console or a container
+# without secrets, never a shell that holds the owner's tokens. Not run on this host yet (untested build).
+set -euo pipefail
+[ $# -ge 2 ] || { echo "usage: tools/kb-render <export-dir> <out-dir> [--build]" >&2; exit 2; }
+src="$1"; out="$2"; build="${3:-}"
+[ -d "$src/src" ] || { echo "kb-render: $src/src not found" >&2; exit 2; }
+[ ! -e "$out" ] || [ -z "$(ls -A "$out")" ] || { echo "kb-render: $out exists and is not empty" >&2; exit 2; }
+mkdir -p "$out/src/routes"
+cp -r "$src/src/." "$out/src/"
+
+cat > "$out/package.json" <<'JSON'
+{
+  "name": "kb-render-site",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": { "build": "vite build" },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^4.0.0",
+    "@sveltejs/kit": "^3.1.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "mdsvex": "^0.12.8",
+    "svelte": "^5.57.3",
+    "vite": "^8.3.5",
+    "vite-node": "^6.0.0"
+  }
+}
+JSON
+
+cat > "$out/vite.config.js" <<'JS'
+import { sveltekit } from '@sveltejs/kit/vite';
+import adapter from '@sveltejs/adapter-static';
+import { mdsvex } from 'mdsvex';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = path.dirname(fileURLToPath(import.meta.url));
+const runbook = path.resolve(root, 'src/lib/layouts/runbook.svelte');
+
+export default {
+  plugins: [
+    sveltekit({
+      extensions: ['.svelte', '.svx'],
+      preprocess: [
+        mdsvex({
+          extensions: ['.svx'],
+          layoutPropForwarding: 'runes',
+          ...(fs.existsSync(runbook) ? { layout: { runbook } } : {}),
+        }),
+      ],
+      adapter: adapter({ fallback: undefined, strict: true }),
+      alias: { '#lib': 'src/lib', '#lib/*': 'src/lib/*' },
+      prerender: { entries: ['*'] },
+    }),
+  ],
+};
+JS
+
+[ -e "$out/src/app.html" ] || cat > "$out/src/app.html" <<'HTML'
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    %sveltekit.head%
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">%sveltekit.body%</div>
+  </body>
+</html>
+HTML
+[ -e "$out/src/routes/+layout.js" ] || printf 'export const prerender = true;\n' > "$out/src/routes/+layout.js"
+[ -e "$out/src/routes/+layout.svelte" ] || printf '<script>\n  let { children } = $props();\n</script>\n\n{@render children()}\n' > "$out/src/routes/+layout.svelte"
+
+echo "kb-render: site written to $out"
+if [ "$build" = "--build" ]; then
+  (cd "$out" && npm install --ignore-scripts && npx vite build)
+  echo "kb-render: built. Read the pages under $out/build/ (find $out/build -name '*.html')."
+else
+  echo "kb-render: next: cd $out && npm install --ignore-scripts && npx vite build"
+fi

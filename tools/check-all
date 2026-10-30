@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# Usage: tools/check-all [--quiet]
+# Runs every repo check in one go and exits 1 if any fails (prints only failures with --quiet):
+#   1. check-handoff on every challenges/*/handoff.md
+#   2. retro-check on every challenges/*/retro.md
+#   3. no course tokens in tracked text files (redact.mjs --check)
+#   4. repo paths named in backticks in CLAUDE.md, the live docs and context/foundation exist
+#   5. every executable in tools/ is named in docs/tools.md or CLAUDE.md
+# Run from anywhere; it changes to the repo root first. Needs bash, awk, git, node, python3.
+set -uo pipefail
+cd "$(dirname "$0")/.."
+quiet=0; [ "${1:-}" = "--quiet" ] && quiet=1
+fail=0
+
+report() { # name status [detail]
+  if [ "$2" = ok ]; then [ "$quiet" = 1 ] || echo "ok    $1"; else fail=1; echo "FAIL  $1"; [ -n "${3:-}" ] && printf '%s\n' "$3" | sed 's/^/      /'; fi
+}
+
+out=""; for f in challenges/*/handoff.md; do [ -e "$f" ] || continue; o=$(tools/check-handoff "$f" 2>&1) || out+="$o"$'\n'; done
+[ -z "$out" ] && report "handoff files" ok || report "handoff files" fail "${out%$'\n'}"
+
+out=""; for f in challenges/*/retro.md; do [ -e "$f" ] || continue; o=$(tools/retro-check "$f" 2>&1) || out+="$o"$'\n'; done
+[ -z "$out" ] && report "retro files" ok || report "retro files" fail "${out%$'\n'}"
+
+files=$(git ls-files | grep -Ev '\.(png|jpe?g|gif|pdf|zip)$' | grep -Fvx '.claude/skills/read/scripts/redact.mjs')
+if out=$(printf '%s\n' "$files" | xargs node .claude/skills/read/scripts/redact.mjs --check 2>&1); then
+  report "no tokens in tracked files" ok
+else
+  report "no tokens in tracked files" fail "$out"
+fi
+
+out=$(python3 -I - <<'PY'
+import glob, os, re
+docs = ["CLAUDE.md", "docs/playbook.md", "docs/tools.md", "docs/environments.md", "docs/lessons-learned.md"]
+docs += sorted(glob.glob("context/foundation/*.md")) + sorted(glob.glob("challenges/*-TEMPLATE.md"))
+ROOTS = ("tools/", "docs/", "context/", "challenges/", "hooks/", ".claude/")
+bad = []
+for doc in docs:
+    if not os.path.exists(doc):
+        continue
+    for n, line in enumerate(open(doc, encoding="utf-8"), 1):
+        for tok in re.findall(r"`([^`\n]+)`", line):
+            tok = tok.split()[0].rstrip(".,;:)")
+            if not tok.startswith(ROOTS) or re.search(r"[<>*{}$\\|]|\.\.\.|https?:", tok):
+                continue  # placeholders, globs, urls and shell syntax are not checkable paths
+            if not os.path.exists(tok):
+                bad.append(f"{doc}:{n}: path does not exist: {tok}")
+print("\n".join(bad))
+PY
+)
+[ -z "$out" ] && report "paths named in docs exist" ok || report "paths named in docs exist" fail "$out"
+
+out=""
+for t in tools/*; do
+  [ -f "$t" ] && [ -x "$t" ] || continue
+  n=$(basename "$t")
+  grep -qF "$n" docs/tools.md CLAUDE.md || out+="tools/$n is not named in docs/tools.md or CLAUDE.md"$'\n'
+done
+[ -z "$out" ] && report "tools are documented" ok || report "tools are documented" fail "${out%$'\n'}"
+
+out=""
+for md in .claude/skills/*/SKILL.md; do
+  [ -e "$md" ] || continue
+  dir=$(dirname "$md")
+  for s in $(grep -oE 'scripts/[A-Za-z0-9._-]+\.mjs' "$md" | sort -u); do
+    [ -e "$dir/$s" ] || out+="$md: names $s, which does not exist in $dir"$'\n'
+  done
+done
+[ -z "$out" ] && report "skill scripts exist" ok || report "skill scripts exist" fail "${out%$'\n'}"
+
+exit $fail
