@@ -22,12 +22,17 @@ out=""; for f in challenges/*/handoff.md; do [ -e "$f" ] || continue; o=$(tools/
 out=""; for f in challenges/*/retro.md; do [ -e "$f" ] || continue; o=$(tools/retro-check "$f" 2>&1) || out+="$o"$'\n'; done
 [ -z "$out" ] && report "retro files" ok || report "retro files" fail "${out%$'\n'}"
 
-files=$(git ls-files | grep -Ev '\.(png|jpe?g|gif|pdf|zip)$' | grep -Fvx '.claude/skills/read/scripts/redact.mjs')
-if out=$(printf '%s\n' "$files" | xargs node .claude/skills/read/scripts/redact.mjs --check 2>&1); then
-  report "no tokens in tracked files" ok
-else
-  report "no tokens in tracked files" fail "$out"
-fi
+allow=hooks/token-allowlist   # files that may carry a course signature on their `signature:` line only
+[ -f "$allow" ] || allow=/dev/null
+files=$(git ls-files | grep -Ev '\.(png|jpe?g|gif|pdf|zip)$' | grep -Fvx '.claude/skills/read/scripts/redact.mjs' | grep -Fvxf "$allow")
+out=""
+if ! o=$(printf '%s\n' "$files" | xargs node .claude/skills/read/scripts/redact.mjs --check 2>&1); then out+="$o"$'\n'; fi
+while IFS= read -r f; do
+  case "$f" in ''|'#'*) continue;; esac
+  [ -f "$f" ] || continue
+  grep -v '^signature: ' "$f" | node .claude/skills/read/scripts/redact.mjs --check --stdin >/dev/null 2>&1 || out+="$f: token or magic link outside the signature line"$'\n'
+done < "$allow"
+[ -z "$out" ] && report "no tokens in tracked files" ok || report "no tokens in tracked files" fail "${out%$'\n'}"
 
 out=$(python3 -I - <<'PY'
 import glob, os, re

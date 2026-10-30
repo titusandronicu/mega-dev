@@ -1,0 +1,6 @@
+# Files that carry a course signature ticket on purpose (one path per line).
+# The course says a signed kb page must carry the ticket exactly as given, as `signature:` in its
+# frontmatter; the ticket stays good on the page after it expires. Only lines that start with
+# "signature: " are exempt from the token check in these files. Every other line is still checked.
+challenges/S01E03/page/4471.svx
+challenges/S01E03/page/4471-split.svx
