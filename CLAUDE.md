@@ -7,6 +7,8 @@
 - When you resume a Challenge, read its `handoff.md` first. If a record has no source labels, take the mapping from there, not from a guess.
 - After the debrief and the course feedback, write `challenges/<code>/retro.md` from `challenges/RETRO-TEMPLATE.md` and run `tools/retro-check` on it. Each finding is a proposal; apply it (playbook, this file, a tool or a skill) only after the owner approves it, and in the same commit set its status to `applied`.
 - Before you start a Challenge, read `docs/playbook.md` and any `retro.md` findings with status `applied` or `proposed`.
+- Before you say a task is done, name the check you ran against the running thing (the live challenge page, the HQ screen, the served build) and paste its output. Green tests alone do not count.
+- Filing: a lesson is stated once, in `docs/lessons-learned.md`. The playbook holds only the action and cites the lesson number; this file holds only hard rules; a refusal goes in `docs/didnt-work.md` as a dated event.
 - After the debrief, record the solve in HQ: `node ~/repos/mega-hq/ingest/solve-notes.mjs challenges/<code>/debrief.md --code <code>` (add `--dry-run` first). It needs the owner env vars (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `OWNER_EMAIL`, `OWNER_PASSWORD`); the owner keeps them in `~/.config/mega-hq`, so do not read or quote that folder.
 - Run `tools/preflight` at the start of a session, before trusting that `gh`/node's ICU/etc. are there.
 - After every `claim-challenge` call, run `tools/record-claim <code> <reply.json>` first - it logs the reply and tells you the right next step for its actual `status` (`solved`/`rejected`/`progress`, not a solved-or-rejected binary). Before any `claim-challenge` call after the first, run `tools/pre-claim-gate <code>` - it refuses to let you proceed on a non-solved prior reply until a human has re-read the challenge's live page since then (a byte-identical re-download is not the same as an unchanged page).
@@ -14,6 +16,12 @@
 - Before filing more than one ticket from one computed analysis, run `tools/subset-check <counts.json>` on the id-sets you're about to split into tickets, and `tools/safe-issue-refs <draft.md> <owner/repo>` on each draft before filing it. Before closing a ticket, use `tools/close-ticket <owner/repo> <issue> <completed|not-planned> <comment-file>` - it requires an explicit reason and verifies the course's own `state_reason` afterward, rather than trusting the close call succeeded.
 - Rendering a kb export (prose in `.svx`, logic in `src/lib`, one shared layout): `tools/scaffold-kb-render <kb-root-dir>` writes the SvelteKit+mdsvex+adapter-static build plumbing around an export that already has `src/lib`/`src/routes`. Then `npm install` the deps it prints and `npx vite build` - read the actual rendered HTML before trusting a computed number, don't just trust the component code.
 - See `docs/lessons-index.md` for which lesson each of these tools (or an existing one) now prevents by default, and which are prose-only on purpose.
+
+## Read before you act
+- Sending anything to the course (a body, a form, a cut text): `docs/playbook.md`, then `docs/lessons-learned.md`.
+- After a refusal or rejection: re-read the live page first (`docs/playbook.md`, "After a refusal or rejection"). Repeating the same refusal: `docs/didnt-work.md`.
+- Touching HQ, secrets or a worker: `context/foundation/hq.md` and the hazards in `context/foundation/agent-background.md`.
+- A command fails or a path is missing: `tools/whereami` and `docs/environments.md`.
 
 ## Tools
 - `tools/transcribe <file> [model]`: local speech-to-text with sentence times (JSON). Default model `small`. No API key needed.
