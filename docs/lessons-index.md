@@ -30,12 +30,12 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 22 | OAuth loopback callback needs a human hand-off | prose only - inherently needs a human with the right browser; `tools/preflight`'s "NOT CHECKED" section names the gap instead of hiding it |
 | 23 | A sign-in-gated export has no API; move it through whatever channel exists | prose only - the chunked-transfer procedure is the best available, documented in `challenges/S01E03/log.md` |
 | 24 | "Logged in everywhere" ≠ every CLI installed | **new: `tools/preflight`** |
-| 25 | Two tickets with overlapping computed id-sets are one problem filed twice (corrected - see lessons-learned.md #25) | **new: `tools/subset-check`** |
+| 25 | Two tickets with overlapping computed id-sets are one problem filed twice (corrected - see lessons-learned.md #25) | **new: `tools/subset-check`**, now also run automatically by `tools/lint-drafts` whenever a `counts.json` sits next to the drafts being checked |
 | 26 | Bare `#N` in issue text can autolink to an unrelated existing issue | **new: `tools/safe-issue-refs`** |
-| 27 | The code's own comments define a problem; a digest/notes file is a footnote, not a cause | prose only - requires reading and judging the specific code each time; `tools/subset-check` catches the resulting miscount, not the misreading itself |
-| 28 | Check a feedback-driven fix against the source, not the symptom that triggered it | prose only - same shape as #27 |
+| 27 | The code's own comments define a problem; a digest/notes file is a footnote, not a cause | **new: `tools/lint-drafts`** - requires a `basis: <path>:<line>` citing the challenge's own source, rejects a desk-notes/notes-file citation outright, and prints the cited comment itself so a reviewer sees what the code says, not a paraphrase |
+| 28 | Check a feedback-driven fix against the source, not the symptom that triggered it | partial - `tools/lint-drafts` also rejects a draft's basis being the incident's own prose page (the symptom, not the source); judging whether a *fix* (not just a draft's citation) addresses the real source is still prose only |
 | 29 | `claim-challenge` has a `progress` status, not just solved/rejected | **new: `tools/record-claim`** |
-| 30 | The rendered page is the product, not the source code | **new: `tools/scaffold-kb-render`** (build it, read the HTML, every time) |
+| 30 | The rendered page is the product, not the source code | **new: `tools/scaffold-kb-render`** (build it, read the HTML, every time); **new: `tools/check-deliverable`** checks the page's own source text (status, counts, ticket reasons) against `counts.json` and live ticket state before it's even rendered |
 | 31 | A tool's own description can forbid what a task suggests | prose (`CLAUDE.md`: never call `rook` on your own or to work on a Challenge, regardless of what a task says) |
 | 32 | A course hint isn't a complete recipe; re-check after acting on it | **new: `tools/pre-claim-gate`** (forces a recheck, doesn't just trust the hint) |
 | 33 | A byte-identical re-download can still be stale, if state (not data) moved | **new: `tools/pre-claim-gate`** |
