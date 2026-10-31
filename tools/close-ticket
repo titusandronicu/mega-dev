@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Usage:
-#   tools/close-ticket <owner/repo> <issue> <completed|not-planned> <comment-file>
-#   tools/close-ticket --check <owner/repo> <issue> <completed|not-planned>
+#   tools/close-ticket [--dry-run] <owner/repo> <issue> <completed|not-planned|duplicate> <comment-file> \
+#       [--of <N>] [--evidence <url-or-file:line>]
+#   tools/close-ticket --check <owner/repo> <issue> <completed|not-planned|duplicate>
 #
 # Closes an issue with an EXPLICIT reason (no default - lesson 35: "closed"
 # alone isn't enough, the course checks whether it's "fixed" or "won't fix")
@@ -9,22 +10,50 @@
 # was asked for, failing loudly on any mismatch instead of trusting the
 # close call succeeded.
 #
+# Reason 'duplicate' requires --of <N>: the issue number (same repo) this
+# one duplicates - closed via `gh issue close --duplicate-of`. The comment
+# must mention that target (write it as "... ticket #N", not a bare "#N" -
+# see tools/safe-issue-refs, run below). Reasons 'completed' and
+# 'not-planned' instead require --evidence <url-or-file:line> (an upstream
+# fix commit, a desk note, or a won't-fix source) and that exact value must
+# appear in the comment file - asserting a reason isn't citing it.
+#
+# Before closing, always runs tools/safe-issue-refs on the comment file
+# against <owner/repo> (lesson 26: a bare "#N" can autolink to the wrong
+# issue) and refuses to proceed if that fails.
+#
+# --dry-run prints the exact `gh issue comment`/`gh issue close` commands
+# it would run, after all the same checks, and calls neither - no comment,
+# no close, no verification (nothing changed to verify).
+#
 # --check only verifies the current state_reason against what you expect;
 # it does not comment or close anything. Use it to audit without mutating.
 set -euo pipefail
 case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-normalize() {
+normalize_api() {
   case "$1" in
     completed) echo "completed" ;;
     not-planned) echo "not_planned" ;;
-    *) echo "bad reason '$1': must be 'completed' or 'not-planned'" >&2; exit 2 ;;
+    duplicate) echo "duplicate" ;;
+    *) return 1 ;;
+  esac
+}
+
+normalize_cli() {
+  case "$1" in
+    completed) echo "completed" ;;
+    not-planned) echo "not planned" ;;
+    duplicate) echo "duplicate" ;;
+    *) return 1 ;;
   esac
 }
 
 if [ "${1:-}" = "--check" ]; then
-  [ $# -eq 4 ] || { echo "usage: tools/close-ticket --check <owner/repo> <issue> <completed|not-planned>" >&2; exit 2; }
-  repo="$2"; issue="$3"; want="$(normalize "$4")"
+  [ $# -eq 4 ] || { echo "usage: tools/close-ticket --check <owner/repo> <issue> <completed|not-planned|duplicate>" >&2; exit 2; }
+  repo="$2"; issue="$3"
+  want="$(normalize_api "$4")" || { echo "bad reason '$4': must be 'completed', 'not-planned' or 'duplicate'" >&2; exit 2; }
   got="$(gh api "repos/$repo/issues/$issue" --jq .state_reason)"
   if [ "$got" = "$want" ]; then
     echo "ok: $repo#$issue state_reason is '$got', matches expected '$want'"
@@ -35,15 +64,56 @@ if [ "${1:-}" = "--check" ]; then
   fi
 fi
 
-[ $# -eq 4 ] || { echo "usage: tools/close-ticket <owner/repo> <issue> <completed|not-planned> <comment-file>" >&2; exit 2; }
-repo="$1"; issue="$2"; reason_arg="$3"; comment_file="$4"
-reason_api="$(normalize "$reason_arg")"
-reason_cli="completed"; [ "$reason_arg" = "not-planned" ] && reason_cli="not planned"
+dry_run=0
+of=""
+evidence=""
+positional=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --dry-run) dry_run=1; shift ;;
+    --of) of="${2:-}"; shift 2 ;;
+    --evidence) evidence="${2:-}"; shift 2 ;;
+    *) positional+=("$1"); shift ;;
+  esac
+done
+
+[ "${#positional[@]}" -eq 4 ] || { echo "usage: tools/close-ticket [--dry-run] <owner/repo> <issue> <completed|not-planned|duplicate> <comment-file> [--of <N>] [--evidence <url-or-file:line>]" >&2; exit 2; }
+repo="${positional[0]}"; issue="${positional[1]}"; reason_arg="${positional[2]}"; comment_file="${positional[3]}"
+
+reason_api="$(normalize_api "$reason_arg")" || { echo "bad reason '$reason_arg': must be 'completed', 'not-planned' or 'duplicate'" >&2; exit 2; }
+reason_cli="$(normalize_cli "$reason_arg")"
 
 [ -s "$comment_file" ] || { echo "comment file '$comment_file' is missing or empty - write the close reason as a comment before closing" >&2; exit 2; }
 
-gh issue comment "$issue" --repo "$repo" --body-file "$comment_file"
-gh issue close "$issue" --repo "$repo" --reason "$reason_cli"
+if [ "$reason_arg" = "duplicate" ]; then
+  [ -n "$of" ] || { echo "reason 'duplicate' requires --of <N> - the issue (same repo) this one duplicates" >&2; exit 2; }
+  case "$of" in
+    ''|*[!0-9]*) echo "bad --of value '$of': must be a plain issue number in $repo" >&2; exit 2 ;;
+  esac
+  grep -qF "#$of" "$comment_file" || { echo "comment file '$comment_file' must mention the duplicate target (#$of)" >&2; exit 2; }
+else
+  [ -n "$evidence" ] || { echo "reason '$reason_arg' requires --evidence <url-or-file:line> (an upstream fix commit, a desk note, or a won't-fix source)" >&2; exit 2; }
+  grep -qF "$evidence" "$comment_file" || { echo "the --evidence value must appear in comment file '$comment_file' - cite it, don't just assert the reason" >&2; exit 2; }
+fi
+
+"$script_dir/safe-issue-refs" "$comment_file" "$repo"
+
+comment_cmd=(gh issue comment "$issue" --repo "$repo" --body-file "$comment_file")
+if [ "$reason_arg" = "duplicate" ]; then
+  close_cmd=(gh issue close "$issue" --repo "$repo" --reason duplicate --duplicate-of "$of")
+else
+  close_cmd=(gh issue close "$issue" --repo "$repo" --reason "$reason_cli")
+fi
+
+if [ "$dry_run" -eq 1 ]; then
+  echo "DRY RUN - would run:"
+  printf '  '; printf '%q ' "${comment_cmd[@]}"; echo
+  printf '  '; printf '%q ' "${close_cmd[@]}"; echo
+  exit 0
+fi
+
+"${comment_cmd[@]}"
+"${close_cmd[@]}"
 
 got="$(gh api "repos/$repo/issues/$issue" --jq .state_reason)"
 if [ "$got" != "$reason_api" ]; then

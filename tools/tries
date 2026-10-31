@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Usage: tools/tries <code>
+#
+# Prints a markdown table (try #, at, status, verbatim message, desk) from
+# challenges/<code>/claim-log.jsonl, for pasting into a debrief - so the
+# debrief quotes every attempt's own wording instead of a paraphrase.
+set -euo pipefail
+[ $# -eq 1 ] || { echo "usage: tools/tries <code>" >&2; exit 2; }
+code="$1"
+log="challenges/$code/claim-log.jsonl"
+[ -s "$log" ] || { echo "no claim-log.jsonl for $code (or it's empty): $log" >&2; exit 1; }
+
+python3 - "$log" <<'PY'
+import json
+import sys
+
+path = sys.argv[1]
+
+
+def cell(v):
+    if v is None:
+        return ""
+    return str(v).replace("|", "\\|").replace("\n", " ")
+
+
+print("| try # | at | status | message | desk |")
+print("|---|---|---|---|---|")
+with open(path, encoding="utf-8") as f:
+    n = 0
+    for raw in f:
+        raw = raw.strip()
+        if not raw:
+            continue
+        n += 1
+        d = json.loads(raw)
+        print(f"| {n} | {cell(d.get('at'))} | {cell(d.get('status'))} | {cell(d.get('message'))} | {cell(d.get('desk'))} |")
+PY

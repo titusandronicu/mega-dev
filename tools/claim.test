@@ -1,0 +1,212 @@
+#!/usr/bin/env bash
+# Usage: tools/claim.test
+#
+# Replays S01E03's real claim-log.jsonl (4 tries: rejected, progress,
+# rejected, solved - challenges/S01E03/claim-log.jsonl) through
+# tools/claim-ready, tools/record-claim and tools/tries, in scratch copies
+# so the real challenge dir is never touched. Covers:
+#   - exit codes per status (0 solved, 10 progress, 20 rejected, 1 unknown)
+#   - record-claim refuses to record try 2 or 3 without a fresh .claim-ready
+#   - claim-ready fails before tries 2, 3 and 4 without a live recheck, and
+#     passes before try 4 with the real recheck in place (same checkpoints
+#     as tools/pre-claim-gate.test, through the wrapper this time)
+#   - tries S01E03 reproduces all 4 tries with the exact messages
+set -euo pipefail
+src=challenges/S01E03
+pass=0
+
+ok()   { echo "ok   - $1"; pass=$((pass + 1)); }
+fail() { echo "FAIL - $1"; exit 1; }
+
+# -- replies reconstructed from the real, already-normalized log lines, so
+# record-claim's output reproduces that log byte-for-byte (modulo key order).
+reply_for() {
+  # $1 = 1-based try number from $src/claim-log.jsonl
+  sed -n "${1}p" "$src/claim-log.jsonl" | python3 -c '
+import json, sys
+d = json.load(sys.stdin)
+out = {"status": d["status"], "message": d["message"], "desk": d["desk"], "solvedAt": d["at"]}
+print(json.dumps(out))
+'
+}
+
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+# === exit codes per status, each in its own fresh scratch challenge ===
+for spec in "solved:0" "progress:10" "rejected:20" "unknown:1"; do
+  status="${spec%%:*}"; want_rc="${spec##*:}"
+  work="$tmp/exit-$status"
+  mkdir -p "$work/challenges/EXIT-$status"
+  reply="$work/reply.json"
+  printf '{"status": "%s", "message": "m", "desk": null, "solvedAt": "2026-01-01T00:00:00Z"}\n' "$status" > "$reply"
+
+  set +e
+  out="$(cd "$work" && "$OLDPWD/tools/claim-ready" "EXIT-$status" 2>&1)"
+  gate_rc=$?
+  set -e
+  [ "$gate_rc" -eq 0 ] || fail "exit-codes/$status: claim-ready should pass on a fresh dir:\n$out"
+
+  set +e
+  out="$(cd "$work" && "$OLDPWD/tools/record-claim" "EXIT-$status" reply.json 2>&1)"
+  got_rc=$?
+  set -e
+  if [ "$got_rc" -eq "$want_rc" ]; then
+    ok "record-claim status=$status exits $got_rc (expected $want_rc)"
+  else
+    fail "record-claim status=$status exited $got_rc, expected $want_rc:\n$out"
+  fi
+done
+
+# === --force-unguarded records anyway and marks the line ===
+fu="$tmp/force-unguarded"
+mkdir -p "$fu/challenges/S01E03"
+printf '{"status": "progress", "message": "m", "desk": null, "solvedAt": "2026-01-01T00:00:00Z"}\n' > "$fu/reply.json"
+set +e
+out="$(cd "$fu" && "$OLDPWD/tools/record-claim" --force-unguarded S01E03 reply.json 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 10 ] || fail "force-unguarded: expected exit 10, got $rc:\n$out"
+grep -q '"unguarded": true' "$fu/challenges/S01E03/claim-log.jsonl" \
+  && ok "force-unguarded: records with no gate and marks the line unguarded:true" \
+  || fail "force-unguarded: line missing \"unguarded\": true"
+
+# === record-claim refuses try 2 and try 3 without a fresh .claim-ready ===
+for n in 2 3; do
+  work="$tmp/refuse-$n"
+  mkdir -p "$work/challenges/S01E03"
+  head -n "$((n - 1))" "$src/claim-log.jsonl" > "$work/challenges/S01E03/claim-log.jsonl"
+  reply_for "$n" > "$work/reply.json"
+
+  set +e
+  out="$(cd "$work" && "$OLDPWD/tools/record-claim" S01E03 reply.json 2>&1)"
+  rc=$?
+  set -e
+  if [ "$rc" -eq 3 ]; then
+    ok "record-claim refuses try $n with no .claim-ready on record (exit 3)"
+  else
+    fail "record-claim on try $n should have refused (exit 3), got $rc:\n$out"
+  fi
+  [ -s "$work/challenges/S01E03/claim-log.jsonl" ] || fail "refuse-$n: claim-log.jsonl vanished"
+  [ "$(wc -l < "$work/challenges/S01E03/claim-log.jsonl")" -eq "$((n - 1))" ] \
+    || fail "refuse-$n: a refused record-claim must not append a line"
+done
+
+# === claim-ready fails before tries 2, 3, 4 without a live recheck, and
+#     passes before try 4 with the real recheck in place ===
+run_gate() {
+  local label="$1" claim_lines="$2" recheck_lines="$3" want="$4"
+  local work="$tmp/gate-$label"
+  mkdir -p "$work/challenges/S01E03"
+  cp "$src/challenge-url.txt" "$work/challenges/S01E03/"
+  head -n "$claim_lines" "$src/claim-log.jsonl" > "$work/challenges/S01E03/claim-log.jsonl"
+  if [ "$recheck_lines" -gt 0 ]; then
+    head -n "$recheck_lines" "$src/live-recheck.log" > "$work/challenges/S01E03/live-recheck.log"
+  else
+    : > "$work/challenges/S01E03/live-recheck.log"
+  fi
+  set +e
+  out="$(cd "$work" && "$OLDPWD/tools/claim-ready" S01E03 2>&1)"
+  rc=$?
+  set -e
+  got="pass"; [ "$rc" -ne 0 ] && got="fail"
+  if [ "$got" = "$want" ]; then
+    ok "claim-ready $label: $got (expected $want)"
+  else
+    fail "claim-ready $label: $got, expected $want:\n$out"
+  fi
+  if [ "$want" = "pass" ]; then
+    [ -f "$work/challenges/S01E03/.claim-ready" ] || fail "claim-ready $label: passed but wrote no .claim-ready"
+    grep -q '^at: ' "$work/challenges/S01E03/.claim-ready" || fail "claim-ready $label: .claim-ready missing 'at:'"
+    grep -q '^claim_log_sha256: ' "$work/challenges/S01E03/.claim-ready" || fail "claim-ready $label: .claim-ready missing claim_log_sha256"
+    grep -q '^live_recheck_sha256: ' "$work/challenges/S01E03/.claim-ready" || fail "claim-ready $label: .claim-ready missing live_recheck_sha256"
+  fi
+}
+
+run_gate "before-try-2" 1 0 fail
+run_gate "before-try-3" 2 0 fail
+run_gate "before-try-4-no-recheck" 3 0 fail
+run_gate "before-try-4-with-recheck" 3 1 pass
+
+# === end-to-end: replay all 4 real tries in order against one scratch dir.
+#     Historically there was no live recheck before tries 2 or 3 (only one
+#     recheck exists, dated after try 3 and before try 4 - see
+#     live-recheck.log) - so a faithful replay under the *new* gate can only
+#     get through tries 2 and 3 via --force-unguarded, exactly as
+#     run_gate above shows claim-ready would refuse them unguarded. ===
+e2e="$tmp/e2e"
+mkdir -p "$e2e/challenges/S01E03"
+cp "$src/challenge-url.txt" "$e2e/challenges/S01E03/"
+
+(cd "$e2e" && "$OLDPWD/tools/claim-ready" S01E03 >/dev/null)
+reply_for 1 > "$e2e/reply.json"
+set +e
+out="$(cd "$e2e" && "$OLDPWD/tools/record-claim" S01E03 reply.json 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 20 ] || fail "e2e: try 1 (rejected) should record with exit 20, got $rc:\n$out"
+ok "e2e: try 1 records (exit 20) after claim-ready on an empty log"
+
+set +e
+out="$(cd "$e2e" && "$OLDPWD/tools/claim-ready" S01E03 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "e2e: claim-ready before try 2 should fail (no live recheck yet):\n$out"
+ok "e2e: claim-ready before try 2 fails (no live recheck yet, matching run_gate above)"
+
+reply_for 2 > "$e2e/reply.json"
+set +e
+out="$(cd "$e2e" && "$OLDPWD/tools/record-claim" --force-unguarded S01E03 reply.json 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 10 ] || fail "e2e: try 2 (progress) should record with exit 10, got $rc:\n$out"
+ok "e2e: try 2 records (exit 10) via --force-unguarded, since the gate genuinely had nothing to pass"
+
+reply_for 3 > "$e2e/reply.json"
+set +e
+out="$(cd "$e2e" && "$OLDPWD/tools/record-claim" --force-unguarded S01E03 reply.json 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 20 ] || fail "e2e: try 3 (rejected) should record with exit 20, got $rc:\n$out"
+ok "e2e: try 3 records (exit 20) via --force-unguarded, still no recheck logged"
+
+cp "$src/live-recheck.log" "$e2e/challenges/S01E03/live-recheck.log"
+set +e
+out="$(cd "$e2e" && "$OLDPWD/tools/claim-ready" S01E03 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 0 ] || fail "e2e: claim-ready before try 4 should pass with the real recheck in place:\n$out"
+ok "e2e: claim-ready before try 4 passes with the real recheck in place"
+
+reply_for 4 > "$e2e/reply.json"
+set +e
+out="$(cd "$e2e" && "$OLDPWD/tools/record-claim" S01E03 reply.json 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 0 ] || fail "e2e: try 4 (solved) should record with exit 0, got $rc:\n$out"
+ok "e2e: try 4 records (exit 0) guarded by the real recheck"
+
+python3 -c "
+import json, sys
+real = [json.loads(l) for l in open('$src/claim-log.jsonl', encoding='utf-8')]
+got = [json.loads(l) for l in open('$e2e/challenges/S01E03/claim-log.jsonl', encoding='utf-8')]
+fields = ['at', 'status', 'message', 'desk']
+ok = len(real) == len(got) and all(r[f] == g[f] for r, g in zip(real, got) for f in fields)
+sys.exit(0 if ok else 1)
+" && ok "e2e: replayed claim-log.jsonl matches the real one on at/status/message/desk" \
+  || fail "e2e: replayed claim-log.jsonl differs from the real one"
+
+# === tries S01E03 reproduces all 4 tries with the exact messages ===
+out="$(tools/tries S01E03)"
+rows="$(printf '%s\n' "$out" | tail -n +3 | wc -l)"
+[ "$rows" -eq 4 ] || fail "tries S01E03: expected 4 rows, got $rows:\n$out"
+ok "tries S01E03: 4 rows"
+
+while IFS= read -r line; do
+  msg="$(sed -n "${line}p" "$src/claim-log.jsonl" | python3 -c 'import json,sys; print(json.load(sys.stdin)["message"])')"
+  printf '%s' "$out" | grep -qF "$msg" || fail "tries S01E03: missing verbatim message for try $line: $msg"
+done < <(seq 1 4)
+ok "tries S01E03: all 4 messages present verbatim"
+
+echo
+echo "all claim.test checks passed ($pass ok)"

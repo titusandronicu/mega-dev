@@ -1,0 +1,141 @@
+#!/usr/bin/env bash
+# Usage: tools/close-ticket.test
+#
+# Exercises tools/close-ticket with --dry-run and a stub `gh` on PATH - no
+# real network writes, ever (the stub exits nonzero on `gh issue comment`/
+# `gh issue close`, so a bug that skipped --dry-run would fail loudly here,
+# not silently touch a real issue). Covers:
+#   - missing reason fails
+#   - missing evidence fails (completed/not-planned)
+#   - duplicate without --of fails
+#   - replay of S01E03 claim-3: closing the hint ticket (#7) as completed
+#     with the real historical comment, which never cited an upstream fix -
+#     refused
+#   - replay of S01E03 claim-4: parser (#6) completed citing the real fix
+#     commit, hint (#7) not-planned citing booking-v3's retirement - both
+#     pass under --dry-run
+set -euo pipefail
+repo_root="$(pwd)"
+pass=0
+
+ok()   { echo "ok   - $1"; pass=$((pass + 1)); }
+fail() { echo "FAIL - $1"; exit 1; }
+
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+# -- stub gh: never performs a real comment/close, logs what it was asked
+#    to do, and fails `api` lookups (so tools/safe-issue-refs treats every
+#    bare #N in these fixtures as unresolved, i.e. safe) --
+stubbin="$tmp/bin"
+mkdir -p "$stubbin"
+gh_log="$tmp/gh.log"
+: > "$gh_log"
+cat > "$stubbin/gh" <<EOF
+#!/usr/bin/env bash
+echo "\$*" >> "$gh_log"
+case "\$1" in
+  api) exit 1 ;;
+  issue)
+    echo "STUB GH REFUSED A REAL MUTATION: \$*" >&2
+    exit 99
+    ;;
+  *) exit 1 ;;
+esac
+EOF
+chmod +x "$stubbin/gh"
+export PATH="$stubbin:$PATH"
+
+close_ticket="$repo_root/tools/close-ticket"
+test_repo="titusandronicu/mega-dev"
+
+# === missing reason fails ===
+echo "a real comment" > "$tmp/c1.md"
+set +e
+out="$("$close_ticket" --dry-run "$test_repo" 6 "$tmp/c1.md" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "omitting the reason entirely should fail, got exit 0:\n$out"
+ok "reason omitted entirely fails (exit $rc)"
+
+set +e
+out="$("$close_ticket" --dry-run "$test_repo" 6 wontfix "$tmp/c1.md" --evidence "a real comment" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "bad reason 'wontfix' should fail, got exit 0:\n$out"
+ok "invalid reason 'wontfix' fails (exit $rc)"
+
+# === missing evidence fails (completed/not-planned) ===
+set +e
+out="$("$close_ticket" --dry-run "$test_repo" 6 completed "$tmp/c1.md" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "completed with no --evidence should fail, got exit 0:\n$out"
+ok "completed with no --evidence fails (exit $rc)"
+
+set +e
+out="$("$close_ticket" --dry-run "$test_repo" 7 not-planned "$tmp/c1.md" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "not-planned with no --evidence should fail, got exit 0:\n$out"
+ok "not-planned with no --evidence fails (exit $rc)"
+
+# === duplicate without --of fails ===
+echo "closing as a duplicate" > "$tmp/c2.md"
+set +e
+out="$("$close_ticket" --dry-run "$test_repo" 8 duplicate "$tmp/c2.md" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "duplicate with no --of should fail, got exit 0:\n$out"
+ok "duplicate with no --of fails (exit $rc)"
+
+# === replay of S01E03 claim-3: #7 (hint) closed 'completed', no upstream
+#     fix evidence - the real comment text used at that point in the
+#     history (challenges/S01E03/log.md, Phase 6) never cites a fix; the
+#     fix commit only became known later (Phase 7 / claim-4). ===
+cat > "$tmp/claim3-hint.md" <<'EOF'
+Triage of desk ticket #4471 is done - this ticket holds 33 reports.
+EOF
+set +e
+out="$("$close_ticket" --dry-run "$test_repo" 7 completed "$tmp/claim3-hint.md" --evidence "fix(dates): parse dd/mm for eu locales" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "claim-3 replay (hint closed completed, no upstream-fix evidence in the comment) should be refused, got exit 0:\n$out"
+ok "claim-3 replay: hint closed completed with no upstream-fix evidence is refused (exit $rc)"
+
+# === replay of S01E03 claim-4: both real closes, --dry-run, must pass ===
+cat > "$tmp/claim4-parser.md" <<'EOF'
+Fixed upstream: fix(dates): parse dd/mm for eu locales. Triage of desk
+ticket #4471 is done - this ticket holds 379 reports (parser cause).
+EOF
+set +e
+out="$("$close_ticket" --dry-run "$test_repo" 6 completed "$tmp/claim4-parser.md" --evidence "fix(dates): parse dd/mm for eu locales" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 0 ] || fail "claim-4 replay: parser (#6) completed citing the fix commit should pass under --dry-run, got $rc:\n$out"
+printf '%s' "$out" | grep -q "gh issue close 6 --repo $test_repo --reason completed" \
+  || fail "claim-4 replay: parser dry-run output missing the exact close command:\n$out"
+ok "claim-4 replay: parser (#6) completed citing the fix commit passes (--dry-run)"
+
+cat > "$tmp/claim4-hint.md" <<'EOF'
+Won't fix: the booking-v3 form was retired, so the hint it displayed no
+longer applies. Desk ticket #4471's hint cause (33 reports) stays closed
+as not planned.
+EOF
+set +e
+out="$("$close_ticket" --dry-run "$test_repo" 7 not-planned "$tmp/claim4-hint.md" --evidence "booking-v3 form was retired" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 0 ] || fail "claim-4 replay: hint (#7) not-planned citing booking-v3's retirement should pass under --dry-run, got $rc:\n$out"
+printf '%s' "$out" | grep -q 'gh issue close 7 --repo titusandronicu/mega-dev --reason not\\ planned' \
+  || fail "claim-4 replay: hint dry-run output missing the exact close command:\n$out"
+ok "claim-4 replay: hint (#7) not-planned citing booking-v3's retirement passes (--dry-run)"
+
+# === no real mutation ever happened ===
+if grep -Eq '^(issue comment|issue close)' "$gh_log"; then
+  fail "a real 'gh issue comment'/'gh issue close' was invoked - --dry-run did not hold:\n$(cat "$gh_log")"
+fi
+ok "no real gh issue comment/close call was made across the whole test (dry-run held)"
+
+echo
+echo "all close-ticket.test checks passed ($pass ok)"
