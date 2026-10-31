@@ -27,9 +27,9 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 19 | `pg_safeupdate` needs a real `WHERE` | out of scope - mega-hq's own `shared/migrations-where.test.mjs`, a different repo |
 | 20 | Put a shared rule in one helper, not two screens | out of scope - mega-hq's own `web/src/lib/progress.ts` |
 | 21 | Check a deployment against the running thing, not just tests | prose (`docs/playbook.md`) |
-| 22 | OAuth loopback callback needs a human hand-off | prose only - inherently needs a human with the right browser; `tools/preflight`'s "NOT CHECKED" section names the gap instead of hiding it |
+| 22 | OAuth loopback callback needs a human hand-off | partial - **new: `tools/auth-relay`** structures the hand-off (`start`/`deliver`) and redacts the code/state values in its own output; a human with the right browser is still required, `tools/preflight`'s `needs-auth` probes point at it instead of discovering the gap mid-task |
 | 23 | A sign-in-gated export has no API; move it through whatever channel exists | prose only - the chunked-transfer procedure is the best available, documented in `challenges/S01E03/log.md` |
-| 24 | "Logged in everywhere" ≠ every CLI installed | **new: `tools/preflight`** |
+| 24 | "Logged in everywhere" ≠ every CLI installed | **new: `tools/preflight`** - now also probes `gh` auth, push access, and the mega-challenge MCP connection specifically (`ok`/`missing`/`needs-auth`, `--json`), not just binary presence |
 | 25 | Two tickets with overlapping computed id-sets are one problem filed twice (corrected - see lessons-learned.md #25) | **new: `tools/subset-check`** |
 | 26 | Bare `#N` in issue text can autolink to an unrelated existing issue | **new: `tools/safe-issue-refs`** |
 | 27 | The code's own comments define a problem; a digest/notes file is a footnote, not a cause | prose only - requires reading and judging the specific code each time; `tools/subset-check` catches the resulting miscount, not the misreading itself |
