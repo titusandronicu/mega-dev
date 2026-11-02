@@ -159,7 +159,7 @@
   ]
  },
  "S02E01#10": {
-  "label": "Same refusal, six variants",
+  "label": "Same refusal, true each time",
   "ideas": [
    "look-again",
    "human-at-fork"
@@ -200,6 +200,31 @@
   "label": "claude not on the service PATH",
   "ideas": [
    "package-it"
+  ]
+ },
+ "S02E01#11": {
+  "label": "Loose files beside the zip",
+  "ideas": [
+   "contract-first",
+   "look-again"
+  ]
+ },
+ "S02E01#12": {
+  "label": "Hook only in one project",
+  "ideas": [
+   "package-it"
+  ]
+ },
+ "S02E01#13": {
+  "label": "Combined command refused",
+  "ideas": [
+   "human-at-fork"
+  ]
+ },
+ "S02E01#14": {
+  "label": "Volume decides the change",
+  "ideas": [
+   "human-at-fork"
   ]
  }
 }

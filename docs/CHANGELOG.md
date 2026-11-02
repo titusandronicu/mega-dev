@@ -11,6 +11,7 @@
 - Added solving scripts (challenges/S01E01/scripts), debrief-submitted.json and an updated docs/tools.md.
 - Pre-commit hook installed (hooks/pre-commit, core.hooksPath=hooks); redact.mjs gained --stdin. Lesson: never `git reset --hard` for test cleanup.
 - 2026-11-02: `tools/lesson-map` (Astro retro map) and `challenges/S02E01/retro.md` (draft; claim still being rejected). Uncommitted.
+- 2026-11-02: S02E01 solved (accepted 14:48:52Z). Retro updated (findings 10-14), lessons 36-42, didnt-work and worked entries, lesson-map data for findings 11-14. Store: postgres:17 on the NAS, port 5471, database reorder_3hnq.
 - 2026-10-27: overnight S01E02 run stopped at step 2 because the mega-challenge MCP needed re-authorization. Nothing sent. See challenges/S01E02/overnight.md.
 ## 2026-10-27 (UGREEN session)
 - Mapped mega-hq (repo-map): no risk zones; watch items listed in context/changes/2026-10-27-hq-pipeline.md.
