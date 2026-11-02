@@ -41,6 +41,13 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 33 | A byte-identical re-download can still be stale, if state (not data) moved | **new: `tools/pre-claim-gate`** |
 | 34 | A browserless harness is blind to live page updates by construction | **new: `tools/pre-claim-gate`** + `tools/preflight` names the gap |
 | 35 | A close reason ("fixed" vs "won't fix") is part of the answer, not just "closed" | **new: `tools/close-ticket`** |
+| 36 | A source list is bigger than the file you opened (zip plus loose files) | prose; proposed tool `diff-listing` (finding 11 in `challenges/S02E01/retro.md`) |
+| 37 | "Something changed" can be literally true: re-list and diff, do not rotate variants | **existing: `tools/pre-claim-gate`** forces a re-read; the archive diff itself is still prose |
+| 38 | A later decision overrides only what it names; a helper's scope is not the owner's | prose only - judgment each time |
+| 39 | A project-scoped hook does not fire for a session started elsewhere | prose (proposed playbook line, finding 12) |
+| 40 | Shared host: read-only first, ask, one action per call; keep passwords out of sent files | prose (proposed playbook line, finding 13) |
+| 41 | A volume decides what you can change in a store (image major, `POSTGRES_DB`) | prose only - specific to the store |
+| 42 | The checker reads one row per fact: give image, port, database their own rows | prose (proposed playbook line, finding 5) |
 
 ## What's still prose, and why that's the right call
 

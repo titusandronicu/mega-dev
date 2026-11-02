@@ -10,3 +10,8 @@
 - 2026-10-27: requesting a sign-in link from the UGREEN right after the human's own request: HTTP 429 (twice).
 - 2026-10-27: `create_proposer` with lesson tools: check constraint `proposers_allowed_tools_check` rejected the row.
 - 2026-10-27: Tailnet URL for HQ from the UGREEN itself timed out; the local port 18790 works.
+- 2026-11-02 (S02E01): plan check-in with the image and port inside one Hosting row: refused twice ("Your plan doesn't say which image version." then "...which port."). Fix: one row per fact.
+- 2026-11-02 (S02E01): build sent with a plan from the zip only: "Something changed since your check-in." A loose session file (c41e7b02) was in the archive listing; a second (5d8a1f37) arrived later.
+- 2026-11-02 (S02E01): one command that read the NAS database password, ran `drizzle-kit push --force` and verified: refused by the permission check ("Blind Apply"). Passed one step at a time after the owner's yes.
+- 2026-11-02 (S02E01): `urllib` download of an archive file: HTTP 403; the same URL with `curl` returned 200.
+- 2026-11-02 (S02E01): `scp` of the compose file to the NAS: "No such file or directory"; `ssh host 'cat > file' < compose.yaml` worked.
