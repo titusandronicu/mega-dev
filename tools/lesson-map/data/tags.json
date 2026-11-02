@@ -164,5 +164,42 @@
    "look-again",
    "human-at-fork"
   ]
+ },
+ "S01E04#1": {
+  "label": "Marker left on the preview",
+  "ideas": [
+   "look-again",
+   "package-it"
+  ]
+ },
+ "S01E04#2": {
+  "label": "Mail to the wrong address form",
+  "ideas": [
+   "source-over-summary"
+  ]
+ },
+ "S01E04#3": {
+  "label": "Duplicate import after merge",
+  "ideas": [
+   "package-it"
+  ]
+ },
+ "S01E04#4": {
+  "label": "Deck visit timed out once",
+  "ideas": [
+   "package-it"
+  ]
+ },
+ "S01E05#1": {
+  "label": "Rejections with no cause logged",
+  "ideas": [
+   "write-down-state"
+  ]
+ },
+ "S01E05#2": {
+  "label": "claude not on the service PATH",
+  "ideas": [
+   "package-it"
+  ]
  }
 }
