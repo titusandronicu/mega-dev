@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+html { background: var(--color-bg); color-scheme: dark light; }
+body { margin: 0; background: var(--color-bg); color: var(--color-fg); font-family: var(--font-sans); }
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--color-fg); outline-offset: 2px; }
+.grid-texture {
+  background-image: linear-gradient(var(--color-blue-grid) 1px, transparent 1px), linear-gradient(90deg, var(--color-blue-grid) 1px, transparent 1px);
+  background-size: 18px 18px;
+}

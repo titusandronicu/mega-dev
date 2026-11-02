@@ -24,3 +24,4 @@
 | `tools/spike-headless-mega-start` | spike for the HQ worker: can headless Claude Code call `mega-start` unattended? | read-only; prints one JSON line; exit 3 on 403/429, then stop and ask the owner; `SPIKE_STRICT=1` loads only the course MCP |
 | `tools/retro-check <retro.md>` | checks evidence, fix and status tags on retro findings | see `challenges/RETRO-TEMPLATE.md` |
 | `tools/whereami` | which host or container you are in, tool and script presence | paste output into the log when something fails on one place; see `docs/environments.md` |
+| `tools/lesson-map` | Astro page (same stack and tokens as mega-hq-web) that maps every `challenges/<code>/retro.md`: lessons -> findings -> the ideas that recur. `npm install && npm run dev` inside the folder | reads retros only; idea tags come from an inline `[idea: ...]` or `tools/lesson-map/data/tags.json`; the build fails on a finding with no idea; see `tools/lesson-map/README.md` |
