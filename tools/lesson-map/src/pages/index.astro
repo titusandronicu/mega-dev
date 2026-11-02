@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+import map from '../data/map.json';
+
+const { topics, items, ideas } = map;
+const byTopic = (id: string) => items.filter((i) => i.topic === id);
+const total = items.length;
+const applied = items.filter((i) => i.status === 'applied').length;
+---
+<Base title="Lesson map">
+  <div class="wrap">
+    <header class="bar">
+      <div>
+        <h1>Lesson map</h1>
+        <p>{total} findings from {topics.filter((t) => t.retro).length} lessons, joined by {ideas.length} ideas that keep coming back. {applied} are applied to the workflow.</p>
+      </div>
+      <div class="tools">
+        <button class="btn" id="expand" type="button">Expand all</button>
+        <button class="btn" id="collapse" type="button">Collapse all</button>
+        <button class="btn" id="theme" type="button" aria-label="Switch theme">Theme</button>
+      </div>
+    </header>
+    <p class="legend">
+      <span><i></i>belongs to lesson</span>
+      <span><i class="dash"></i>uses the idea</span>
+      <span><i class="sel"></i>selected</span>
+      <span><b class="dot" style="background:var(--color-green)"></b>applied</span>
+      <span><b class="dot" style="background:var(--color-blue-link)"></b>approved</span>
+      <span><b class="dot" style="background:var(--color-amber)"></b>proposed</span>
+    </p>
+
+    <div class="layout">
+      <div class="map" id="map">
+        <svg class="links" id="links" aria-hidden="true"></svg>
+        <div class="head topics">Lessons</div>
+        <div class="head items">What happened</div>
+        <div class="head ideas">Ideas that recur</div>
+
+        {topics.map((t) => (
+          <div class="topic" data-topic={t.id}>
+            <button class="topic-label" type="button" data-topic-btn={t.id} aria-expanded="true">
+              <span class="chev" aria-hidden="true">▼</span>
+              <span>{t.label}<small>{t.title}</small></span>
+            </button>
+            <div class="items">
+              {byTopic(t.id).length === 0 && <div class="empty">No retro yet. Add challenges/{t.id}/retro.md.</div>}
+              {byTopic(t.id).map((i) => (
+                <button class={`item st-${i.status}`} type="button" data-item={i.id} aria-pressed="false">
+                  <span>{i.label}</span>
+                  <span class="meta"><i class="dot"></i>{i.fix}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <div class="ideas-col">
+          {ideas.map((d) => (
+            <button class="idea" type="button" data-idea={d.id} aria-pressed="false">
+              {d.label}<small>in {d.count} findings</small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <aside class="panel" id="panel" aria-live="polite"></aside>
+    </div>
+  </div>
+  <script id="map-data" type="application/json" set:html={JSON.stringify(map)} />
+  <script>
+    import '../lib/mapView';
+  </script>
+</Base>

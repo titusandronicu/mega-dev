@@ -1,0 +1,168 @@
+{
+ "S01E01#1": {
+  "label": "Guessed the body shape",
+  "ideas": [
+   "contract-first"
+  ]
+ },
+ "S01E01#2": {
+  "label": "Counted 1288 chars by eye",
+  "ideas": [
+   "contract-first",
+   "package-it"
+  ]
+ },
+ "S01E01#3": {
+  "label": "Wrong model name in the form",
+  "ideas": [
+   "source-over-summary",
+   "look-again",
+   "human-at-fork"
+  ]
+ },
+ "S01E01#4": {
+  "label": "Tries left were not recorded",
+  "ideas": [
+   "write-down-state"
+  ]
+ },
+ "S01E01#5": {
+  "label": "Skill script deleted, unnoticed",
+  "ideas": [
+   "write-down-state",
+   "package-it"
+  ]
+ },
+ "S01E02#1": {
+  "label": "No local speech-to-text",
+  "ideas": [
+   "package-it"
+  ]
+ },
+ "S01E02#2": {
+  "label": "Untrusted input to a yolo worker",
+  "ideas": [
+   "distrust-decoys"
+  ]
+ },
+ "S01E02#3": {
+  "label": "Model timestamps for speech",
+  "ideas": [
+   "source-over-summary",
+   "package-it"
+  ]
+ },
+ "S01E02#4": {
+  "label": "Decoy times in recordings",
+  "ideas": [
+   "distrust-decoys"
+  ]
+ },
+ "S01E03#1": {
+  "label": "Moved state sat unseen",
+  "ideas": [
+   "look-again"
+  ]
+ },
+ "S01E03#2": {
+  "label": "Numbers from the rendered page",
+  "ideas": [
+   "source-over-summary"
+  ]
+ },
+ "S01E03#3": {
+  "label": "Merged two bugs by symptom",
+  "ideas": [
+   "distrust-decoys",
+   "human-at-fork"
+  ]
+ },
+ "S01E03#4": {
+  "label": "Third ticket for one-day moves",
+  "ideas": [
+   "contract-first"
+  ]
+ },
+ "S01E03#5": {
+  "label": "No browser the agent can drive",
+  "ideas": [
+   "human-at-fork"
+  ]
+ },
+ "S01E03#6": {
+  "label": "Notes outside the repo",
+  "ideas": [
+   "write-down-state"
+  ]
+ },
+ "S01E03#7": {
+  "label": "Render recipe not packaged",
+  "ideas": [
+   "package-it"
+  ]
+ },
+ "S02E01#1": {
+  "label": "Summary dropped the ORM",
+  "ideas": [
+   "source-over-summary",
+   "write-down-state"
+  ]
+ },
+ "S02E01#2": {
+  "label": "Draft older than the decision",
+  "ideas": [
+   "source-over-summary"
+  ]
+ },
+ "S02E01#3": {
+  "label": "Three kinds of session noise",
+  "ideas": [
+   "distrust-decoys"
+  ]
+ },
+ "S02E01#4": {
+  "label": "Sources moved after check-in",
+  "ideas": [
+   "look-again"
+  ]
+ },
+ "S02E01#5": {
+  "label": "No image or port row",
+  "ideas": [
+   "contract-first"
+  ]
+ },
+ "S02E01#6": {
+  "label": "Subagent widened the scope",
+  "ideas": [
+   "human-at-fork",
+   "distrust-decoys"
+  ]
+ },
+ "S02E01#7": {
+  "label": "No Docker in WSL, port taken",
+  "ideas": [
+   "package-it",
+   "human-at-fork"
+  ]
+ },
+ "S02E01#8": {
+  "label": "Hook failed silently on a 403",
+  "ideas": [
+   "package-it"
+  ]
+ },
+ "S02E01#9": {
+  "label": "Schema typo from retyping",
+  "ideas": [
+   "package-it"
+  ]
+ },
+ "S02E01#10": {
+  "label": "Same refusal, six variants",
+  "ideas": [
+   "look-again",
+   "human-at-fork"
+  ]
+ }
+}

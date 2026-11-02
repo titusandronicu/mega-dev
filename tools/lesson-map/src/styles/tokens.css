@@ -1,0 +1,38 @@
+/* Same tokens as mega-hq-web, so the two apps read as one product. */
+@theme {
+  --color-bg: #000000;
+  --color-surface: #0a0a0a;
+  --color-line: #2a2a2a;
+  --color-line-strong: #3a3a3a;
+  --color-fg: #f2f2f2;
+  --color-dim: #bdbdbd;
+  --color-muted: #a0a0a0;
+  --color-quiet: #8a8a8a;
+  --color-red: #ff3b3b;
+  --color-red-solid: #e60000;
+  --color-red-line: #6b2222;
+  --color-green: #3ddc84;
+  --color-amber: #ffb347;
+  --color-blue-line: #2a3470;
+  --color-blue-bg: #05060f;
+  --color-blue-grid: #0e1330;
+  --color-blue-link: #6f7fe0;
+  --font-sans: 'Geist Sans', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+}
+:root[data-theme='light'] {
+  --color-bg: #f4f3ee; --color-surface: #ffffff; --color-line: #d9d6cc; --color-line-strong: #bdb9ac;
+  --color-fg: #141413; --color-dim: #3d3d3a; --color-muted: #5f5f5a; --color-quiet: #6f6f69;
+  --color-red: #b80000; --color-red-solid: #c40000; --color-red-line: #d9a3a3;
+  --color-green: #0a6b36; --color-amber: #8a5300;
+  --color-blue-line: #aab4e6; --color-blue-bg: #eef0fb; --color-blue-grid: #dde1f5; --color-blue-link: #3a4bb8;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --color-bg: #f4f3ee; --color-surface: #ffffff; --color-line: #d9d6cc; --color-line-strong: #bdb9ac;
+    --color-fg: #141413; --color-dim: #3d3d3a; --color-muted: #5f5f5a; --color-quiet: #6f6f69;
+    --color-red: #b80000; --color-red-solid: #c40000; --color-red-line: #d9a3a3;
+    --color-green: #0a6b36; --color-amber: #8a5300;
+    --color-blue-line: #aab4e6; --color-blue-bg: #eef0fb; --color-blue-grid: #dde1f5; --color-blue-link: #3a4bb8;
+  }
+}
