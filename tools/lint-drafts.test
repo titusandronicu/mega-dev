@@ -1,0 +1,182 @@
+#!/usr/bin/env bash
+# Usage: tools/lint-drafts.test
+#
+# Fixtures built from `git show` of the real commits (31d3f9b: the
+# original 3 drafts, not yet filed) and a local snippet copy of the kb's
+# own causes.ts (so the test is hermetic - it does not depend on the
+# external kb export checkout staying in place). Covers:
+#   - the original 3 drafts (31d3f9b) are flagged: 01/02 have no basis
+#     line at all; 03, given the basis a naive reading of its own prose
+#     would suggest (desk-notes.json), is flagged for citing a notes file,
+#     not the challenge's own source; the sibling counts.json still has
+#     the real subset overlap (oneDayMoveIds vs groups[cause=parser]) -
+#     the actual S01E03 claim-1 duplicate, not a fixture artifact
+#   - a merge-proposal fixture citing the shared symptom (the incident's
+#     own prose page) is flagged, and a companion citation of causeOf
+#     prints the causes.ts "different bug" comment
+#   - the current drafts (01, 02 - with basis lines added) pass, in
+#     isolation from the sibling counts.json's already-settled subset
+#     finding (that is covered separately, below)
+set -euo pipefail
+repo_root="$(pwd)"
+pass=0
+
+ok()   { echo "ok   - $1"; pass=$((pass + 1)); }
+fail() { echo "FAIL - $1"; exit 1; }
+
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+lint="$repo_root/tools/lint-drafts"
+
+# -- a local, hermetic copy of the kb's causes.ts (verbatim through the
+#    functions these drafts cite - line numbers match the real file) --
+src_root="$tmp/source"
+mkdir -p "$src_root/src/lib/kb"
+cat > "$src_root/src/lib/kb/causes.ts" <<'CAUSESEOF'
+// How the support desk tells which cause a report belongs to. Pages explain it; this file is what runs.
+
+// `meta.intakeTag` is what intake guessed from the reporter's browser, the moment the report came
+// in. It is a guess. The cause depends on the tenant: where they are, and which booking form they
+// run (locales.ts). The two disagree more often than intake would like.
+export type Report = {
+  id: string;
+  receivedAt: string;
+  tenant: string;
+  channel: 'app' | 'email' | 'form';
+  subject: string;
+  body: string;
+  meta: { browserLocale: string; intakeTag: string };
+  mergedInto: number | null;
+  mergedAt: string | null;
+};
+
+export type Tenant = { handle: string; name: string; locale: string; form: 'booking-v2' | 'booking-v3' };
+
+export type Cause = 'parser' | 'hint';
+export const CAUSES: readonly Cause[] = ['parser', 'hint'];
+
+// What each booking form prints under its date field.
+const DATE_HINT: Record<Tenant['form'], string> = {
+  'booking-v2': 'DD/MM/YYYY',
+  'booking-v3': 'MM/DD/YYYY',
+};
+
+// Does this locale write the day before the month? Asked of the platform, never typed in a list.
+export function dayFirst(locale: string): boolean {
+  const order = new Intl.DateTimeFormat(locale, { year: 'numeric', month: '2-digit', day: '2-digit' })
+    .formatToParts(new Date(Date.UTC(2026, 0, 2, 12)))
+    .map((p) => p.type);
+  return order.indexOf('day') < order.indexOf('month');
+}
+
+// The shared parser reads every date month first. A day-first tenant's dates come out flipped:
+// that is `parser`. Through booking-v3's form the tenant's people type what the hint tells them,
+// month first, and the form reads it the tenant's way: that is `hint`, a different bug.
+export function causeOf(r: Pick<Report, 'channel'>, t: Tenant | undefined): Cause | null {
+  if (!t || !dayFirst(t.locale)) return null;
+  return r.channel === 'form' && DATE_HINT[t.form].startsWith('MM') ? 'hint' : 'parser';
+}
+CAUSESEOF
+
+# === the original 3 drafts (31d3f9b, not yet filed) are flagged ===
+orig="$tmp/orig/issues"
+mkdir -p "$orig"
+git show 31d3f9b:challenges/S01E03/issues/00-not-filing-tag-mismatch.md > "$orig/00-not-filing-tag-mismatch.md"
+git show 31d3f9b:challenges/S01E03/issues/01-parser-month-first-eu-dates.md > "$orig/01-parser-month-first-eu-dates.md"
+git show 31d3f9b:challenges/S01E03/issues/02-booking-v3-hint-reads-month-first.md > "$orig/02-booking-v3-hint-reads-month-first.md"
+git show 31d3f9b:challenges/S01E03/issues/03-day-timezone-boundary-shift.md > "$orig/03-day-timezone-boundary-shift.md"
+# Neither 01 nor 02 had a basis line at 31d3f9b. 03's own prose names its
+# only "source" as desk-notes.json - add exactly that, the naive citation
+# its own text points at, to show the lint catches it.
+python3 -c "
+import re
+p = '$orig/03-day-timezone-boundary-shift.md'
+s = open(p, encoding='utf-8').read()
+s = s.replace('---\ntitle:', '---\nbasis: \"s01e03/desk-notes.json:1\"\ntitle:', 1)
+open(p, 'w', encoding='utf-8').write(s)
+"
+git show 31d3f9b:challenges/S01E03/counts.json > "$tmp/orig/counts.json"
+
+set +e
+out="$("$lint" "$orig" --source-root "$src_root" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "31d3f9b drafts should be flagged, got exit 0:\n$out"
+printf '%s' "$out" | grep -q "01-parser-month-first-eu-dates.md: no 'basis" \
+  || fail "31d3f9b: draft 01 (no basis at all) should be flagged:\n$out"
+printf '%s' "$out" | grep -q "02-booking-v3-hint-reads-month-first.md: no 'basis" \
+  || fail "31d3f9b: draft 02 (no basis at all) should be flagged:\n$out"
+printf '%s' "$out" | grep -q "03-day-timezone-boundary-shift.md: basis .*desk-notes.json.* is a desk reading / notes file" \
+  || fail "31d3f9b: draft 03's desk-notes.json basis should be flagged as a notes file, not a cause:\n$out"
+printf '%s' "$out" | grep -q "oneDayMoveIds (5 ids) is a subset of groups\[cause=parser\]" \
+  || fail "31d3f9b: the real subset overlap (claim-1 duplicate) should be flagged via subset-check:\n$out"
+ok "31d3f9b: all 3 drafts flagged (missing basis x2, notes-file basis x1, real subset overlap)"
+
+# === a merge-proposal fixture citing the shared symptom is flagged, and a
+#     companion causeOf citation prints the "different bug" comment ===
+merge="$tmp/merge/issues"
+mkdir -p "$merge"
+cat > "$merge/01-merge-proposal.md" <<'EOF'
+---
+title: "Merge: parser and booking-v3 hint are the same problem"
+basis: "page/4471-split.svx:1"
+---
+
+Both show a flipped day/month to the user - same symptom, should be one ticket.
+EOF
+cat > "$merge/02-causeof-says-otherwise.md" <<'EOF'
+---
+title: "causeOf: parser and hint are explicitly two different bugs"
+basis: "src/lib/kb/causes.ts:40"
+---
+
+Citing causeOf directly, not the symptom it's filed under.
+EOF
+
+set +e
+out="$("$lint" "$merge" --source-root "$src_root" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "merge-proposal fixture should be flagged, got exit 0:\n$out"
+printf '%s' "$out" | grep -q "01-merge-proposal.md: basis .*4471-split.svx.* is a desk reading / notes file or the incident's own prose page" \
+  || fail "merge-proposal: citing the prose page as basis should be flagged:\n$out"
+printf '%s' "$out" | grep -qF "that is \`hint\`, a different bug." \
+  || fail "merge-proposal: the causeOf citation should print causes.ts's own 'different bug' comment:\n$out"
+ok "merge-proposal fixture flagged; causes.ts's own 'different bug' comment is printed by the companion citation"
+
+# === current drafts (01, 02 - with basis lines) pass, in isolation from
+#     the sibling counts.json's already-settled subset finding ===
+current="$tmp/current/issues"
+mkdir -p "$current"
+cp "$repo_root/challenges/S01E03/issues/01-parser-month-first-eu-dates.md" "$current/"
+cp "$repo_root/challenges/S01E03/issues/02-booking-v3-hint-reads-month-first.md" "$current/"
+
+set +e
+out="$("$lint" "$current" --source-root "$src_root" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 0 ] || fail "current drafts 01/02 with basis lines should pass, got exit $rc:\n$out"
+printf '%s' "$out" | grep -q "^ok   - 01-parser-month-first-eu-dates.md: basis src/lib/kb/causes.ts:40" \
+  || fail "current: draft 01's basis should resolve and print ok:\n$out"
+printf '%s' "$out" | grep -q "^ok   - 02-booking-v3-hint-reads-month-first.md: basis src/lib/kb/causes.ts:24" \
+  || fail "current: draft 02's basis should resolve and print ok:\n$out"
+ok "current drafts (01, 02) with basis lines pass"
+
+# === sanity: run against the REAL, committed issues dir too (its sibling
+#     counts.json has the known, already-settled oneDayMove/parser subset
+#     relationship - documented, not a regression this tool introduces;
+#     01/02 still resolve and pass individually; 03 has no real-code basis
+#     to cite and is correctly, intentionally left flagged, same as above) ===
+set +e
+out="$("$lint" "$repo_root/challenges/S01E03/issues" --source-root "$src_root" 2>&1)"
+rc=$?
+set -e
+printf '%s' "$out" | grep -q "^ok   - 01-parser-month-first-eu-dates.md: basis" \
+  || fail "real issues dir: draft 01 should still resolve:\n$out"
+printf '%s' "$out" | grep -q "^ok   - 02-booking-v3-hint-reads-month-first.md: basis" \
+  || fail "real issues dir: draft 02 should still resolve:\n$out"
+ok "real challenges/S01E03/issues: 01 and 02 resolve (overall exit $rc - the sibling counts.json's known subset finding and draft 03's missing basis are expected, not regressions)"
+
+echo
+echo "all lint-drafts.test checks passed ($pass ok)"

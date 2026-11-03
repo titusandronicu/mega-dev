@@ -1,0 +1,205 @@
+#!/usr/bin/env bash
+# Usage: tools/check-deliverable.test
+#
+# Fixtures built from `git show` of the real commits (4fb3dbd, 7a3db63,
+# bc08e23) plus --tickets-json reproducing the real ticket states at each
+# point (so the test never calls the live `gh api`). At 4fb3dbd,
+# page/4471.svx (mega-dev's own revision of it) didn't exist yet - the
+# desk's own kb page at that point is the original, unedited one from the
+# kb export (challenges/S01E03/log.md Phase 5: "the desk's own kb page
+# still said status: known... after we'd already filed #6/#7" - that is
+# exactly what this replays). Covers:
+#   - at 4fb3dbd: the desk's own (then-unedited) page is flagged for
+#     status 'known' while tickets already exist
+#   - at 7a3db63: the desk's own page is flagged for status 'split'
+#     (pending/open) while both named tickets are already closed, and
+#     4471-split.svx's still-unedited "What to do" section is flagged for
+#     naming those same already-closed tickets as a pending action
+#   - at bc08e23: passes
+set -euo pipefail
+repo_root="$(pwd)"
+pass=0
+
+ok()   { echo "ok   - $1"; pass=$((pass + 1)); }
+fail() { echo "FAIL - $1"; exit 1; }
+
+check="$repo_root/tools/check-deliverable"
+repo="titusandronicu/mega-dev"
+
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+# === 4fb3dbd: desk's own (unedited) page says 'known'; tickets exist ===
+d1="$tmp/4fb3dbd"
+mkdir -p "$d1/page"
+# The desk's original page, as it stood in the kb export before any of
+# our edits - unsigned, status known (matches challenges/S01E03/page/
+# README.md and log.md Phase 5's own description of what this said).
+cat > "$d1/page/4471.svx" <<'EOF'
+---
+layout: runbook
+title: '#4471 · dates parse mm/dd in eu locales'
+owner: support desk
+status: known
+reviewed: 2026-09-30
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+</script>
+
+Since April, people have told us their bookings land on the wrong day: a month flipped. By
+4 October the desk had **412 reports**.
+
+**Merged as one issue.** The parser reads dates month first, and our tenants write the day
+first. The fix is queued.
+
+<Callout>
+Known. One issue, one fix queued.
+</Callout>
+
+## What was merged
+
+<CauseTable ticket={4471} />
+
+## Since April
+
+<QueueTimeline ticket={4471} />
+EOF
+git show 4fb3dbd:challenges/S01E03/page/4471-split.svx > "$d1/page/4471-split.svx"
+git show 4fb3dbd:challenges/S01E03/counts.json > "$d1/counts.json"
+cat > "$d1/tickets.json" <<'EOF'
+[
+  {"number": 6, "state": "open", "state_reason": null},
+  {"number": 7, "state": "open", "state_reason": null}
+]
+EOF
+
+set +e
+out="$("$check" "$d1" "$repo" --tickets-json "$d1/tickets.json" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "4fb3dbd fixture should be flagged, got exit 0:\n$out"
+printf '%s' "$out" | grep -q "4471.svx: status 'known' (treated as 'not yet split') but ticket(s) \[6, 7\] already exist" \
+  || fail "4fb3dbd: desk page's stale 'known' status should be flagged:\n$out"
+printf '%s' "$out" | grep -q "4471.svx: missing (or empty) 'signature'" \
+  || fail "4fb3dbd: the desk's original, genuinely-unsigned page should also be flagged for that:\n$out"
+ok "4fb3dbd: desk's own page flagged (status 'known' while #6/#7 exist; unsigned)"
+
+# === 7a3db63: desk page says 'split' (pending/open) while #6/#7 are
+#     already closed; 4471-split's "What to do" still names them pending ===
+d2="$tmp/7a3db63"
+mkdir -p "$d2/page"
+git show 7a3db63:challenges/S01E03/page/4471.svx > "$d2/page/4471.svx"
+git show 7a3db63:challenges/S01E03/page/4471-split.svx > "$d2/page/4471-split.svx"
+git show 7a3db63:challenges/S01E03/counts.json > "$d2/counts.json"
+# Real state at this point (log.md Phase 6): #6 and #7 both closed
+# 'completed' (that #7 should have been 'not_planned' is what the
+# desk's real 05-Oct closure, discovered later, corrected).
+cat > "$d2/tickets.json" <<'EOF'
+[
+  {"number": 6, "state": "closed", "state_reason": "completed"},
+  {"number": 7, "state": "closed", "state_reason": "completed"}
+]
+EOF
+
+set +e
+out="$("$check" "$d2" "$repo" --tickets-json "$d2/tickets.json" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "7a3db63 fixture should be flagged, got exit 0:\n$out"
+printf '%s' "$out" | grep -q "4471.svx: status 'split' (pending/open) but ticket(s) \[6, 7\] are already closed" \
+  || fail "7a3db63: desk page's 'split' status vs already-closed tickets should be flagged:\n$out"
+printf '%s' "$out" | grep -q "4471-split.svx: 'What to do' section names ticket #6 as a pending action, but it is already closed" \
+  || fail "7a3db63: 4471-split's stale 'What to do' section should flag #6:\n$out"
+printf '%s' "$out" | grep -q "4471-split.svx: 'What to do' section names ticket #7 as a pending action, but it is already closed" \
+  || fail "7a3db63: 4471-split's stale 'What to do' section should flag #7:\n$out"
+ok "7a3db63: desk page's stale 'split'/pending status, and 4471-split's stale 'What to do' section, both flagged"
+
+# === bc08e23: passes ===
+d3="$tmp/bc08e23"
+mkdir -p "$d3/page"
+git show bc08e23:challenges/S01E03/page/4471.svx > "$d3/page/4471.svx"
+git show bc08e23:challenges/S01E03/page/4471-split.svx > "$d3/page/4471-split.svx"
+git show bc08e23:challenges/S01E03/counts.json > "$d3/counts.json"
+cat > "$d3/tickets.json" <<'EOF'
+[
+  {"number": 6, "state": "closed", "state_reason": "completed"},
+  {"number": 7, "state": "closed", "state_reason": "not_planned"}
+]
+EOF
+
+set +e
+out="$("$check" "$d3" "$repo" --tickets-json "$d3/tickets.json" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 0 ] || fail "bc08e23 fixture should pass, got exit $rc:\n$out"
+printf '%s' "$out" | grep -q "^check-deliverable: ok" || fail "bc08e23: expected an 'ok' summary line:\n$out"
+ok "bc08e23: passes cleanly"
+
+# === targeted micro-fixtures for the two rules the history above
+#     doesn't happen to exercise: a stated close reason not matching the
+#     real state_reason, and a report count absent from counts.json ===
+d4="$tmp/reason-mismatch"
+mkdir -p "$d4/page"
+cat > "$d4/page/x.svx" <<'EOF'
+---
+title: 'x'
+owner: support desk
+status: closed
+signature: "sig-placeholder-not-real"
+---
+
+## What happened
+
+Filed as [#6 (parser, 379)](https://github.com/titusandronicu/mega-dev/issues/6). Engineering
+closed #4471 on 05 Oct: #6 fixed (some commit).
+EOF
+cat > "$d4/counts.json" <<'EOF'
+{"groups": [{"cause": "parser", "count": 379}]}
+EOF
+cat > "$d4/tickets.json" <<'EOF'
+[{"number": 6, "state": "closed", "state_reason": "not_planned"}]
+EOF
+set +e
+out="$("$check" "$d4" "$repo" --tickets-json "$d4/tickets.json" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "reason-mismatch fixture should be flagged, got exit 0:\n$out"
+printf '%s' "$out" | grep -q "states ticket #6 closed as 'completed', but its real state_reason is 'not_planned'" \
+  || fail "reason-mismatch: expected the specific mismatch message:\n$out"
+ok "close reason on page ('fixed') not matching real state_reason ('not_planned') is flagged"
+
+d5="$tmp/count-mismatch"
+mkdir -p "$d5/page"
+cat > "$d5/page/x.svx" <<'EOF'
+---
+title: 'x'
+owner: titusandronicu
+status: known
+signature: "sig-placeholder-not-real"
+---
+
+## What happened
+
+380 reports, filed as [#6](https://github.com/titusandronicu/mega-dev/issues/6).
+EOF
+cat > "$d5/counts.json" <<'EOF'
+{"groups": [{"cause": "parser", "count": 379}]}
+EOF
+cat > "$d5/tickets.json" <<'EOF'
+[{"number": 6, "state": "open", "state_reason": null}]
+EOF
+set +e
+out="$("$check" "$d5" "$repo" --tickets-json "$d5/tickets.json" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "count-mismatch fixture should be flagged, got exit 0:\n$out"
+printf '%s' "$out" | grep -q "states '380 reports' - no such number appears anywhere in counts.json" \
+  || fail "count-mismatch: expected the specific mismatch message:\n$out"
+ok "a report count (380) absent from counts.json (379) is flagged"
+
+echo
+echo "all check-deliverable.test checks passed ($pass ok)"

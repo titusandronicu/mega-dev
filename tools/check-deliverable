@@ -1,0 +1,266 @@
+#!/usr/bin/env bash
+# Usage: tools/check-deliverable <challenge-dir> <owner/repo> [--tickets-json <file>]
+#
+# For every .svx page under <challenge-dir>/page/: reads front-matter
+# (status, owner, signature) and the per-ticket counts/reasons the page's
+# own prose states, and compares them against <challenge-dir>/counts.json
+# and the real ticket state (read-only `gh api`, or a fixture file with
+# --tickets-json: an array of {"number": N, "state": "open"|"closed",
+# "state_reason": "completed"|"not_planned"|null}).
+#
+# Checks:
+#   - a page owned by "support desk" (the desk's own canonical incident
+#     record - see challenges/S01E03/page/README.md) with status
+#     'known'/'one issue' while any ticket already exists for this
+#     incident (across ANY page) - the page hasn't caught up (lesson:
+#     found in S01E03 Phase 5, the real reason the kb page was stale).
+#     A different page's own `status` (e.g. an analysis/breakdown page,
+#     not the desk's own record) is NOT held to this - its status tracks
+#     that page's own currency, not the incident's lifecycle.
+#   - same support-desk page: status says split/known (not closed) while
+#     every ticket it names is actually closed, or status says closed
+#     while a named ticket is still open.
+#   - any page: a block of prose under a heading matching "What to do"
+#     naming a ticket that's already closed (a pending action already
+#     done), or under "What happened" naming a ticket that's still open
+#     (a past-tense claim that hasn't happened yet).
+#   - any page: a stated close reason ("fixed"/"completed" vs "won't
+#     fix"/"not planned"/"retired") near a ticket link, for a ticket
+#     that's actually closed, not matching that ticket's real
+#     state_reason.
+#   - any page: a "<N> report(s)" count that doesn't match any number
+#     found anywhere in counts.json.
+#   - any page: no (non-empty) `signature` front-matter field. Checked
+#     for presence only - its value is never printed, matching this
+#     task's rule against quoting signature/ticket values.
+#
+# Exit 0 = nothing found. Exit 1 = findings printed above. Exit 2 = usage.
+set -euo pipefail
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH";; esac
+
+challenge_dir=""
+repo=""
+tickets_json=""
+positional=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --tickets-json) tickets_json="${2:-}"; shift 2 ;;
+    *) positional+=("$1"); shift ;;
+  esac
+done
+[ "${#positional[@]}" -eq 2 ] || { echo "usage: tools/check-deliverable <challenge-dir> <owner/repo> [--tickets-json <file>]" >&2; exit 2; }
+challenge_dir="${positional[0]}"; repo="${positional[1]}"
+page_dir="$challenge_dir/page"
+[ -d "$page_dir" ] || { echo "no such directory: $page_dir" >&2; exit 2; }
+
+python3 - "$challenge_dir" "$repo" "$tickets_json" <<'PY'
+import json
+import re
+import subprocess
+import sys
+
+challenge_dir, repo, tickets_json = sys.argv[1], sys.argv[2], sys.argv[3]
+page_dir = f"{challenge_dir}/page"
+
+import os
+svx_files = sorted(f for f in os.listdir(page_dir) if f.endswith(".svx"))
+if not svx_files:
+    print(f"no .svx pages under {page_dir}", file=sys.stderr)
+    sys.exit(2)
+
+findings = []
+
+
+def fail(msg):
+    findings.append(msg)
+
+
+# ---- counts.json: every integer anywhere in it is a "valid" count ----
+valid_numbers = set()
+counts_path = f"{challenge_dir}/counts.json"
+if os.path.isfile(counts_path):
+    def walk(v):
+        if isinstance(v, bool):
+            return
+        if isinstance(v, int):
+            valid_numbers.add(v)
+        elif isinstance(v, dict):
+            for x in v.values():
+                walk(x)
+        elif isinstance(v, list):
+            for x in v:
+                walk(x)
+    walk(json.load(open(counts_path, encoding="utf-8")))
+
+# ---- parse every page first, to discover every ticket number referenced ----
+issue_re = re.compile(re.escape(f"github.com/{repo}/issues/") + r"(\d+)")
+
+pages = []
+for fname in svx_files:
+    path = f"{page_dir}/{fname}"
+    text = open(path, encoding="utf-8").read()
+    lines = text.splitlines()
+    if lines and lines[0].strip() == "---":
+        try:
+            end = lines.index("---", 1)
+        except ValueError:
+            end = -1
+    else:
+        end = -1
+    frontmatter = {}
+    body_lines = lines
+    if end != -1:
+        for fl in lines[1:end]:
+            m = re.match(r'^([A-Za-z_][A-Za-z0-9_]*):\s*(.*)$', fl)
+            if m:
+                key, val = m.group(1), m.group(2).strip()
+                if val.startswith('"') and val.endswith('"') and len(val) >= 2:
+                    val = val[1:-1]
+                elif val.startswith("'") and val.endswith("'") and len(val) >= 2:
+                    val = val[1:-1]
+                frontmatter[key] = val
+        body_lines = lines[end + 1:]
+    pages.append({"fname": fname, "frontmatter": frontmatter, "body_lines": body_lines})
+
+all_ticket_numbers = set()
+for p in pages:
+    for line in p["body_lines"]:
+        for m in issue_re.finditer(line):
+            all_ticket_numbers.add(int(m.group(1)))
+
+# ---- ticket state: fixture file, or read-only gh api ----
+tickets = {}
+if tickets_json:
+    for t in json.load(open(tickets_json, encoding="utf-8")):
+        tickets[int(t["number"])] = {"state": t.get("state"), "state_reason": t.get("state_reason")}
+else:
+    for n in sorted(all_ticket_numbers):
+        try:
+            out = subprocess.run(
+                ["gh", "api", f"repos/{repo}/issues/{n}", "--jq", "{state: .state, state_reason: .state_reason}"],
+                capture_output=True, text=True, check=True,
+            )
+            tickets[n] = json.loads(out.stdout)
+        except Exception as e:
+            fail(f"could not read live state of {repo}#{n}: {e}")
+
+FIXED_WORDS = ["fixed", "completed"]
+NOTPLANNED_WORDS = ["won't fix", "wont fix", "not planned", "retired"]
+MENTION_RE = re.compile(r'#(\d+)')
+
+
+def reason_by_ticket(block_text):
+    # Each reason word is assigned to whichever ticket mention - bare "#N"
+    # or a real issues/N link - sits nearest to it in the block, in either
+    # direction. The two real pages here put the reason right before the
+    # mention in one ("fixed (desk ticket #6...)") and right after it in
+    # the other ("#7 won't fix"), so distance has to be checked both ways
+    # rather than assuming the mention always follows its reason.
+    anchors = [(m.start(), int(m.group(1))) for m in MENTION_RE.finditer(block_text)]
+    anchors += [(m.start(), int(m.group(1))) for m in issue_re.finditer(block_text)]
+    if not anchors:
+        return {}
+    result = {}
+    for kind, words in (("completed", FIXED_WORDS), ("not_planned", NOTPLANNED_WORDS)):
+        for w in words:
+            for m in re.finditer(re.escape(w), block_text, re.IGNORECASE):
+                nearest_ticket = min(anchors, key=lambda a: abs(a[0] - m.start()))[1]
+                result[nearest_ticket] = kind
+    return result
+
+
+# ---- per-page checks ----
+for p in pages:
+    fname, fm, body_lines = p["fname"], p["frontmatter"], p["body_lines"]
+
+    sig = fm.get("signature", "")
+    if not sig.strip():
+        fail(f"{fname}: missing (or empty) 'signature' front-matter field")
+
+    status = (fm.get("status") or "").strip().lower()
+    owner = (fm.get("owner") or "").strip().lower()
+    is_desk_record = owner == "support desk"
+
+    page_ticket_numbers = set()
+    for line in body_lines:
+        for m in issue_re.finditer(line):
+            page_ticket_numbers.add(int(m.group(1)))
+
+    if is_desk_record:
+        if status in ("known", "one issue") and all_ticket_numbers:
+            fail(f"{fname}: status '{status}' (treated as 'not yet split') but ticket(s) "
+                 f"{sorted(all_ticket_numbers)} already exist for this incident")
+        elif status in ("split",) and page_ticket_numbers:
+            closed = [n for n in page_ticket_numbers if tickets.get(n, {}).get("state") == "closed"]
+            if closed and len(closed) == len(page_ticket_numbers):
+                fail(f"{fname}: status '{status}' (pending/open) but ticket(s) {sorted(closed)} "
+                     f"are already closed")
+        elif status == "closed":
+            still_open = [n for n in page_ticket_numbers if tickets.get(n, {}).get("state") == "open"]
+            if still_open:
+                fail(f"{fname}: status 'closed' but ticket(s) {sorted(still_open)} are still open")
+
+    # blocks (blank-line-separated), tracking the nearest preceding '## ' heading
+    heading = None
+    block = []
+
+    def flush(heading, block_lines):
+        if not block_lines:
+            return
+        text = " ".join(l.strip() for l in block_lines if l.strip())
+        if not text:
+            return
+        # pending/open-vs-closed wording, by heading
+        if heading and re.match(r'^what to do\b', heading, re.IGNORECASE):
+            for m in issue_re.finditer(text):
+                n = int(m.group(1))
+                if tickets.get(n, {}).get("state") == "closed":
+                    fail(f"{fname}: 'What to do' section names ticket #{n} as a pending action, "
+                         f"but it is already closed")
+        if heading and re.match(r'^what happened\b', heading, re.IGNORECASE):
+            for m in issue_re.finditer(text):
+                n = int(m.group(1))
+                if tickets.get(n, {}).get("state") == "open":
+                    fail(f"{fname}: 'What happened' section presents ticket #{n} as resolved, "
+                         f"but it is still open")
+
+        # close-reason mismatch, per ticket link in this block
+        reasons = reason_by_ticket(text)
+        for m in issue_re.finditer(text):
+            n = int(m.group(1))
+            if tickets.get(n, {}).get("state") != "closed":
+                continue
+            claimed = reasons.get(n)
+            real = tickets.get(n, {}).get("state_reason")
+            if claimed and real and claimed != real:
+                fail(f"{fname}: states ticket #{n} closed as '{claimed}', but its real "
+                     f"state_reason is '{real}'")
+
+        # count claims vs counts.json
+        if valid_numbers:
+            for m in re.finditer(r'(\d+)\s+reports?\b', text, re.IGNORECASE):
+                n = int(m.group(1))
+                if n not in valid_numbers:
+                    fail(f"{fname}: states '{n} reports' - no such number appears anywhere in counts.json")
+
+    for line in body_lines:
+        hm = re.match(r'^##\s+(.*\S)\s*$', line)
+        if hm:
+            flush(heading, block)
+            heading, block = hm.group(1), []
+            continue
+        if line.strip() == "":
+            flush(heading, block)
+            block = []
+            continue
+        block.append(line)
+    flush(heading, block)
+
+if findings:
+    for f in findings:
+        print(f"FAIL - {f}", file=sys.stderr)
+    print(f"\ncheck-deliverable: {len(findings)} finding(s) - see above", file=sys.stderr)
+    sys.exit(1)
+
+print(f"check-deliverable: ok ({len(svx_files)} page(s), {len(all_ticket_numbers)} ticket(s) checked)")
+PY

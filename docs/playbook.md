@@ -40,9 +40,9 @@ Knowledge-base challenges (from S01E03)
 
 Filing and closing tickets, rendering a kb (from S01E03)
 1. `tools/preflight` at the start of the session, before relying on `gh`/node's ICU.
-2. Before filing more than one ticket from one analysis: `tools/subset-check <counts.json>` on the id-sets - two tickets whose ids overlap are one problem filed twice, and that's what a "the same problem" rejection means, not similar-sounding fix text.
+2. Before filing more than one ticket from one analysis: `tools/lint-drafts <issues-dir> --source-root <kb-root>` on the drafts - every draft needs a `basis: <path>:<line>` citing the challenge's own source, not a desk-notes file or the incident's own prose page, and it runs `tools/subset-check` on the id-sets too - two tickets whose ids overlap are one problem filed twice, and that's what a "the same problem" rejection means, not similar-sounding fix text.
 3. Before filing each draft: `tools/safe-issue-refs <draft.md> <owner/repo>` - a bare `#N` can silently autolink to an unrelated existing issue.
-4. If the brief asks for a rendered page, not just source: `tools/scaffold-kb-render <kb-root-dir>`, then build and read the actual HTML. The rendered page is the product; a computed number you never looked at in the browser isn't checked yet.
+4. If the brief asks for a rendered page, not just source: `tools/scaffold-kb-render <kb-root-dir>`, then build and read the actual HTML. The rendered page is the product; a computed number you never looked at in the browser isn't checked yet. Before calling the deliverable done: `tools/check-deliverable <challenge-dir> <owner/repo>` - catches a page whose status/counts/ticket reasons have drifted from `counts.json` or the tickets' real state.
 5. After every `claim-challenge` call: `tools/record-claim <code> <reply.json>` first (status can be `progress`, not just solved/rejected), then act on exactly what it tells you.
 6. Before any `claim-challenge` call after the first: `tools/pre-claim-gate <code>`. It will refuse until a human has re-read the challenge's live page since the last non-solved reply - a byte-identical re-download does not mean the page is unchanged.
 7. Closing a ticket: `tools/close-ticket <owner/repo> <issue> <completed|not-planned> <comment-file>` - never close without an explicit reason; the course checks "fixed" vs "won't fix", not just "closed".
