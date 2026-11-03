@@ -16,14 +16,15 @@ export function isTrustedSender(from, trusted) {
 }
 
 /**
- * Reject only clear spoofing: DMARC failed and neither SPF nor DKIM passed.
- * The AgentMail docs advise against rejecting on dmarc=fail alone.
- * A missing field is "unknown", not a failure (older mail has none).
+ * Does the mail prove it came from the domain in its From address?
+ * "pass" only when DMARC passed: that means SPF or DKIM passed AND matched the From domain, so a forger who sends
+ * "From: owner@example.com" from another server cannot pass. Anything else is not trusted:
+ *   "fail"    - DMARC failed, or is "none" (no policy to check against), or is missing while other fields exist;
+ *   "unknown" - the mail carries no authentication result at all (treated as not trusted too).
  */
 export function authVerdict(ar) {
   if (!ar || typeof ar !== 'object') return 'unknown';
-  if (ar.dmarc === 'fail' && ar.spf !== 'pass' && ar.dkim !== 'pass') return 'fail';
-  return 'ok';
+  return ar.dmarc === 'pass' ? 'pass' : 'fail';
 }
 
 const KEY_PATTERNS = [/\bam_[A-Za-z0-9_-]{16,}/, /\bsk-ant-[A-Za-z0-9_-]{10,}/, /\bsk-[A-Za-z0-9]{24,}/];

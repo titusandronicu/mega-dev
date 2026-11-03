@@ -11,5 +11,5 @@ What the agent may touch. Anything not listed is out of reach.
 | Secrets | environment only | never see them | scan every outgoing mail, refuse on a match |
 
 Limits: 6 model steps per mail, 4 fetches, 90 s wall time per mail, 2 retries with backoff per HTTP call.
-Trust: only `rook@mail.mega.dev` gets work done. Other senders are journaled and get no reply (no backscatter).
+Trust: only the addresses in `TRUSTED_SENDERS` (exact match) get work done, and only when the mail proves where it came from (DMARC pass; a missing, `none` or failing result is ignored). Everyone else is journaled, gets no reply (no backscatter), and their text never reaches the model, not even as thread history.
 Data, not orders: mail text and fetched pages go to the model inside tagged data blocks. Only the trusted sender's mail is a request.
