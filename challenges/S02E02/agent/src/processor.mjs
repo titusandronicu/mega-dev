@@ -16,8 +16,8 @@ export function createProcessor({ mail, store, journal, callModel, fetchPage, tr
       return await Promise.all(earlier.map(async (m) => {
         const f = await mail.getMessage(m.message_id);
         const sent = (f.labels ?? []).includes('sent');
-        // A stranger's words (and links) must never reach the model, not even as context: keep only that the mail existed.
-        if (!sent && !isTrustedSender(f.from, trustedSender)) {
+        // A stranger's words (and links), or those of a forged trusted address, must never reach the model, not even as context: keep only that the mail existed.
+        if (!sent && !(isTrustedSender(f.from, trustedSender) && authVerdict(f.authentication_results) === 'pass')) {
           return { from: parseAddress(f.from), sent: false, stranger: true, text: '(mail from an unverified sender, ignored by the system; content withheld)' };
         }
         return { from: parseAddress(f.from), sent, text: (f.extracted_text || f.text || f.preview || '').slice(0, 1500) };
@@ -38,9 +38,11 @@ export function createProcessor({ mail, store, journal, callModel, fetchPage, tr
       journal.append('ignored', { message_id: id, from: parseAddress(from), reason: 'sender not trusted' });
       return 'ignored';
     }
-    if (authVerdict(full.authentication_results) === 'fail') {
-      store.mark(id, 'ignored', { note: 'authentication failed' });
-      journal.append('ignored', { message_id: id, from: parseAddress(from), reason: 'spf, dkim and dmarc all failed', auth: full.authentication_results });
+    const verdict = authVerdict(full.authentication_results);
+    if (verdict !== 'pass') {
+      // A trusted address is not enough: the mail must prove it really came from that address's domain.
+      store.mark(id, 'ignored', { note: `sender authentication ${verdict}` });
+      journal.append('ignored', { message_id: id, from: parseAddress(from), reason: `sender authentication not passed (${verdict})`, auth: full.authentication_results ?? null });
       return 'ignored';
     }
 

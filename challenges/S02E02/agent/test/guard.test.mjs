@@ -10,11 +10,16 @@ test('trusted sender needs the exact address', () => {
   assert.equal(isTrustedSender('"rook@mail.mega.dev" <evil@x.com>', 'rook@mail.mega.dev'), false); // display name never counts
   assert.equal(parseAddress(undefined), '');
 });
-test('auth verdict rejects only clear spoofing', () => {
+test('auth verdict: only an aligned DMARC pass is trusted', () => {
   assert.equal(authVerdict(undefined), 'unknown');
+  assert.equal(authVerdict(null), 'unknown');
+  assert.equal(authVerdict({ dmarc: 'pass', spf: 'pass', dkim: 'pass' }), 'pass');
+  assert.equal(authVerdict({ dmarc: 'pass' }), 'pass');
   assert.equal(authVerdict({ dmarc: 'fail', spf: 'fail', dkim: 'fail' }), 'fail');
-  assert.equal(authVerdict({ dmarc: 'fail', spf: 'pass', dkim: 'none' }), 'ok');
-  assert.equal(authVerdict({ dmarc: 'pass' }), 'ok');
+  assert.equal(authVerdict({ dmarc: 'fail', spf: 'pass', dkim: 'pass' }), 'fail'); // passed, but not aligned with the From domain
+  assert.equal(authVerdict({ dmarc: 'none', spf: 'pass', dkim: 'pass' }), 'fail');
+  assert.equal(authVerdict({ spf: 'pass', dkim: 'pass' }), 'fail'); // no DMARC verdict at all
+  assert.equal(authVerdict({}), 'fail');
 });
 test('secret scan catches plain, encoded, reversed and key-shaped strings', () => {
   const key = 'am_0123456789abcdefSECRET';
