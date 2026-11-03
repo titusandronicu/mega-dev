@@ -53,3 +53,9 @@ Skill commands (from the repo root)
 - Cuts: cut-diff.mjs original short --keep-file keep --max-chars N. Replay example: challenges/S01E01/keep.txt.
 - Before commit: redact.mjs --check on the files you changed.
 - --open has no cookies: read contracts behind the sign-in from the browser session.
+
+Agent-by-email challenges (from S02E02)
+1. Before the first claim, run the rehearsal on the host that holds the keys: `node evals/rehearse.mjs 2` in `challenges/S02E02/agent` (lesson 43). It must say "REHEARSAL PASSED".
+2. Keep thread history and the pages read per thread; enforce a requested answer format in code (lesson 44).
+3. Only the named trusted sender gets work done; log strangers, do not reply. Keys live in a file on the host that runs the agent, never in a repo or a chat.
+4. Mounting a missing path makes Docker create a directory: mount the parent read-only and test for a file first (see `docs/didnt-work.md`, 2026-11-03).

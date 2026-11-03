@@ -1,0 +1,1 @@
+{"status":"retry","message":"Your agent's replies are in. The course is still checking the round. Call again with the same answer in about a minute.","retryAfter":60,"next":"No verdict yet. Wait retryAfter seconds, then send the same call."}
