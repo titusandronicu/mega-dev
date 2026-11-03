@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# Usage: tools/auth-relay.test
+#
+# deliver refuses non-localhost and https URLs; redacts query values in
+# any output; uses a stub curl, no real network call.
+set -euo pipefail
+repo_root="$(pwd)"
+pass=0
+
+ok()   { echo "ok   - $1"; pass=$((pass + 1)); }
+fail() { echo "FAIL - $1"; exit 1; }
+
+relay="$repo_root/tools/auth-relay"
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+
+cat > "$tmp/curl-stub" <<'EOF2'
+#!/usr/bin/env bash
+echo -n "200"
+EOF2
+chmod +x "$tmp/curl-stub"
+
+secret="SUPERSECRETCODE12345"
+
+# === refuses https ===
+set +e
+out="$(PREFLIGHT_CURL="$tmp/curl-stub" "$relay" deliver "https://localhost:3118/callback?code=$secret&state=xyz" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "https URL should be refused, got exit 0:\n$out"
+printf '%s' "$out" | grep -q "refused:" || fail "https URL: expected a 'refused:' message:\n$out"
+printf '%s' "$out" | grep -qF "$secret" && fail "https URL: the secret code leaked into output:\n$out"
+ok "deliver refuses an https URL, without leaking its query values"
+
+# === refuses non-localhost ===
+set +e
+out="$(PREFLIGHT_CURL="$tmp/curl-stub" "$relay" deliver "http://example.com:3118/callback?code=$secret" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "non-localhost URL should be refused, got exit 0:\n$out"
+printf '%s' "$out" | grep -q "refused:" || fail "non-localhost URL: expected a 'refused:' message:\n$out"
+printf '%s' "$out" | grep -qF "$secret" && fail "non-localhost URL: the secret code leaked into output:\n$out"
+ok "deliver refuses a non-localhost URL, without leaking its query values"
+
+# === accepts a well-shaped localhost URL, redacts the query, uses the stub curl ===
+set +e
+out="$(PREFLIGHT_CURL="$tmp/curl-stub" "$relay" deliver "http://localhost:3118/callback?code=$secret&state=xyz" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -eq 0 ] || fail "well-shaped localhost URL should succeed with the stub curl (200), got exit $rc:\n$out"
+printf '%s' "$out" | grep -q "HTTP status: 200" || fail "expected the stub's 200 status to be printed:\n$out"
+printf '%s' "$out" | grep -qF "$secret" && fail "the secret code leaked into output:\n$out"
+printf '%s' "$out" | grep -q '?<redacted>' || fail "expected the redacted query marker in output:\n$out"
+ok "deliver accepts http://localhost:.../..., redacts the query, reports the stub's HTTP status"
+
+# === refuses a bare path with no scheme ===
+set +e
+out="$(PREFLIGHT_CURL="$tmp/curl-stub" "$relay" deliver "/callback?code=$secret" 2>&1)"
+rc=$?
+set -e
+[ "$rc" -ne 0 ] || fail "a bare path should be refused, got exit 0:\n$out"
+ok "deliver refuses a bare path (no http://localhost prefix)"
+
+echo
+echo "all auth-relay.test checks passed ($pass ok)"
