@@ -1,9 +1,11 @@
 [
-  { "id": "contract-first", "label": "Read the contract first", "summary": "The shape, the limit or the counting rule is written down somewhere. Find it before you send." },
-  { "id": "source-over-summary", "label": "Source over summary", "summary": "A summary, a draft or a model's memory loses facts. Go back to the original line and its time." },
-  { "id": "distrust-decoys", "label": "Distrust decoys", "summary": "Other projects, noise and untrusted input look like evidence. Only a proposal plus an approval, or the asked event, counts." },
-  { "id": "look-again", "label": "Look again after a no", "summary": "A refusal often means the world moved. Re-read the live source and log the date." },
-  { "id": "write-down-state", "label": "Write down what a summary drops", "summary": "Tries left, file lists and working folders vanish in compaction. Put them in the log and the hand-off." },
-  { "id": "package-it", "label": "Package the repeatable", "summary": "If a step will come back, make it a tool, a hook or a playbook line before the next challenge." },
-  { "id": "human-at-fork", "label": "Human decides at the fork", "summary": "Scope, a changed answer or a split-or-merge call goes to the human before it enters the work." }
+  {"id": "contract-first", "label": "Read the contract first", "summary": "The shape, the limit or the counting rule is written down somewhere. Find it before you send."},
+  {"id": "source-over-summary", "label": "Source over summary", "summary": "A summary, a draft or a model's memory loses facts. Go back to the original line and its time."},
+  {"id": "distrust-decoys", "label": "Distrust decoys", "summary": "Other projects, noise and untrusted input look like evidence. Only a proposal plus an approval, or the asked event, counts."},
+  {"id": "look-again", "label": "Look again after a no", "summary": "A refusal often means the world moved. Re-read the live source and log the date."},
+  {"id": "write-down-state", "label": "Write down what a summary drops", "summary": "Tries left, file lists and working folders vanish in compaction. Put them in the log and the hand-off."},
+  {"id": "package-it", "label": "Package the repeatable", "summary": "If a step will come back, make it a tool, a hook or a playbook line before the next challenge."},
+  {"id": "human-at-fork", "label": "Human decides at the fork", "summary": "Scope, a changed answer or a split-or-merge call goes to the human before it enters the work."},
+  {"id": "rehearse-the-shape", "label": "Rehearse the round's shape", "summary": "Fakes repeat your own assumptions. Replay the likely sequence through the real code and the real model, and claim only when every run passes."},
+  {"id": "code-over-prompt", "label": "Code decides, the model answers", "summary": "Who is trusted, what format is sent and which limits hold are checked in code before and after the model, not asked of it in a prompt."}
 ]
