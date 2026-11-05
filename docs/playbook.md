@@ -59,3 +59,20 @@ Agent-by-email challenges (from S02E02)
 2. Keep thread history and the pages read per thread; enforce a requested answer format in code (lesson 44).
 3. Only the named trusted sender gets work done; log strangers, do not reply. Keys live in a file on the host that runs the agent, never in a repo or a chat.
 4. Mounting a missing path makes Docker create a directory: mount the parent read-only and test for a file first (see `docs/didnt-work.md`, 2026-11-03).
+
+Remote workers, hosts and public links (from S01E04, S01E05, S02E03, S02E04)
+1. Before you send work to a remote place (cloud session, CI, a Worker), make one read-only request from it to the course host. A job link is valid for about a day, so spend it only after the place can reach the host. The allowlist is the owner's setting; ask for the one host only.
+2. A prompt that leaves this machine goes into its own file. First line: the job and "paste alone". Say what a correct first reply looks like, so a wrong paste is seen at once.
+3. A worker gets only its own job link. Delete any helper file that holds a link when the job is done.
+4. When nothing comes back from a host, read that host's own log first (host.log, `wrangler tail`) before you suspect the course. Dry-run each agent on its own before the first ping.
+5. Check a link the way the other side will open it: from outside the tailnet, with status, certificate and the content you care about (for example the lane marker once). Before you publish a page, read the served bytes for the marker and for external references.
+6. A step that waits on the other side (a reviewer) is its own issue. It stays open until they confirm and it blocks the clean-up. Check on a fixed interval and change the page only after they ask.
+7. Read the repo's ADRs before you choose a host. Run the typecheck after every merge of parallel work.
+8. Take the enrolled address from the profile page, not from memory or the mail header.
+9. Before you build an MCP server, check which spec revision is current and keep the older ones for clients that still need them. Check the course's size limits on tool results and the wording of errors (name the input, say what to send instead).
+10. A job link or an MCP server without a client in the harness: use `tools/mcp-call` (list, call, `--log`), with the URL in `MCP_URL` or `--url-file`; do not rebuild curl and JSON-RPC by hand.
+11. Copy a link or a passphrase by script or paste, never by retyping. Note when it expires. Make passphrases without look-alike letters, and rotate any passphrase that was printed in the session.
+
+Joining sources and hand-offs (from S01E02, S02E04)
+1. Before you join two sources, write down each one's clock and its offset on that date, convert, and put the conversion in the log. Eastern 22:50 on 31 Oct (EDT, UTC-4) is 03:50 in central European winter time, not 22:50.
+2. A hand-off to a new session labels each part with the recording or file it came from. A merged record loses its labels and the next session can only guess or ask.

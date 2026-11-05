@@ -24,5 +24,8 @@ Rook's notes on the solve:
 - The NAS Docker tool has no restart policy, so a reboot stops the agent while mail waits in the inbox. The owner runs `docker update --restart unless-stopped mail-agent` once. [evidence: debrief "Still running: partly"] [fix: none] [status: proposed] [idea: human-at-fork]
 - The course said to add yourself to who the agent trusts, but the setting held one address. `TRUSTED_SENDERS` is now a validated list (exact match, an empty list trusts nobody, a bad entry stops the start), and the owner chose the two addresses added to Rook. [evidence: Rook's note, 45 of 45 tests on the NAS, live check with the real model, journal `started` lists three senders] [fix: tool] [status: applied] [idea: human-at-fork, code-over-prompt]
 
+- A mail costs at most 6 model steps, 4 fetches and 90 seconds, and strangers cost no model call, but trusted mail has no daily cap, and AgentMail's free plan allows 100 sends a day. Add a daily cap on trusted mail so a loop or a flood cannot spend the key or the quota. [evidence: course sheet "What a mail costs" (partly)] [fix: tool] [status: proposed] [idea: code-over-prompt]
+
 ## Applied
 Findings 1 to 5, 7 and 11: the agent code, tests and rehearsal in `challenges/S02E02/agent/`; lessons 43 and 44 in `docs/lessons-learned.md`; the S02E02 section of `docs/playbook.md`; the refusal events in `docs/didnt-work.md`. Finding 6 was agreed in chat; findings 8 to 10 are proposals. The owner asked on 2026-11-03 to adapt the debrief's learning points into the lesson map; the map and this file were updated in that step.
+The course sheet for S02E02 was read on 2026-11-05 (https://hq.mega.dev/challenges/nobody-asked#debrief); finding 12 comes from it. The rest of the sheet matches findings 1 to 11.

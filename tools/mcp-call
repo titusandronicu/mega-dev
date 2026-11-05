@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Usage: MCP_URL=<url> tools/mcp-call [--url-file f] [--log f] [--raw] list | call <tool> [json|@file|-]
+# Calls a remote MCP server over HTTP with no MCP client; details in tools/mcp-call.mjs.
+exec node "$(dirname "$0")/mcp-call.mjs" "$@"
