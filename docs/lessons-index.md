@@ -48,6 +48,18 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 40 | Shared host: read-only first, ask, one action per call; keep passwords out of sent files | prose (proposed playbook line, finding 13) |
 | 41 | A volume decides what you can change in a store (image major, `POSTGRES_DB`) | prose only - specific to the store |
 | 42 | The checker reads one row per fact: give image, port, database their own rows | prose (proposed playbook line, finding 5) |
+| 45 | Two sources, two clocks: convert on the right date before a join | prose (`docs/playbook.md`, "Joining sources") |
+| 46 | A prompt for a remote worker is its own file, named and "paste alone" | prose (`docs/playbook.md`, "Remote workers" 2) |
+| 47 | A remote place has its own network policy: test reach before spending a job link | prose (`docs/playbook.md`, "Remote workers" 1) |
+| 48 | A link is a key: only the worker that runs the job gets it | prose (`docs/playbook.md`, "Remote workers" 3); the pre-commit hook catches tokens in files |
+| 49 | A step that waits on the other side is its own issue | prose (`docs/playbook.md`, "Remote workers" 6) |
+| 50 | Uploaded is not reachable: fetch a link as the other side will | prose (`docs/playbook.md`, "Remote workers" 5) |
+| 51 | Read the repo ADRs before you pick a host | prose (`docs/playbook.md`, "Remote workers" 7) |
+| 52 | Read the host log first when nothing comes back | prose (`docs/playbook.md`, "Remote workers" 4) |
+| 53 | A merged record loses its source labels | prose (`docs/playbook.md`, "Joining sources" 2); proposed check in `tools/check-handoff` |
+| 54 | Check the MCP spec revision and the course limits before building a server | prose (`docs/playbook.md`, "Remote workers" 9) |
+| 55 | Copy links and passphrases, never retype; rotate a printed passphrase | prose (`docs/playbook.md`, "Remote workers" 10) |
+| 56 | Take the enrolled address from the profile page | prose (`docs/playbook.md`, "Remote workers" 8) |
 
 ## What's still prose, and why that's the right call
 
