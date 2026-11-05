@@ -70,7 +70,8 @@ Remote workers, hosts and public links (from S01E04, S01E05, S02E03, S02E04)
 7. Read the repo's ADRs before you choose a host. Run the typecheck after every merge of parallel work.
 8. Take the enrolled address from the profile page, not from memory or the mail header.
 9. Before you build an MCP server, check which spec revision is current and keep the older ones for clients that still need them. Check the course's size limits on tool results and the wording of errors (name the input, say what to send instead).
-10. Copy a link or a passphrase by script or paste, never by retyping. Note when it expires. Make passphrases without look-alike letters, and rotate any passphrase that was printed in the session.
+10. A job link or an MCP server without a client in the harness: use `tools/mcp-call` (list, call, `--log`), with the URL in `MCP_URL` or `--url-file`; do not rebuild curl and JSON-RPC by hand.
+11. Copy a link or a passphrase by script or paste, never by retyping. Note when it expires. Make passphrases without look-alike letters, and rotate any passphrase that was printed in the session.
 
 Joining sources and hand-offs (from S01E02, S02E04)
 1. Before you join two sources, write down each one's clock and its offset on that date, convert, and put the conversion in the log. Eastern 22:50 on 31 Oct (EDT, UTC-4) is 03:50 in central European winter time, not 22:50.
