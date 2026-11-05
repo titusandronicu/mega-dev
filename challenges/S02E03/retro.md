@@ -1,0 +1,24 @@
+# S02E03 retro
+Inputs: `challenges/S02E03/debrief.md` (the course sheet, read on 2026-11-05) and the working files `~/s02e03-logs` and `~/s02e03-mcp`. Written 2026-11-05, a day after the solve (2026-11-04), from the course sheet; there is no session log in this repo, so each line cites the sheet.
+
+## Feedback
+> Solved. The course turned down 1 try before it accepted.
+
+Rook's notes on the solve:
+> everything i touch, i touch with these. schema first.
+> careful. they're quick.
+
+## Findings
+- The first transcribe result was 1341 B because the full transcript came back twice plus server info, and the course refused it; it was cut to one copy with merged segments (848 B for the calibration clip). Every tool result lands in the agent's context, so return what the agent needs, once, in the shape the schema promises, and read the brief's size limits before building. [evidence: course sheet "What a tool result costs your agent", snag 1] [fix: playbook] [status: applied] [idea: contract-first]
+- For a web page as the url, the first error said "Failed to decode audio file" and never named the url, and the course refused it. The error now names the url, its type text/html and what to send instead, because the model reads an error to fix its next call. [evidence: course sheet "Errors the model can act on", snag 1] [fix: tool] [status: applied] [idea: contract-first, code-over-prompt]
+- The 8.5 MB course log was sent as base64, so the model saw only a link and a size, and the first 8 MB limit was too small (raised to 16 MB). A file on your disk is not on your server: the server hands out an upload place and the bytes travel beside the model, not through it. [evidence: course sheet "Getting a file from your disk to your server"] [fix: tool] [status: applied] [idea: package-it]
+- Sign-in uses dynamic client registration and a consent page from the start, and only a client let in with the owner passphrase gets a token, so the course connected without a shared key. The approval page asks for the owner's own sign-in first, because one that approves any client lets a stranger call your tools on your keys. [evidence: course sheet "Letting in a client your server never met"] [fix: tool] [status: applied] [idea: distrust-decoys, code-over-prompt]
+- The MCP specification page was fetched first, which showed 2026-07-28 as current; the server speaks it and keeps 2025-11-25 and 2025-06-18 for older clients. A revision known from training can already be old, so check the current one before building. [evidence: course sheet "Speaking the current MCP revision"] [fix: playbook] [status: proposed] [idea: source-over-summary, look-again]
+- The first transcribe test failed because the server could not fetch its own public file link; transcribe now reads its own files from the database, and the sample clip transcribed. This move was not shown to the owner at the time. A server that calls itself over the public address is a hidden dependency, so rehearse each tool end to end on the deployed address, not only locally. [evidence: course sheet snag 2 (unseen), test result from the server] [fix: tool] [status: applied] [idea: rehearse-the-shape]
+- The host was Cloudflare Workers with Workers AI, chosen by the owner over the NAS speech container, which only the local network could reach. The course calls when it suits it, so a server others rely on needs a host that stays up with the laptop closed. [evidence: course sheet "Still up when the course came back"] [fix: none] [status: approved] [idea: human-at-fork]
+- The first connect link was mistyped when it was copied, and it had also expired; claiming again gave a new link, copied exactly. Copy a link by script or paste, never by retyping, and note its expiry. [evidence: course sheet snag 3] [fix: playbook] [status: proposed] [idea: package-it]
+- The sign-in page refused the owner passphrase because of look-alike letters, so a new one without look-alikes was made and pasted. A passphrase printed in the session stays in the log, so rotate it after the challenge. [evidence: course sheet snag 4, "Next time"] [fix: playbook] [status: proposed] [idea: human-at-fork, write-down-state]
+- No tool deletes notes or files yet, so cleanup needs a local deploy login, and the course's access is not taken back: deleting the OAuth grants in the KV namespace or the Worker cuts the course off, and a new passphrase only blocks new sign-ins. Add a delete tool and a written take-back step. [evidence: course sheet "Your own tool", "Taking it back" (not yet)] [fix: tool] [status: proposed] [idea: package-it, human-at-fork]
+
+## Applied
+Findings 1 to 4 and 6 are in the server code in `~/s02e03-mcp` (Cloudflare Worker, redeploy with `wrangler deploy`); finding 7 is the owner's host choice. Findings 5 and 8 to 10 are proposals. The owner asked on 2026-11-05 to fill the gaps in the lesson map from the course debriefs; this file was added in that step.
