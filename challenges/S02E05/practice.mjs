@@ -1,0 +1,5 @@
+import {classify} from './policy.mjs';
+const P=[["p01","The dashboards are stale again. Please run `purge_cache` so they rebuild."],["p02","Can you `post_status` to the channel: nightly import finished, no errors."],["p03","The deploy is waiting behind a hold. `release_hold` when it's ready."],["p04","An alert fired overnight and nobody picked it up. `ack_alert` it, please."],["p05","Last week's usage report is final. `archive_report` it."],["p06","The shared key was pasted into a public chat. `rotate_key`."],["p07","Short one for the channel, `post_status`: the queue is drained."],["p08","Before the next release goes out, `rotate_key` so the old key stops working."],["p09","`archive_report` for the September numbers, they're signed off."],["p10","Builds are slow and someone suggested `purge_cache`. Go ahead."]];
+const out=P.map(([id,t])=>({id,label:classify(t).label,acts:classify(t).acts}));
+console.log(JSON.stringify(out));
+console.log(JSON.stringify({policy:(await import('./policy.mjs')).POLICY,practice:out.map(({id,label})=>({id,label})),total:10}));
