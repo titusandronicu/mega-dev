@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Course tools by episode</title>
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--mut:#5b6572;--card:#f5f7fa;--line:#c9d1da;--blue:#2563eb;--green:#15803d;--amber:#b45309;--red:#b91c1c;--violet:#6d28d9}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1317;--fg:#e6e9ee;--mut:#9aa5b1;--card:#181e25;--line:#323b46;--blue:#6ea0ff;--green:#4ade80;--amber:#fbbf24;--red:#f87171;--violet:#a78bfa}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,sans-serif}
+.w{max-width:1000px;margin:0 auto;padding:20px 16px 72px}
+h1{font-size:1.6rem;margin:.2em 0}h2{margin-top:1.8em;font-size:1.2rem;border-bottom:1px solid var(--line);padding-bottom:4px}h3{font-size:1rem;margin-top:1.3em}
+.m{color:var(--mut)}a{color:var(--blue)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:2;border-bottom:1px solid var(--line)}
+.tabs button{font:inherit;font-size:.85rem;padding:5px 10px;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tabs button .t{display:block;font-size:.7rem;opacity:.8}
+section.ep[hidden]{display:none}
+svg{width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}
+svg text{fill:var(--fg);font:13px system-ui,sans-serif}svg .s{fill:var(--mut);font-size:11.5px}svg .b{font-weight:600}
+.box{fill:var(--bg);stroke:var(--line);stroke-width:1.5}.ln{stroke:var(--mut);stroke-width:1.5;fill:none}.lead{stroke:var(--line);stroke-width:1;fill:none}
+table{border-collapse:collapse;width:100%;font-size:.9rem;margin:10px 0}th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--card)}code{background:var(--card);padding:1px 4px;border-radius:4px;font-size:.88em}
+pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px;overflow-x:auto;font-size:.85rem}
+.note{border-left:4px solid var(--amber);background:var(--card);padding:8px 12px;border-radius:4px}
+.pill{display:inline-block;font-size:.72rem;padding:0 7px;border-radius:9px;border:1px solid var(--line);margin-right:4px}
+.v{color:var(--green)}.n{color:var(--amber)}
+@media (max-width:640px){table{display:block;overflow-x:auto}}
+</style></head><body><div class="w">
+<p><a href="/">&larr; lesson map</a></p>
+<h1>Course tools by episode</h1>
+<p class="m">Pick an episode to see what it was about, what was installed or built, what each thing is for, where it lives, and what went wrong. Each tab says where its facts come from. Written 2026-11-06.</p>
+<p class="note"><b>Trust levels.</b> <span class="pill v">verified today</span> means read from the live NAS or the course replies on 2026-11-06 (S02E05 only). <span class="pill n">from records</span> means taken from the repo notes (<code>challenges/&lt;code&gt;/debrief.md</code>, <code>log.md</code>, <code>retro.md</code>, <code>docs/tools.md</code>) and not re-checked today. Something may have changed since. No keys, codes, tokens or topic names are on this page.</p>
+
+<div class="tabs" role="tablist" id="tabs"></div>
+
+<!-- ================= OVERVIEW ================= -->
+<section class="ep" id="ov" data-title="Overview" data-tag="all episodes">
+<h2>Overview: what stays running, and where</h2>
+<p><span class="pill n">from records</span> plus a container list read from the NAS on 2026-11-06 (<span class="pill v">verified</span> that the containers named are up).</p>
+<svg viewBox="0 0 900 470" role="img" aria-label="Places and what runs in each, tagged with episodes">
+<rect class="box" x="10" y="10" width="270" height="450" rx="10"/><text class="b" x="24" y="34">Your machines (Claude Code sessions)</text>
+<rect class="box" x="26" y="50" width="238" height="76" rx="8"/><text x="38" y="74">WSL2 laptop session</text><text class="s" x="38" y="94">this session (S02E05), local subagent</text><text class="s" x="38" y="112">worker for S02E04 job 1</text>
+<rect class="box" x="26" y="138" width="238" height="76" rx="8"/><text x="38" y="162">Mac mini</text><text class="s" x="38" y="182">same repo clone; signed-in course</text><text class="s" x="38" y="200">browser session (deck, forms)</text>
+<rect class="box" x="26" y="226" width="238" height="76" rx="8"/><text x="38" y="250">UGREEN host session</text><text class="s" x="38" y="270">repo /home/Funky/Dev/mega-dev, ffmpeg,</text><text class="s" x="38" y="288">tools/*, docker (see environments.md)</text>
+<rect class="box" x="26" y="314" width="238" height="64" rx="8"/><text x="38" y="338">Course MCP: mega-challenge</text><text class="s" x="38" y="358">all episodes: list, start, claim, debrief</text>
+
+<rect class="box" x="300" y="10" width="300" height="450" rx="10"/><text class="b" x="314" y="34">UGREEN NAS (always on, yours)</text>
+<rect class="box" x="316" y="50" width="268" height="52" rx="8"/><text x="328" y="72">mail-agent container</text><text class="s" x="328" y="90">S02E02 built it, S02E05 extended it</text>
+<rect class="box" x="316" y="110" width="268" height="52" rx="8"/><text x="328" y="132">stock-5-store-db-1 (Postgres 17)</text><text class="s" x="328" y="150">S02E01 store, port 5471</text>
+<rect class="box" x="316" y="170" width="268" height="52" rx="8"/><text x="328" y="192">agent runner, host.log</text><text class="s" x="328" y="210">S01E05 agent answering the reviewer</text>
+<rect class="box" x="316" y="230" width="268" height="52" rx="8"/><text x="328" y="252">Tailscale Funnel + local file server</text><text class="s" x="328" y="270">S01E04 public preview link</text>
+<rect class="box" x="316" y="290" width="268" height="52" rx="8"/><text x="328" y="312">Mother Console, code-server</text><text class="s" x="328" y="330">S01E02 transcription try; editor</text>
+<rect class="box" x="316" y="350" width="268" height="52" rx="8"/><text x="328" y="372">mega-hq stack, harness-live</text><text class="s" x="328" y="390">course workspace and session viewer</text>
+<rect class="box" x="316" y="410" width="268" height="40" rx="8"/><text x="328" y="435">lesson-map (nginx, port 18082)</text>
+
+<rect class="box" x="620" y="10" width="270" height="450" rx="10"/><text class="b" x="634" y="34">Cloud services</text>
+<rect class="box" x="636" y="50" width="238" height="64" rx="8"/><text x="648" y="74">Cloudflare Worker + Workers AI</text><text class="s" x="648" y="94">S02E03 memo, upload, transcribe MCP</text>
+<rect class="box" x="636" y="126" width="238" height="64" rx="8"/><text x="648" y="150">Claude Code cloud session</text><text class="s" x="648" y="170">S02E04 job 2 worker</text>
+<rect class="box" x="636" y="202" width="238" height="64" rx="8"/><text x="648" y="226">AgentMail inbox</text><text class="s" x="648" y="246">S02E02 and S02E05 mailbox</text>
+<rect class="box" x="636" y="278" width="238" height="52" rx="8"/><text x="648" y="300">ntfy.sh</text><text class="s" x="648" y="318">S02E05 phone push</text>
+<rect class="box" x="636" y="342" width="238" height="52" rx="8"/><text x="648" y="364">Model APIs (Anthropic, Gemini)</text><text class="s" x="648" y="382">replies; S01E02 transcription</text>
+<rect class="box" x="636" y="406" width="238" height="44" rx="8"/><text x="648" y="432">GitHub (titusandronicu)</text>
+</svg>
+<h3>Where the sessions run</h3>
+<table><tr><th>Place</th><th>What it has</th><th>What it does not have</th></tr>
+<tr><td>UGREEN host</td><td>Course MCP login, ffmpeg, <code>tools/*</code>, docker</td><td>-</td></tr>
+<tr><td>Mother Console container</td><td>bash, awk, git, node</td><td>the repo, ffmpeg, course MCP</td></tr>
+<tr><td>code-server container</td><td>repo at <code>/workspace/mega-dev</code>, bash, awk, git</td><td>ffmpeg, node</td></tr>
+<tr><td>Mac mini</td><td>same repo clone, headless course browser session</td><td>gitignored recordings unless copied (unchecked)</td></tr></table>
+<p class="m">Source: <code>docs/environments.md</code>. This WSL2 laptop session is not in that table, and the S02E05 work was done from it.</p>
+<h3>Tools used across the course</h3>
+<table><tr><th>Tool</th><th>What it is for</th></tr>
+<tr><td><code>mega-challenge</code> MCP</td><td>List, start, claim and debrief challenges.</td></tr>
+<tr><td>browser automation skill</td><td>Headless, signed-in course browser (deck, forms).</td></tr>
+<tr><td><code>gh</code></td><td>Create and push the private repo, file issues.</td></tr>
+<tr><td>Python 3 (isolated mode)</td><td>Count characters, redact logs. Count with a tool, never by eye.</td></tr>
+<tr><td><code>ffmpeg</code> silencedetect, <code>tools/speech-offsets</code></td><td>Check speech start times when models disagree.</td></tr>
+<tr><td><code>tools/check-all</code>, <code>tools/retro-check</code>, <code>tools/whereami</code></td><td>Repo checks, retro checks, which host am I on.</td></tr>
+<tr><td><code>tools/mcp-call</code></td><td>Call a remote MCP server over HTTP without an MCP client.</td></tr>
+<tr><td><code>tools/lesson-map</code></td><td>The page you are on: lessons, findings, recurring ideas.</td></tr></table>
+<p class="m">Source: <code>docs/tools.md</code>, shortened.</p>
+<div class="note"><b>Keeping this page.</b> The NAS script <code>update.sh</code> rebuilds the lesson map and then deletes everything in the served folder before copying the new build. A file placed on the NAS by hand disappears at the next update. This page lives in the repo at <code>tools/lesson-map/public/tools.html</code>, which the build copies as it is, so it survives once it is merged to main.</div>
+</section>
+
+<!-- ================= S01E01 ================= -->
+<section class="ep" id="S01E01" data-title="somebody slow" data-tag="S01E01" hidden>
+<h2>S01E01 · somebody slow</h2>
+<p><span class="pill n">from records</span> <code>challenges/S01E01/debrief.md</code>, <code>log.md</code></p>
+<h3>What it was about</h3>
+<p>Rook's long message waited on the Challenge page. The harness had to send the course a shorter version of at most 700 characters. The paragraph about the 26th had to stay exactly as written. Then it answered one question on a form.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it is</th><th>What it was for</th><th>Where</th></tr>
+<tr><td>Browser session, signed in as you</td><td>Headless browser run by the browser automation skill</td><td>Read Rook's message and open the form</td><td>The machine running the session</td></tr>
+<tr><td>Python</td><td>Scripting language</td><td>Count characters: 1288 in the full message, cut to 669</td><td>Same machine; scripts in <code>challenges/S01E01/scripts</code></td></tr>
+<tr><td>Live web search</td><td>Search tool in the harness</td><td>Find the newest model name instead of trusting the lesson</td><td>Claude Code</td></tr>
+<tr><td><code>read</code> skill (artifact from Rook)</td><td>Skill: find-contract, cut-diff, save-page, redact</td><td>Contract first, keep-list plus diff of every cut</td><td>Taken from the course; installed afterwards (<code>.claude/skills/read</code>, <code>docs/tools.md</code>)</td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>The harness guessed the body shape. The course answered "you guessed the shape. don't guess". The real shape was in a schema file linked in the page.</li>
+<li>It sent 1288 characters when a shorter message was required. It counted with Python and cut to 669, listing every cut.</li>
+<li>The form answer named its own model, then an old model name from the lesson. Both were refused. A live search found the current name and you approved it at about 55% confidence. That was the right call.</li></ol>
+<p class="m">Result: solved after 5 turned-down tries.</p>
+</section>
+
+<!-- ================= S01E02 ================= -->
+<section class="ep" id="S01E02" data-title="who said what" data-tag="S01E02" hidden>
+<h2>S01E02 · who said what</h2>
+<p><span class="pill n">from records</span> <code>challenges/S01E02/debrief.md</code>. That file was compiled later from the repo records, not the page debrief.</p>
+<h3>What it was about</h3>
+<p>Two recordings of one night: a video of 114.3 s and an audio of 113.2 s. Report when the batch ended and where the sentence sits in each, then file a record of every spoken word (285 words, numbers as words). A new session then answered one more question.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it is</th><th>What it was for</th><th>Where</th></tr>
+<tr><td><code>ffmpeg</code> with silencedetect</td><td>Audio and video tool</td><td>Confirm speech start times, because the models' timestamps disagreed (19.7, 64.9 and 119.6 s for one sentence)</td><td>UGREEN host (the only host with ffmpeg)</td></tr>
+<tr><td>Transcription through a model API</td><td>Cloud API, key read once with your OK and held in memory only</td><td>Turn the two audio tracks into words with timestamps. No tools attached</td><td>Cloud</td></tr>
+<tr><td><code>tools/transcribe</code>, <code>tools/speech-offsets</code></td><td>Local scripts added afterwards</td><td>Transcribe, and list speech starts after pauses</td><td>Repo <code>tools/</code></td></tr>
+<tr><td>Mother Console (Gemini worker)</td><td>Container on the NAS running a Grok/Gemini code worker</td><td>First route for transcription. Dropped</td><td>NAS container, workspace <code>/home/Funky/agent-workspace</code></td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>The host had no speech-to-text, only ffmpeg. You chose the model API route.</li>
+<li>The Mother Console route failed: its workspace is not the repo folder and belongs to another user, so the audio could not be placed there.</li>
+<li>That worker ran shell commands although the prompt said read-only. It runs with a flag that skips confirmations. Lesson: a prompt is not a guardrail, and untrusted input should not go to that worker.</li>
+<li>Ambiguous words ("u t c", "and" inside a number) were settled by majority across 3 to 6 model runs.</li></ol>
+<p class="m">Answers: video "All times are UTC", batch end 02:38, sentence at 79.7 s. Audio "All times are local plus two hours", batch end 04:38, sentence at 64.7 s.</p>
+</section>
+
+<!-- ================= S01E03 ================= -->
+<section class="ep" id="S01E03" data-title="what it shows" data-tag="S01E03" hidden>
+<h2>S01E03 · what it shows</h2>
+<p><span class="pill n">from records</span> <code>challenges/S01E03/debrief.md</code> (compiled from the repo records)</p>
+<h3>What it was about</h3>
+<p>The support desk had merged 412 date reports into ticket #4471 and called it one known bug. The task was to file one ticket per real problem, each with how many reports it covers, and add a signed page to the knowledge base (kb).</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it is</th><th>What it was for</th><th>Where</th></tr>
+<tr><td>kb export + <code>vite-node</code></td><td>The course's own export, run unmodified</td><td>Run the kb's own <code>causes.ts</code> and <code>locales.ts</code> to classify all 412 reports</td><td>Machine running the session</td></tr>
+<tr><td><code>gh</code> / GitHub issues</td><td>GitHub CLI</td><td>File issues #6 (parser, 379 reports, 11 tenants) and #7 (hint, 33 reports, 3 tenants) in your public repo</td><td>Repo <code>titusandronicu/mega-dev</code></td></tr>
+<tr><td><code>tools/kb-render</code></td><td>Script that builds a throwaway SvelteKit site from an export</td><td>Read the rendered kb. Its build runs the export's own code, so only in a container without secrets. Not yet run on this host (per tools.md)</td><td>Repo <code>tools/</code></td></tr>
+<tr><td>Python</td><td>Scripting</td><td>Count rows: 427 rows, 412 unique ids, 15 duplicates</td><td>Same machine</td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>First filed three tickets, splitting 5 one-day-move reports into their own problem because the desk's notes read them that way. The kb's own code says they belong under the parser problem. Closed as duplicate.</li>
+<li>Then proposed merging parser and hint into one ticket. The code says the hint bug is a different bug. They stayed separate.</li>
+<li>A third rejection: the kb page for #4471 was stale. Updating it was the missing step.</li>
+<li>The console had no browser, so it missed a "DESK UPDATE" on the live page for two submit cycles. You read the page and relayed it.</li></ol>
+<p class="m">Result: accepted on the third claim after two rejections.</p>
+</section>
+
+<!-- ================= S01E04 ================= -->
+<section class="ep" id="S01E04" data-title="before i looked" data-tag="S01E04" hidden>
+<h2>S01E04 · before i looked</h2>
+<p><span class="pill n">from records</span> <code>challenges/S01E04/retro.md</code> (no solve-time debrief file exists). Source log was on the NAS (<code>s01e04-log/log.md</code>, 2026-10-29).</p>
+<h3>What it was about</h3>
+<p>A team handed over a repo: a small service, its plan, notes and a skill. The task was to start a new public repo from the course template, turn the plan into issues, let agents build it, and send the reviewer a public link to an HTML copy of the page.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it is</th><th>What it was for</th><th>Where</th></tr>
+<tr><td><code>plan-to-issues</code> skill</td><td>Skill in the repo's <code>.agents/skills</code></td><td>Turn the plan into eight issues, naming the worker in each</td><td>The new repo</td></tr>
+<tr><td>Parallel worker agents</td><td>Agents run on the NAS</td><td>Build the issues. Two added the same import and the lead found it after the merge. 22 tests re-run before pushing</td><td>NAS</td></tr>
+<tr><td>npm (not pnpm)</td><td>Package manager</td><td>pnpm was not installed on the NAS. You approved a plain <code>npm install</code> inside the repo folder only</td><td>NAS repo folder</td></tr>
+<tr><td>Tailscale Funnel + a local file server</td><td>Public relay already on the NAS, plus a small server for one folder</td><td>Give the reviewer a public link. GitHub Pages was ruled out by the repo's ADR, since the lane marker would stay in git history. Funnel could not serve the folder directly (needs root)</td><td>NAS</td></tr>
+<tr><td><code>visit-deck.mjs</code></td><td>Script that opens the course deck</td><td>One retry on load timeout was added after a timeout at 19:24Z</td><td>NAS</td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>The preview went out with the lane marker still in it and the reviewer sent it back. Read the served bytes for the marker before sending.</li>
+<li>Three sign-in attempts failed until the mail was sent to the address form the profile page shows.</li>
+<li>"Uploaded" was not "reachable": the first check came from a machine on the tailnet. The link was then fetched through the public relay (200, valid certificate, marker present once).</li></ol>
+</section>
+
+<!-- ================= S01E05 ================= -->
+<section class="ep" id="S01E05" data-title="answer where i asked" data-tag="S01E05" hidden>
+<h2>S01E05 · answer where i asked</h2>
+<p><span class="pill n">from records</span> <code>challenges/S01E05/retro.md</code> (no solve-time debrief file). Logs referenced: <code>s01e05-rig/host.log</code> (2026-10-30), <code>src/nas/runner.mjs</code>.</p>
+<h3>What it was about</h3>
+<p>Fix what was open in the course's rig project and put an agent on a host. When the course reviewer asks where the rig stands, the agent answers on its own, within a minute. A second agent writes a test for the open bug.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it is</th><th>What it was for</th><th>Where</th></tr>
+<tr><td>Agent runner (<code>src/nas/runner.mjs</code>)</td><td>Small service that receives the reviewer's request and starts a <code>claude</code> job</td><td>Answer with nobody at the keyboard</td><td>NAS (a host that stays up). Its log is <code>host.log</code></td></tr>
+<tr><td>Second agent</td><td>A separate Claude Code agent</td><td>Write the test for the open bug</td><td>The rig repo</td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>The first test job failed with <code>spawn claude ENOENT</code>: the service ran with a PATH that has no <code>claude</code>. The runner passes only PATH and HOME. The next job returned 202. Lesson: give the child an absolute path or a full PATH, and check it at start-up.</li>
+<li>Three requests were rejected for missing headers before the first accepted job. The log does not say whether those were your own probes or the course's. Lesson: log the source address and the missing header on every rejection.</li></ol>
+<p class="m">The runner's retro findings are marked "proposed", not applied.</p>
+</section>
+
+<!-- ================= S02E01 ================= -->
+<section class="ep" id="S02E01" data-title="found out late" data-tag="S02E01" hidden>
+<h2>S02E01 · found out late</h2>
+<p><span class="pill n">from records</span> <code>challenges/S02E01/debrief.md</code> and <code>log.md</code> (the log was reconstructed afterwards).</p>
+<h3>What it was about</h3>
+<p>Two teams rebuilt the nightly reorder loop of stock-5 and left sessions behind. The task: work out what was decided, write the plan that holds, and build the store it describes.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it is</th><th>What it was for</th><th>Where</th></tr>
+<tr><td>Starter zip and session zips</td><td>Course downloads</td><td>Read 9 sessions to find the decisions. Loose files beside the zip were missed at first</td><td>Local scratch folder</td></tr>
+<tr><td>Postgres 17 container <code>stock-5-store-db-1</code></td><td>The reorder store, with Drizzle for the schema</td><td>The store the plan describes. Port 5471, database <code>reorder_3hnq</code></td><td>UGREEN NAS, Docker (<span class="pill v">verified</span> still up)</td></tr>
+<tr><td><code>archive-gate.py</code></td><td>Script that lists the archive again before each claim</td><td>Catch files that appear mid-run. Its first live run found a new file (database name)</td><td><code>~/s02e01/gate</code></td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>The first store on the NAS was Postgres 16 on port 5432. Build 3 was refused because the archive had changed: loose files of a later agent said image 17, port 5471. You approved recreating the store (volume dropped, empty table only).</li>
+<li>The plan lacked three rows the course asked for: image version, port and database name.</li>
+<li>One combined shell command was refused by the permission check.</li></ol>
+<p class="m">Verify printed PostgreSQL 17.11 on port 5471. Solved 2026-11-02 14:48:52Z.</p>
+</section>
+
+<!-- ================= S02E02 ================= -->
+<section class="ep" id="S02E02" data-title="nobody asked" data-tag="S02E02" hidden>
+<h2>S02E02 · nobody asked</h2>
+<p><span class="pill n">from records</span> <code>challenges/S02E02/debrief.md</code>. Today's container state is <span class="pill v">verified</span>.</p>
+<h3>What it was about</h3>
+<p>Build an agent people can reach by email. It gets mail at its own address, does what is asked with its own tools, and replies in the same thread. The course wrote three times with nobody in the chat: a task behind a link, a follow-up that named no link, and a stranger asking for the same thing.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it is</th><th>What it was for</th><th>Where</th></tr>
+<tr><td>mail-agent container</td><td>Node app in <code>node:24-alpine</code></td><td>The agent itself. It polled every 10 s, with no restart policy at that time. Today it has <code>unless-stopped</code> (verified)</td><td>UGREEN NAS, volumes <code>mail-agent-app</code> and <code>mail-agent-data</code></td></tr>
+<tr><td>AgentMail inbox</td><td>Cloud mailbox service</td><td>The address the course writes to. The first key lacked permission to create an inbox, so it was fixed with you</td><td>Cloud</td></tr>
+<tr><td>Fetch tool with address checks</td><td>Code in the agent</td><td>Read the linked pages. Blocks private network addresses and scans for keys</td><td>In the agent (<code>/app/src</code>)</td></tr>
+<tr><td>Exact sender check</td><td>Code in the agent</td><td>Only <code>rook@mail.mega.dev</code> is trusted, decided in code, not by the model. A stranger's mail reaches the model only as a withheld marker</td><td>In the agent</td></tr>
+<tr><td>SQLite thread memory</td><td>Small database</td><td>One row per mail and every page read per thread, so a follow-up knows its thread</td><td>Data volume on the NAS</td></tr>
+<tr><td>Anthropic API key</td><td>Secret for the model</td><td>The agent's model calls (at most 6 steps, 4 fetches, 90 s per mail)</td><td>Read-only config folder on the NAS</td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>The first reply added a time the page did not show (03:49:38 against 03:50:55). The code now sends only the answer line.</li>
+<li>Round 1 failed: each mail was handled alone, so "who enqueued it?" got "no record". Thread memory fixed it.</li>
+<li>Round 2 was refused because your browser had opened the stranger's page, which counted as obeying it. In round 3 no stranger link was opened, and it passed.</li></ol>
+<p class="m">Solved after 2 turned-down tries. This is the agent that S02E05 reuses.</p>
+</section>
+
+<!-- ================= S02E03 ================= -->
+<section class="ep" id="S02E03" data-title="schema first" data-tag="S02E03" hidden>
+<h2>S02E03 · schema first</h2>
+<p><span class="pill n">from records</span> <code>challenges/S02E03/debrief.md</code>, <code>docs/take-back-s02e03.md</code>. Folders <code>~/s02e03-mcp</code> and <code>~/s02e03-logs</code> exist on this laptop.</p>
+<h3>What it was about</h3>
+<p>Give your tools a home: build and deploy a remote MCP server of your own with memo, upload and transcribe, connect it to your harness, and hand it to the course. A stranger (the course) called it by its schemas and came back hours later.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it is</th><th>What it was for</th><th>Where</th></tr>
+<tr><td>Cloudflare Worker</td><td>Serverless host</td><td>Run the MCP server on a public address that stays up. Chosen over the NAS because only the local network can reach the NAS speech container. Deploy with <code>wrangler deploy</code></td><td>Cloudflare. Source in <code>~/s02e03-mcp</code></td></tr>
+<tr><td>Workers AI</td><td>Cloudflare model service</td><td>The transcribe tool</td><td>Cloudflare</td></tr>
+<tr><td>OAuth provider library</td><td>Library in the Worker</td><td>Dynamic client registration and a consent page. Only a client let in with the owner passphrase gets a token</td><td>In the Worker; grants stored in a KV namespace</td></tr>
+<tr><td>Upload tool</td><td>Tool in the server</td><td>Hands out a place to send bytes, so a file travels beside the model, not through it. Limit raised to 16 MB</td><td>Worker</td></tr>
+<tr><td><code>s02e03-memo</code> MCP connection</td><td>The server added to Claude Code at user scope</td><td>Use your own tools from your harness (visible in this session's tool list)</td><td>Claude Code config</td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>The transcribe result was too big and its error did not name the url, so the course refused it. Both were fixed, and the results were cut from 1341 B to 848 B.</li>
+<li>The first connect link was mistyped when copied and had expired.</li>
+<li>The sign-in page refused the passphrase because of look-alike letters. A new one without them was used.</li></ol>
+<p class="m">Still open: a tool to delete notes and files needs a local deploy login. To take it back, delete the OAuth grants in the KV namespace; a new passphrase only blocks new sign-ins.</p>
+</section>
+
+<!-- ================= S02E04 ================= -->
+<section class="ep" id="S02E04" data-title="two places" data-tag="S02E04" hidden>
+<h2>S02E04 · two places</h2>
+<p><span class="pill n">from records</span> <code>challenges/S02E04/debrief.md</code>, <code>log.md</code></p>
+<h3>What it was about</h3>
+<p>Two course jobs, each with a skill. One worker ran on this machine and one elsewhere. The main agent did neither job. It took both results, joined them and claimed.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it is</th><th>What it was for</th><th>Where</th></tr>
+<tr><td>Local subagent</td><td>General-purpose Claude Code subagent</td><td>Job 1, <code>incident-lookup</code>: read tram-3 without ever reading the crew field, redact, submit. Used <code>curl</code> with JSON-RPC instead of an MCP client</td><td>The WSL machine</td></tr>
+<tr><td>Claude Code cloud session</td><td>Session on your account in the cloud</td><td>Job 2, <code>voice-to-memo</code>: 11 notes from the tram desk clip</td><td>Cloud</td></tr>
+<tr><td>Python <code>zipfile</code></td><td>Standard library module</td><td>Unpack the skills, because the host had no <code>unzip</code></td><td>Local</td></tr>
+<tr><td>Model judgment for the join</td><td>The main agent</td><td>Convert the clocks: 22:50 US Eastern (EDT) is 03:50 central European, so the note at 0:57 was the right one</td><td>Main session</td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>You pasted job 1's status into the cloud session by mistake, so it answered it had no context.</li>
+<li>The cloud environment's network policy refused the course host (403). You allowed the host in the environment's settings.</li>
+<li>Two clocks (US Eastern and central European) had to be converted before the join.</li></ol>
+<p class="m">Solved on the first claim, 2026-11-05 09:42:44Z.</p>
+</section>
+
+<!-- ================= S02E05 ================= -->
+<section class="ep" id="S02E05" data-title="while you're away" data-tag="S02E05" hidden>
+<h2>S02E05 · while you're away</h2>
+<p><span class="pill v">verified today</span> from the live NAS and the course replies on 2026-11-06. Earlier tries come from <code>challenges/S02E05/log.md</code> and a memory note (<span class="pill n">from records</span>).</p>
+<h3>What it was about</h3>
+<p>Your agent keeps working while you are away. It reads course mail on one channel, does the acts you allow on its own, and holds the acts that need you. A held act needs a code only you can give. The agent's own log must agree with the course's times.</p>
+<table><tr><th>Free: agent does it alone</th><th>Gated: agent holds it</th></tr>
+<tr><td><code>post_status</code>, <code>ack_alert</code>, <code>archive_report</code>, <code>purge_cache</code></td><td><code>release_hold</code>, <code>rotate_key</code></td></tr></table>
+<p class="m">The policy changed between tries: the repo log lists <code>purge_cache</code> as gated, the final code (<code>away.mjs</code>) has it free. Free acts are easy to undo. Gated acts touch production or a shared key.</p>
+
+<h3>Where things run</h3>
+<svg viewBox="0 0 900 400" role="img" aria-label="Laptop, cloud, NAS">
+<rect class="box" x="10" y="10" width="270" height="380" rx="10"/><text class="b" x="24" y="34">Your laptop (WSL2)</text>
+<rect class="box" x="30" y="56" width="230" height="64" rx="8"/><text x="42" y="82">Claude Code (harness)</text><text class="s" x="42" y="102">runs commands, calls course tools</text>
+<rect class="box" x="30" y="140" width="230" height="64" rx="8"/><text x="42" y="166">ssh client, host "ugreen"</text><text class="s" x="42" y="186">door into the NAS, user Funky</text>
+<rect class="box" x="30" y="224" width="230" height="64" rx="8"/><text x="42" y="250">Your phone</text><text class="s" x="42" y="270">ntfy app receives the push</text>
+<rect class="box" x="30" y="308" width="230" height="64" rx="8"/><text x="42" y="334">Your own mail address</text><text class="s" x="42" y="354">only for an optional APPROVE mail</text>
+<rect class="box" x="310" y="10" width="270" height="380" rx="10"/><text class="b" x="324" y="34">Cloud services (not yours)</text>
+<rect class="box" x="330" y="56" width="230" height="64" rx="8"/><text x="342" y="82">hq.mega.dev MCP server</text><text class="s" x="342" y="102">course: start, claim, debrief</text>
+<rect class="box" x="330" y="140" width="230" height="64" rx="8"/><text x="342" y="166">AgentMail inbox</text><text class="s" x="342" y="186">the mailbox the course writes to</text>
+<rect class="box" x="330" y="224" width="230" height="64" rx="8"/><text x="342" y="250">ntfy.sh</text><text class="s" x="342" y="270">public push relay</text>
+<rect class="box" x="330" y="308" width="230" height="64" rx="8"/><text x="342" y="334">Anthropic API</text><text class="s" x="342" y="354">claude-haiku-5-5 writes replies</text>
+<rect class="box" x="610" y="10" width="280" height="380" rx="10"/><text class="b" x="624" y="34">UGREEN NAS (yours, always on)</text>
+<rect class="box" x="630" y="56" width="240" height="150" rx="8"/><text class="b" x="642" y="82">mail-agent container</text>
+<text class="s" x="642" y="104">node:24-alpine, restart: unless-stopped</text><text class="s" x="642" y="126">/app (read-only): the code</text><text class="s" x="642" y="146">/data (writable): journal, status log, holds</text><text class="s" x="642" y="166">/run/cfg (read-only): keys and config</text>
+<rect class="box" x="630" y="226" width="240" height="64" rx="8"/><text x="642" y="252">Docker engine</text><text class="s" x="642" y="272">volumes under /volume1/@docker</text>
+<rect class="box" x="630" y="310" width="240" height="64" rx="8"/><text x="642" y="336">lesson-map (nginx)</text><text class="s" x="642" y="356">serves this page on port 18082</text>
+</svg>
+
+<h3>One message, start to finish</h3>
+<svg viewBox="0 0 900 360" role="img" aria-label="Message flow">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor" style="color:var(--mut)"/></marker></defs>
+<g class="ln"><path d="M130 60H190" marker-end="url(#a)"/><path d="M330 60H390" marker-end="url(#a)"/><path d="M530 60H590" marker-end="url(#a)"/><path d="M730 60H790" marker-end="url(#a)"/>
+<path d="M660 90V150" marker-end="url(#a)"/><path d="M660 215V265" marker-end="url(#a)"/><path d="M560 295H330" marker-end="url(#a)"/><path d="M440 180H560" marker-end="url(#a)"/></g>
+<rect class="box" x="10" y="35" width="120" height="50" rx="8"/><text x="22" y="64">Course mail</text>
+<rect class="box" x="190" y="35" width="140" height="50" rx="8"/><text x="202" y="64">AgentMail inbox</text>
+<rect class="box" x="390" y="35" width="140" height="50" rx="8"/><text x="402" y="55">guard.mjs</text><text class="s" x="402" y="73">sender + auth check</text>
+<rect class="box" x="590" y="35" width="140" height="50" rx="8"/><text x="602" y="55">away.mjs gate</text><text class="s" x="602" y="73">policy table, no model</text>
+<rect class="box" x="790" y="35" width="100" height="50" rx="8"/><text x="802" y="64">journal</text>
+<rect class="box" x="560" y="150" width="200" height="65" rx="8"/><text x="572" y="174">free act: DONE</text><text class="s" x="572" y="194">gated act: HOLD + agent code</text>
+<rect class="box" x="560" y="265" width="200" height="60" rx="8"/><text x="572" y="291">ntfy push to your phone</text><text class="s" x="572" y="310">only when something is held</text>
+<rect class="box" x="130" y="265" width="200" height="60" rx="8"/><text x="142" y="291">reply in the same thread</text><text class="s" x="142" y="310">one line per ask</text>
+<rect class="box" x="10" y="140" width="430" height="85" rx="8"/><text class="b" x="22" y="164" style="fill:var(--amber)">Owner step (only you)</text>
+<text class="s" x="22" y="186">You type your owner code. It goes into an approve file</text><text class="s" x="22" y="204">on the NAS, or into an APPROVE mail from your address.</text>
+</svg>
+<p class="m">Two codes exist. The <b>agent code</b> names one hold and is shown in the push. The <b>owner code</b> is the secret only you can give. An unknown act, or two acts in one mail, is held (fail closed). A hold lasts 60 minutes.</p>
+
+<h3>What was installed or built, and for what</h3>
+<table><tr><th>Tool</th><th>What it is for</th><th>Where</th></tr>
+<tr><td>mail-agent container</td><td>The agent. Built in S02E02, extended here with the act gate.</td><td>NAS, image <code>node:24-alpine</code>, code in <code>/app/src</code></td></tr>
+<tr><td><code>away.mjs</code> (act gate)</td><td>Policy table, one-time 8-character code, 60 minute expiry, approval by APPROVE mail or approve file. Acts are simulated: they are written to the journal only.</td><td><code>/app/src</code>, deployed to the app volume with checksums, backups in <code>/app/bak-s02e02</code></td></tr>
+<tr><td><code>guard.mjs</code></td><td>Trusted sender must also pass mail authentication</td><td><code>/app/src</code></td></tr>
+<tr><td><code>journal.mjs</code></td><td>Writes <code>journal.jsonl</code> and, live, <code>statuslog.jsonl</code>: one row per course event with a round number</td><td><code>/data</code> volume</td></tr>
+<tr><td><code>/data/window-start</code></td><td>Tells the journal which rows are round 1 (before) and round 2 (inside the window)</td><td><code>/data</code> volume</td></tr>
+<tr><td>AgentMail, ntfy.sh, Anthropic API</td><td>Mailbox, phone push (the agent posts to <code>https://ntfy.sh/&lt;topic&gt;</code>), and reply wording. The model never decides free or gated</td><td>Cloud</td></tr>
+<tr><td><code>holds.json</code>, <code>/data/approve/</code></td><td>Open holds and your approvals</td><td><code>/data</code> volume</td></tr>
+<tr><td>Container backups</td><td>Copies of the agent before edits</td><td>Archives <code>mail-agent-backup-*.tgz</code> in <code>/home/Funky</code> on the NAS</td></tr></table>
+
+<h3>Today's timeline (UTC)</h3>
+<svg viewBox="0 0 900 290" role="img" aria-label="Timeline">
+<rect x="370" y="118" width="400" height="24" fill="var(--blue)" opacity="0.15"/><text class="s" x="372" y="112">window 13:45 to 14:10</text>
+<line class="ln" x1="50" y1="130" x2="850" y2="130"/>
+<circle cx="130" cy="130" r="6" fill="var(--blue)"/><line class="lead" x1="130" y1="124" x2="130" y2="70"/><text x="130" y="62" text-anchor="middle">13:30</text><text class="s" x="130" y="50" text-anchor="middle">registered</text>
+<circle cx="178" cy="130" r="6" fill="var(--green)"/><line class="lead" x1="178" y1="136" x2="178" y2="190"/><text x="178" y="206" text-anchor="middle">13:32:53</text><text class="s" x="178" y="222" text-anchor="middle">Rook mail, ACK sent</text><text class="s" x="178" y="236" text-anchor="middle">(round 1)</text>
+<circle cx="370" cy="130" r="6" fill="var(--mut)"/><line class="lead" x1="370" y1="124" x2="370" y2="70"/><text x="370" y="62" text-anchor="middle">13:45</text><text class="s" x="370" y="50" text-anchor="middle">window opens</text>
+<circle cx="617" cy="130" r="6" fill="var(--amber)"/><line class="lead" x1="617" y1="124" x2="617" y2="70"/><text x="617" y="62" text-anchor="middle">14:00:26</text><text class="s" x="617" y="50" text-anchor="middle">Scout mail: archive done,</text><text class="s" x="617" y="36" text-anchor="middle">release held, push sent</text>
+<circle cx="648" cy="130" r="6" fill="var(--violet)"/><line class="lead" x1="648" y1="136" x2="648" y2="190"/><text x="648" y="206" text-anchor="middle">14:02:20</text><text class="s" x="648" y="222" text-anchor="middle">owner code: release ran</text>
+<circle cx="672" cy="130" r="6" fill="var(--green)"/><line class="lead" x1="672" y1="136" x2="740" y2="168"/><text x="744" y="172">14:03:51</text><text class="s" x="744" y="188">solved</text>
+<circle cx="770" cy="130" r="6" fill="var(--mut)"/><line class="lead" x1="770" y1="124" x2="770" y2="70"/><text x="770" y="62" text-anchor="middle">14:10</text><text class="s" x="770" y="50" text-anchor="middle">window closes</text>
+</svg>
+
+<h3>Steps taken today, and why</h3>
+<table><tr><th>#</th><th>Action</th><th>Why</th></tr>
+<tr><td>1</td><td>Read the memory note, then checked the container and the status log.</td><td>Earlier tries had failed. The log did not exist yet: the code creates it on the first course event.</td></tr>
+<tr><td>2</td><td>Backed up, then wrote the window start to <code>/data/window-start</code>.</td><td>The round numbers in the log come from it.</td></tr>
+<tr><td>3</td><td>Started the challenge and sent the practice answer: 10 of 10 with your policy.</td><td>Practice comes before live messages.</td></tr>
+<tr><td>4</td><td>Waited until 13:30 and registered the channel, the window 13:45 to 14:10 and the ntfy topic.</td><td>The window must start within 15 minutes of registering.</td></tr>
+<tr><td>5</td><td>Watched the journal. At the hold, wrote your owner code to the approve file.</td><td>Only you can give the owner code. The "owner pre-approved" line in the mail was ignored.</td></tr>
+<tr><td>6</td><td>Sent the status log to the course exactly as written.</td><td>An edited or rebuilt log had been rejected before.</td></tr></table>
+
+<h3>Earlier tries and why they failed</h3>
+<p><span class="pill n">from records</span> <code>challenges/S02E05/log.md</code> and a memory note.</p>
+<ol><li>First mail: the gate held a mail with no act and sent a useless ping and a HELD reply. Fixed: zero acts now gives an ACK.</li>
+<li>Second mail: the agent sent one generic "HELD" line instead of one line per ask. The corrected reply went out about 94 minutes late, because the corrected reply depended on the WSL session, which had stalled. The course rejected it with <code>no_action_lines</code>. Lesson: the agent on the NAS must answer correctly by itself.</li>
+<li>Later windows failed with a log mismatch: a status log rebuilt afterwards from the journal does not match the course's times. The journal now writes the status log live.</li></ol>
+
+<h3>Gaps</h3>
+<ul><li><span class="n">Not checked:</span> what the container can reach (files, network, keys). The setup came from earlier sessions.</li>
+<li><span class="n">Not read:</span> the read-only config folder, because it holds keys.</li>
+<li>The repo's <code>challenges/S02E05/log.md</code> stops at the 12:02 window. The 13:30 run above is not in it yet.</li></ul>
+</section>
+
+</div>
+<script>
+(function(){
+  var secs=[].slice.call(document.querySelectorAll('section.ep'));
+  var tabs=document.getElementById('tabs');
+  function show(id){
+    var found=false;
+    secs.forEach(function(s){var on=s.id===id;s.hidden=!on;if(on)found=true;});
+    if(!found){id=secs[0].id;secs[0].hidden=false;}
+    [].forEach.call(tabs.children,function(b){b.setAttribute('aria-selected',b.dataset.id===id?'true':'false');});
+    try{history.replaceState(null,'','#'+id);}catch(e){}
+    window.scrollTo(0,0);
+  }
+  secs.forEach(function(s){
+    var b=document.createElement('button');
+    b.type='button';b.setAttribute('role','tab');b.dataset.id=s.id;
+    b.innerHTML=(s.dataset.tag==='all episodes'?'Overview':s.id)+'<span class="t">'+s.dataset.title+'</span>';
+    b.addEventListener('click',function(){show(s.id);});
+    tabs.appendChild(b);
+  });
+  window.addEventListener('hashchange',function(){show(location.hash.slice(1));});
+  show(location.hash.slice(1)||secs[0].id);
+})();
+</script>
+</body></html>
