@@ -15,6 +15,7 @@ const applied = items.filter((i) => i.status === 'applied').length;
         <p>{total} findings from {topics.filter((t) => t.retro).length} lessons, joined by {ideas.length} ideas that keep coming back. {applied} are applied to the workflow.</p>
       </div>
       <div class="tools">
+        <a class="btn" href="/tools.html">Tools by episode</a>
         <button class="btn" id="expand" type="button">Expand all</button>
         <button class="btn" id="collapse" type="button">Collapse all</button>
         <button class="btn" id="theme" type="button" aria-label="Switch theme">Theme</button>

@@ -42,3 +42,6 @@
 - 2026-11-05: S02E04 solved (accepted 09:42:44Z, first claim). Retros and debriefs added for S02E03 and S02E04; S01E01, S01E02, S01E04, S01E05, S02E01 and S02E02 extended from the course sheets; the lesson map shows 87 findings from 9 lessons (PR titusandronicu/mega-dev#21). Playbook sections "Remote workers, hosts and public links" and "Joining sources and hand-offs"; lessons 45-56 and their index rows. Findings that fix by playbook are marked applied once this merges.
 - 2026-11-05: `tools/mcp-call` (+ `.mjs` module and `mcp-call.test.mjs`): MCP over HTTP without a client, for course job links; masked log. Mock-server tests pass; not yet used on a live job.
 - 2026-11-05: `docs/take-back-s02e03.md`: owner steps to cut the course off from the S02E03 server, delete its data or take it down. Written, not run. The server's delete tools already exist (live `/plan` lists them).
+
+## 2026-11-06
+- `tools/lesson-map/public/tools.html`: "Tools by episode" page (overview plus one tab per episode, S01E01 to S02E05), linked from the lesson map header. S02E05 tab checked against the live NAS and course replies; the other tabs come from the repo records and were not re-checked. `challenges/S02E05/log.md` is not committed here and stops at the 12:02 window.
