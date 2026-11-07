@@ -44,4 +44,5 @@
 - 2026-11-05: `docs/take-back-s02e03.md`: owner steps to cut the course off from the S02E03 server, delete its data or take it down. Written, not run. The server's delete tools already exist (live `/plan` lists them).
 
 ## 2026-11-06
-- `tools/lesson-map/public/tools.html`: "Tools by episode" page (overview plus one tab per episode, S01E01 to S02E05), linked from the lesson map header. S02E05 tab checked against the live NAS and course replies; the other tabs come from the repo records and were not re-checked. `challenges/S02E05/log.md` is not committed here and stops at the 12:02 window.
+- `tools/lesson-map/public/tools.html`: "Tools by episode" page (overview plus one tab per episode, S01E01 to S02E05), linked from the lesson map header. S02E05 tab checked against the live NAS and course replies; the other tabs come from the repo records and were not re-checked.
+- 2026-11-06: S02E05 solved (14:03:51Z). `challenges/S02E05/` committed: agent source synced from the NAS (live status log in `journal.mjs`, `purge_cache` free), 68/68 tests, log with the 13:45 to 14:10 run, owner and decoy codes masked.
