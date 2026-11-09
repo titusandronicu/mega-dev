@@ -46,3 +46,4 @@
 ## 2026-11-06
 - `tools/lesson-map/public/tools.html`: "Tools by episode" page (overview plus one tab per episode, S01E01 to S02E05), linked from the lesson map header. S02E05 tab checked against the live NAS and course replies; the other tabs come from the repo records and were not re-checked.
 - 2026-11-06: S02E05 solved (14:03:51Z). `challenges/S02E05/` committed: agent source synced from the NAS (live status log in `journal.mjs`, `purge_cache` free), 68/68 tests, log with the 13:45 to 14:10 run, owner and decoy codes masked.
+- 2026-11-09: automated prep run; hq.mega.dev unreachable (proxy 403 / DNS), wrote challenges/2026-11-09/prep.md from repo only.
