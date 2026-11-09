@@ -76,3 +76,11 @@ Remote workers, hosts and public links (from S01E04, S01E05, S02E03, S02E04)
 Joining sources and hand-offs (from S01E02, S02E04)
 1. Before you join two sources, write down each one's clock and its offset on that date, convert, and put the conversion in the log. Eastern 22:50 on 31 Oct (EDT, UTC-4) is 03:50 in central European winter time, not 22:50.
 2. A hand-off to a new session labels each part with the recording or file it came from. A merged record loses its labels and the next session can only guess or ask.
+
+Mixed-file requirements (from S03E01)
+1. Before you read any media, read the course repo's `CLAUDE.md` and list `tools/`. Use `tools/transcribe` for audio and `tools/speech-offsets` for times; do not install a second speech tool first.
+2. Read each source by its own kind: look at images and video frames, transcribe audio, decode a PDF's text, screenshot a canvas. Cite each requirement to its file and place (`at` seconds, `region` as 0-1 fractions, `page`).
+3. List every tag you see, including ones that were deleted or retracted. Count the tags per source against what you send before the claim.
+4. Check a heard tag against the shape of the written ones, and say which letters are unsure.
+5. Two tags that cannot both hold, or a tag that the data cannot meet (an incident with no author), go in `conflicts` with one question to the owner naming both sides. Do not pick a side. If the owner answers only some, build the rest as a stated choice and tell the human.
+6. First `claim-challenge` call: send `receipts: {}`. Step two sends the receipt from step one inside `answer`.

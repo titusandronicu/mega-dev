@@ -46,3 +46,6 @@
 ## 2026-11-06
 - `tools/lesson-map/public/tools.html`: "Tools by episode" page (overview plus one tab per episode, S01E01 to S02E05), linked from the lesson map header. S02E05 tab checked against the live NAS and course replies; the other tabs come from the repo records and were not re-checked.
 - 2026-11-06: S02E05 solved (14:03:51Z). `challenges/S02E05/` committed: agent source synced from the NAS (live status log in `journal.mjs`, `purge_cache` free), 68/68 tests, log with the 13:45 to 14:10 run, owner and decoy codes masked.
+
+## 2026-11-09
+- S03E01 "status for the night" solved (08:39:07Z; list refused once for `missing_tag`). `challenges/S03E01/` holds the debrief, log, retro and the `capture` skill text. Findings 1, 2, 4, 5 and 7 written into `docs/lessons-learned.md` (57 to 61) and `docs/playbook.md` ("Mixed-file requirements"); status page live as its own Worker `s03e01-status` (public, no login, reads the ops feed live) until `wrangler delete`.
