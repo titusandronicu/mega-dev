@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Usage: tools/stale-docs [--days N] [extra-dir ...]
+# Lists notes and docs not changed for N days (default 14), oldest first, so the owner can decide to modify or archive each one.
+# Looks at CLAUDE.md, docs/*.md, context/**/*.md (not context/archive) and every *.md in the extra dirs (for example the agent memory folder).
+# Age = days since the last commit that touched the file; a file git does not track uses its modified time. Report only: it never edits or moves anything. Exit 0, 64 usage.
+set -uo pipefail
+cd "$(dirname "$0")/.."
+days=14
+if [ "${1:-}" = "--days" ]; then [[ "${2:-}" =~ ^[0-9]+$ ]] || { echo "usage: tools/stale-docs [--days N] [extra-dir ...]" >&2; exit 64; }; days=$2; shift 2; fi
+now=${STALE_NOW:-$(date +%s)}
+{
+  ls CLAUDE.md docs/*.md 2>/dev/null
+  find context -name '*.md' -not -path 'context/archive/*' 2>/dev/null
+  for d in "$@"; do find "$d" -name '*.md' 2>/dev/null; done
+} | sort -u | while IFS= read -r f; do
+  t=$(git log -1 --format=%ct -- "$f" 2>/dev/null); [ -n "$t" ] || t=$(stat -c %Y "$f")
+  age=$(( (now - t) / 86400 ))
+  [ "$age" -ge "$days" ] && printf '%5d days  %s\n' "$age" "$f"
+done | sort -rn | awk -v d="$days" 'BEGIN{n=0} {print; n++} END{ if(n==0) print "nothing older than " d " days"; else print n " file(s) older than " d " days: for each, propose modify or archive; the owner approves" }'

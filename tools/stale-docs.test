@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# bash tools/stale-docs.test : a note 30 days old is listed, a fresh one is not (STALE_NOW fixes the clock).
+set -uo pipefail
+cd "$(dirname "$0")/.."
+d=$(mktemp -d); trap 'rm -rf "$d"' EXIT
+echo old > "$d/old.md"; echo new > "$d/new.md"
+touch -d '2026-10-01' "$d/old.md"; touch -d '2026-10-31' "$d/new.md"
+out=$(STALE_NOW=$(date -d 2026-10-31 +%s) tools/stale-docs --days 14 "$d")
+echo "$out" | grep -q "old.md" || { echo "FAIL: old note missing: $out"; exit 1; }
+echo "$out" | grep -q "new.md" && { echo "FAIL: fresh note listed"; exit 1; }
+echo "$out" | grep -q "the owner approves" || { echo "FAIL: no owner line"; exit 1; }
+tools/stale-docs --days x >/dev/null 2>&1; [ $? = 64 ] || { echo "FAIL: bad usage exit"; exit 1; }
+echo "stale-docs: 3 cases ok"

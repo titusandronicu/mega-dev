@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# bash tools/next-step.test : one fixture folder walked through every state.
+set -uo pipefail
+cd "$(dirname "$0")/.."
+d=$(mktemp -d); trap 'rm -rf "$d"' EXIT; export CHALLENGES_DIR="$d"
+n() { tools/next-step X1; }
+expect() { out=$(n); echo "$out" | grep -q "$1" || { echo "FAIL (want '$1'): $out"; exit 1; }; }
+expect "no folder yet"
+mkdir "$d/X1"; expect "write .*log.md"
+echo "# log" > "$d/X1/log.md"; expect "no claim logged"
+echo '{"at": "t", "status": "progress"}' > "$d/X1/claim-log.jsonl"; expect "pre-claim-gate"
+echo '{"at": "t", "status": "rejected"}' >> "$d/X1/claim-log.jsonl"; expect "hint tool"
+echo '{"at": "t", "status": "solved"}' >> "$d/X1/claim-log.jsonl"; expect "debrief.md"
+echo debrief > "$d/X1/debrief.md"; expect "retro.md from"
+printf '# r\n## Findings\n- no tags\n' > "$d/X1/retro.md"; expect "fails tools/retro-check"
+printf '# r\n## Findings\n- ok [evidence: x] [fix: none] [status: proposed]\n' > "$d/X1/retro.md"; expect "solve-notes"
+tools/next-step >/dev/null 2>&1; [ $? = 64 ] || { echo "FAIL usage exit"; exit 1; }
+echo "next-step: 9 cases ok"
