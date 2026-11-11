@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Usage: tools/next-step <challenge-code>
+# Prints the ONE next step for a challenge from the files in challenges/<code>/ (CHALLENGES_DIR overrides the folder), so a session reads one short line instead of the whole playbook.
+# It looks at: the folder, log.md, claim-log.jsonl (last status), live-recheck.log, debrief.md, retro.md. Exit 0, 64 usage.
+set -uo pipefail
+cd "$(dirname "$0")/.."
+[ $# -eq 1 ] || { echo "usage: tools/next-step <challenge-code>" >&2; exit 64; }
+code=$1; base=${CHALLENGES_DIR:-challenges}; dir="$base/$code"
+say() { echo "next: $*"; exit 0; }
+[ -d "$dir" ] || say "no folder yet. Read docs/playbook.md and any retro.md finding with status applied or proposed, make $dir/ with log.md, then start the Challenge."
+[ -f "$dir/log.md" ] || say "write $dir/log.md (Tries used / left at the top), then continue the Challenge."
+[ -s "$dir/claim-log.jsonl" ] || say "no claim logged. Work the Challenge; after every claim-challenge call run tools/record-claim $code <reply.json> first."
+last=$(tail -1 "$dir/claim-log.jsonl" | grep -o '"status": *"[a-z]*"' | head -1 | grep -o '[a-z]*"$' | tr -d '"')
+case "$last" in
+  progress) say "a step was accepted, not solved. Do what the last reply's message/next says, then run tools/pre-claim-gate $code before the next claim." ;;
+  rejected) say "last claim was refused. Read docs/didnt-work.md, ask the owner to re-read the live page and add a dated line to $dir/live-recheck.log, ask the hint tool with the code and tries, then tools/pre-claim-gate $code." ;;
+  solved)
+    [ -f "$dir/debrief.md" ] || say "solved. Copy the course debrief into $dir/debrief.md."
+    [ -f "$dir/retro.md" ] || say "debrief saved. Write $dir/retro.md from challenges/RETRO-TEMPLATE.md, then tools/retro-check on it."
+    tools/retro-check "$dir/retro.md" >/dev/null 2>&1 || say "retro.md fails tools/retro-check; fix its Findings lines."
+    say "record the solve in HQ: node ~/repos/mega-hq/ingest/solve-notes.mjs $dir/debrief.md --code $code (add --dry-run first). Findings stay proposals until the owner approves." ;;
+  *) say "last claim status is '$last', which I do not know. Read $dir/log.md and the last line of claim-log.jsonl." ;;
+esac

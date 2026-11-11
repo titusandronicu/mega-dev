@@ -6,6 +6,7 @@
 #   3. no course tokens in tracked text files (redact.mjs --check)
 #   4. repo paths named in backticks in CLAUDE.md, the live docs and context/foundation exist
 #   5. every executable in tools/ is named in docs/tools.md or CLAUDE.md
+#   6. every tools/*.test and tools/*.test.mjs passes (this script is the one blocking gate before a merge: docs/playbook.md, "One gate")
 # Run from anywhere; it changes to the repo root first. Needs bash, awk, git, node, python3.
 set -uo pipefail
 cd "$(dirname "$0")/.."
@@ -24,7 +25,7 @@ out=""; for f in challenges/*/retro.md; do [ -e "$f" ] || continue; o=$(tools/re
 
 allow=hooks/token-allowlist   # files that may carry a course signature on their `signature:` line only
 [ -f "$allow" ] || allow=/dev/null
-files=$(git ls-files | grep -Ev '\.(png|jpe?g|gif|pdf|zip)$' | grep -Fvx '.claude/skills/read/scripts/redact.mjs' | grep -Fvxf "$allow")
+files=$(git ls-files | while IFS= read -r f; do [ -L "$f" ] || printf '%s\n' "$f"; done | grep -Ev '\.(png|jpe?g|gif|pdf|zip)$' | grep -Fvx '.claude/skills/read/scripts/redact.mjs' | grep -Fvxf "$allow")
 out=""
 if ! o=$(printf '%s\n' "$files" | xargs node .claude/skills/read/scripts/redact.mjs --check 2>&1); then out+="$o"$'\n'; fi
 while IFS= read -r f; do
@@ -73,5 +74,13 @@ for md in .claude/skills/*/SKILL.md; do
   done
 done
 [ -z "$out" ] && report "skill scripts exist" ok || report "skill scripts exist" fail "${out%$'\n'}"
+
+out=""
+for t in tools/*.test tools/*.test.mjs; do
+  [ -f "$t" ] || continue
+  case "$t" in *.mjs) cmd=(node "$t");; *) cmd=(bash "$t");; esac
+  timeout 120 "${cmd[@]}" >/dev/null 2>&1 || out+="$t fails (run it to see why)"$'\n'
+done
+[ -z "$out" ] && report "tool tests pass" ok || report "tool tests pass" fail "${out%$'\n'}"
 
 exit $fail

@@ -13,5 +13,5 @@ printf 'FEED_URL=http://127.0.0.1:8899/feed\n' > .dev.vars
 npx wrangler dev --port 8787 > ../wrangler.log 2>&1 & echo $! > ../wrangler.pid
 git init -q; git config user.name sched-agent; git config user.email agent@invalid; git add -A; git commit -qm base
 sleep 10
-TRACKER_URL=http://127.0.0.1:8899 TRACKER_TOKEN=mock-token LIVE_URL=http://127.0.0.1:8787 POLL_MS=5000 nohup node agent/loop.mjs > ../loop.out 2>&1 &
+TRACKER_URL=http://127.0.0.1:8899 TRACKER_TOKEN="mock-token" LIVE_URL=http://127.0.0.1:8787 POLL_MS=5000 nohup node agent/loop.mjs > ../loop.out 2>&1 &
 echo $! > ../loop.pid; echo started

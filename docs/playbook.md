@@ -93,3 +93,13 @@ Unattended rounds with an owner in the loop (from S03E03)
 5. Stop background jobs by the pid files the script wrote. `pkill -f <pattern>` can match your own command line and kill the shell.
 6. Before a round opens, rehearse and run `tools/check-ask-order` on the mock's dump: it fails on any ship line but `asked`, or a close, before the owner entry. Send files to the NAS with `tools/nas-put` (it compares checksums), not `scp`.
 7. Keep `claim-log.jsonl` as the source for the number of claims; the course debrief counts per round. Put both in the hand-off.
+
+Verification, review, gates and upkeep (from the S03E03 lesson, "AI-Native Product Development")
+1. One short file per feature in `docs/features/` from `docs/features/TEMPLATE.md`: role, how to get there, how to verify, what to keep in mind, last checked. Only what the code does not show. First candidate: `mail-agent` and its `log_mismatch` history, when it is next touched.
+2. Maps and notes rot. At the start of each lesson run `tools/stale-docs` (add the agent memory folder as an extra dir). For each file listed, propose modify or archive; the owner approves. A wrong note is worse than none.
+3. One gate: `tools/check-all` is the single blocking check before a merge. An agent may add a check (a ratchet for a pattern it noticed) only as a script with a test in `tools/`, wired into `check-all`, through a PR the owner approves.
+4. The reviewer is not the author. For medium and high risk changes start `.claude/agents/reviewer.md` on the diff in a fresh context, ideally another model. The author answers every finding (fixed, disagree with a reason, out of scope).
+5. Start a Challenge session with `tools/next-step <code>`: one line for the next step. The skill and the playbook are not read end to end each time.
+6. Research only as deep as it can be verified. Before you lean on a new service or method, write in the log how it will be verified: who can explain it, check it, cross-check it and sign it off.
+7. Schedules are part of the system. Before adding a scheduled or background agent on the NAS, read `free -h`, `df -h` and `docker system df` (it runs more than thirty containers). Start with one audit and one cleanup, queue peaks instead of running agents in parallel, and give an agent read-only production signals (logs, errors), not only container logs.
+
