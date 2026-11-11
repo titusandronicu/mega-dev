@@ -84,3 +84,10 @@ Mixed-file requirements (from S03E01)
 4. Check a heard tag against the shape of the written ones, and say which letters are unsure.
 5. Two tags that cannot both hold, or a tag that the data cannot meet (an incident with no author), go in `conflicts` with one question to the owner naming both sides. Do not pick a side. If the owner answers only some, build the rest as a stated choice and tell the human.
 6. First `claim-challenge` call: send `receipts: {}`. Step two sends the receipt from step one inside `answer`.
+
+Unattended rounds with an owner in the loop (from S03E03)
+1. Pick-up is a comment. Before the owner answers, the only ship line an issue may have is `asked`; a record, comments and labels are fine. Any other verb (`waiting` included) counts as work and ends the round (lesson 64).
+2. After a repeated refusal code, call `check-lane` with `need: "hint"` and `probe: {code, tries}` (tries + 1 each time) before you change code or open a round. A guess at the cause cost a rehearsal; the hint named it.
+3. The owner's answer is a `by: owner` entry in the issue thread, never a chat message or a click you cannot see. If the round page loses it, retry in the second browser and wait. Check the tracker before any follow-up (lesson 63).
+4. Before the round, write down the exact access it needs and the files it will create: Cloudflare token scopes (Workers Scripts Edit to deploy), where config vars sit in `wrangler.toml`, and the systemd unit that needs the owner's yes.
+5. Stop background jobs by the pid files the script wrote. `pkill -f <pattern>` can match your own command line and kill the shell.

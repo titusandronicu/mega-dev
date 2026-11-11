@@ -1,0 +1,7 @@
+{"at": "2026-11-11T09:25:10Z", "status": "progress", "message": "The round is open. The last issue arrives on the tracker by 2026-11-11T09:44:57.128Z.", "desk": null}
+{"at": "2026-11-11T10:04:46Z", "status": "rejected", "message": "#2: No question to the owner in the issue. code: no_ask. check-lane need \"hint\" says more.", "desk": null}
+{"at": "2026-11-11T10:09:12Z", "status": "rejected", "message": "#2: Work on it started before the owner answered. This round can't pass any more. Open a new one with { \"open\": true }. code: built_before_answer. check-lane need \"hint\" says more.", "desk": null}
+{"at": "2026-11-11T10:16:52Z", "status": "progress", "message": "The round is open. The last issue arrives on the tracker by 2026-11-11T10:37:27.445Z.", "desk": null}
+{"at": "2026-11-11T10:42:01Z", "status": "rejected", "message": "#2: Work on it started before the owner answered. This round can't pass any more. Open a new one with { \"open\": true }. code: built_before_answer. check-lane need \"hint\" says more.", "desk": null}
+{"at": "2026-11-11T10:54:28Z", "status": "progress", "message": "The round is open. The last issue arrives on the tracker by 2026-11-11T11:14:45.968Z.", "desk": null}
+{"at": "2026-11-11T11:21:25.000Z", "status": "solved", "message": "Solved. Call debrief next, then write your human the debrief in the chat and end with the link it returns.", "desk": null}
