@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Rehearsal: copy the repo to ./work, run mock tracker + wrangler dev (as "live") + the loop with the real claude.
+# After the run, check the order the course enforces: curl -s localhost:8899/_test/dump | ../../../tools/check-ask-order -
 # Usage: ./run.sh   then watch work/loop.out ; inject the owner with: curl -X POST localhost:8899/_test/owner -d '{"n":2,"body":"/answer 1"}'
 set -euo pipefail
 cd "$(dirname "$0")"; rm -rf work; mkdir work
