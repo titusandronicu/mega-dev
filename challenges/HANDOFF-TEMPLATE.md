@@ -7,6 +7,7 @@ Copy to `challenges/<code>/handoff.md`. A new session reads this first. Every fa
 
 ## Facts
 - Tries used / left: <n> / <n> [source: <course reply or log.md line>]
+- Claims made (from `challenges/<code>/claim-log.jsonl`, one line per claim; the course debrief may count per round instead): <n> [source: claim-log.jsonl]
 - <fact> [source: <name>, <track>, <offset>]
 
 ## Decisions

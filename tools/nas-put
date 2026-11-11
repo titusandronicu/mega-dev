@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Usage: tools/nas-put <local-file> <remote-path> [host]
+# Sends one file to the NAS over ssh (stdin -> cat), then compares sha256 on both sides.
+# Why: `scp` with a relative path failed on the NAS twice ("No such file or directory", docs/didnt-work.md 2026-11-02, S03E03).
+# <remote-path> may start with ~/ ; the folder must exist. Host defaults to `ugreen` (or $NAS_HOST). Exit 0 same checksum, 1 differs, 64 usage.
+set -uo pipefail
+[ $# -ge 2 ] && [ -f "$1" ] || { echo "usage: tools/nas-put <local-file> <remote-path> [host]" >&2; exit 64; }
+src=$1; dst=$2; host=${3:-${NAS_HOST:-ugreen}}
+case "$dst" in *"'"*) echo "remote path must not contain a quote" >&2; exit 64;; esac
+q=$dst; case "$q" in "~/"*) q="\$HOME/${q#\~/}";; esac
+ssh "$host" "cat > \"$q\"" < "$src" || { echo "send failed" >&2; exit 1; }
+want=$(sha256sum "$src" | cut -d' ' -f1)
+got=$(ssh "$host" "sha256sum \"$q\"" | cut -d' ' -f1)
+if [ "$want" = "$got" ]; then echo "ok  $want  $host:$dst"; else echo "DIFFERENT local=$want remote=$got" >&2; exit 1; fi

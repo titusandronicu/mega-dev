@@ -16,6 +16,7 @@ const send = (res, code, o) => { res.writeHead(code, { 'content-type': 'applicat
 const body = (req) => new Promise((r) => { let b = ''; req.on('data', (d) => (b += d)); req.on('end', () => r(b ? JSON.parse(b) : {})); });
 http.createServer(async (req, res) => {
   const p = new URL(req.url, 'http://x').pathname; const m = (re) => p.match(re); let k;
+  if (p === '/_test/dump') return send(res, 200, { issues, stamp });
   if (p === '/_test/rawlog') return send(res, 200, { stamp, at: now() });
   if (p === '/feed') return send(res, 200, feed);
   if (p === '/_test/owner') { const b = await body(req); issues.find((i) => i.n === b.n).thread.push({ by: 'owner', at: now(), kind: 'comment', body: b.body }); return send(res, 200, { ok: true }); }

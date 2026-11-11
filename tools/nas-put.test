@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# bash tools/nas-put.test : runs nas-put against a fake `ssh` (no network): one run copies, one run corrupts the copy.
+set -uo pipefail
+d=$(mktemp -d); trap 'rm -rf "$d"' EXIT; mkdir "$d/bin" "$d/remote"
+cat > "$d/bin/ssh" <<'FAKE'
+#!/usr/bin/env bash
+shift; export HOME="$FAKE_REMOTE"; bash -c "$1"
+FAKE
+chmod +x "$d/bin/ssh"; echo hello > "$d/f.txt"
+export FAKE_REMOTE="$d/remote" PATH="$d/bin:$PATH"
+out=$(tools/nas-put "$d/f.txt" '~/f.txt' fakehost) || { echo "FAIL copy: $out"; exit 1; }
+cmp -s "$d/f.txt" "$d/remote/f.txt" || { echo "FAIL: remote file differs"; exit 1; }
+echo ok-copy
+printf '#!/usr/bin/env bash\nshift; export HOME="$FAKE_REMOTE"; bash -c "$1" | sed "s/^./0/"\n' > "$d/bin/ssh"
+tools/nas-put "$d/f.txt" '~/g.txt' fakehost >/dev/null 2>&1 && { echo "FAIL: a differing checksum passed"; exit 1; }
+echo "nas-put: 2 cases ok"

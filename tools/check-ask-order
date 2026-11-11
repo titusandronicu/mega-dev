@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+// Usage: tools/check-ask-order <dump.json|->
+// Input: { "issues": [{ "n", "labels", "thread": [{ "by", "at", "kind" }] }], "stamp": [[iso time, "#N · verb · live: .. · open risks: .."]] }
+// (the rehearsal mock gives it at /_test/dump). Checks the order the S03E03 course enforces (lessons 63, 64):
+// for every issue the agent asked about, nothing but an `asked` ship line, and no close, comes before the first by=owner entry.
+// Exit 0 ok, 1 violation, 64 usage.
+import { readFileSync } from 'node:fs';
+
+export function checkAskOrder({ issues, stamp }) {
+  const bad = [];
+  for (const i of issues) {
+    const lines = stamp.filter(([, l]) => l.startsWith(`#${i.n} `)).map(([at, l]) => ({ at, verb: l.split(' · ')[1] }));
+    const asked = lines.some((l) => l.verb === 'asked') || (i.labels ?? []).includes('needs-human') || i.thread.some((t) => t.kind === 'label' && t.label === 'needs-human');
+    if (!asked) continue;
+    const ownerAt = i.thread.filter((t) => t.by === 'owner').map((t) => t.at).sort()[0] ?? '9999';
+    for (const l of lines) if (l.at < ownerAt && l.verb !== 'asked') bad.push(`#${i.n}: ship line "${l.verb}" at ${l.at} before the owner entry (${ownerAt === '9999' ? 'none yet' : ownerAt})`);
+    for (const t of i.thread) if (t.at < ownerAt && t.kind === 'close') bad.push(`#${i.n}: closed at ${t.at} before the owner entry (${ownerAt === '9999' ? 'none yet' : ownerAt})`);
+    if (!lines.some((l) => l.verb === 'asked')) bad.push(`#${i.n}: labelled needs-human but no "asked" ship line`);
+  }
+  return bad;
+}
+
+if (process.argv[1] && import.meta.url === new URL(process.argv[1], 'file:').href) {
+  const arg = process.argv[2];
+  if (!arg) { console.error('usage: tools/check-ask-order <dump.json|->'); process.exit(64); }
+  const bad = checkAskOrder(JSON.parse(readFileSync(arg === '-' ? 0 : arg, 'utf8')));
+  if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
+  console.log('ask order ok');
+}

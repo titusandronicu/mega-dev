@@ -91,3 +91,5 @@ Unattended rounds with an owner in the loop (from S03E03)
 3. The owner's answer is a `by: owner` entry in the issue thread, never a chat message or a click you cannot see. If the round page loses it, retry in the second browser and wait. Check the tracker before any follow-up (lesson 63).
 4. Before the round, write down the exact access it needs and the files it will create: Cloudflare token scopes (Workers Scripts Edit to deploy), where config vars sit in `wrangler.toml`, and the systemd unit that needs the owner's yes.
 5. Stop background jobs by the pid files the script wrote. `pkill -f <pattern>` can match your own command line and kill the shell.
+6. Before a round opens, rehearse and run `tools/check-ask-order` on the mock's dump: it fails on any ship line but `asked`, or a close, before the owner entry. Send files to the NAS with `tools/nas-put` (it compares checksums), not `scp`.
+7. Keep `claim-log.jsonl` as the source for the number of claims; the course debrief counts per round. Put both in the hand-off.
