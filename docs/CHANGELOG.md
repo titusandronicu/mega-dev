@@ -49,3 +49,4 @@
 
 ## 2026-11-09
 - S03E01 "status for the night" solved (08:39:07Z; list refused once for `missing_tag`). `challenges/S03E01/` holds the debrief, log, retro and the `capture` skill text. Findings 1, 2, 4, 5 and 7 written into `docs/lessons-learned.md` (57 to 61) and `docs/playbook.md` ("Mixed-file requirements"); status page live as its own Worker `s03e01-status` (public, no login, reads the ops feed live) until `wrangler delete`.
+- 2026-11-12: automated prep run; hq.mega.dev unreachable (403 proxy / DNS), wrote challenges/2026-11-12/prep.md from repo only.
