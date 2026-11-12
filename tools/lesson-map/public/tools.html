@@ -75,6 +75,7 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <tr><td><code>ffmpeg</code> silencedetect, <code>tools/speech-offsets</code></td><td>Check speech start times when models disagree.</td></tr>
 <tr><td><code>tools/check-all</code>, <code>tools/retro-check</code>, <code>tools/whereami</code></td><td>Repo checks, retro checks, which host am I on.</td></tr>
 <tr><td><code>tools/mcp-call</code></td><td>Call a remote MCP server over HTTP without an MCP client.</td></tr>
+<tr><td><code>tools/video-sheet</code></td><td>Labeled contact sheet of video frames, to read the moments of a recording from its frames (S03E04).</td></tr>
 <tr><td><code>tools/lesson-map</code></td><td>The page you are on: lessons, findings, recurring ideas.</td></tr></table>
 <p class="m">Source: <code>docs/tools.md</code>, shortened.</p>
 <div class="note"><b>Keeping this page.</b> The NAS script <code>update.sh</code> rebuilds the lesson map and then deletes everything in the served folder before copying the new build. A file placed on the NAS by hand disappears at the next update. This page lives in the repo at <code>tools/lesson-map/public/tools.html</code>, which the build copies as it is, so it survives once it is merged to main.</div>
@@ -405,24 +406,49 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <!-- ================= S03E04 ================= -->
 <section class="ep" id="S03E04" data-title="show me when (Verifying Product Outcomes)" data-tag="S03E04" hidden>
 <h2>S03E04 · show me when</h2>
-<p><span class="pill n">from records</span> the lesson text, the owner's transcript <code>s03e04-transcript.md</code> and a read of this repo on 2026-11-12. The Challenge "show me when" is not started, so nothing here is a solve. Findings are in <code>challenges/S03E04/retro.md</code>, all <span class="pill n">proposed</span>.</p>
+<p><span class="pill v">verified today</span> from the live address, the course replies, the GitHub run and the recordings on 2026-11-12. Facts come from <code>challenges/S03E04/log.md</code>, <code>claim-log.jsonl</code>, <code>reply1.json</code> to <code>reply4.json</code> and <code>debrief.md</code>. Solved at 08:18:57 UTC. The lesson part is in <code>retro.md</code> findings 1 to 11; the Challenge part is findings 12 to 20.</p>
 <h3>What it was about</h3>
-<p>Agents build the wrong thing fast, or stop too early or too late, and "done" from an agent is not proof. The lesson has five layers: acceptance (evidence matched to the risk of the change), verification (a lab where agents use the app like a user), system diff (one page for the person), review (separate reviewers with principles, sources and boundaries) and quality gates (deterministic checks that block a merge). The transcript adds what happens after a merge: feature flags, watching the deploy, and tested restores.</p>
-<h3>What we already had, and what was missing</h3>
-<table><tr><th>Idea</th><th>Have</th><th>Missing</th></tr>
-<tr><td>Acceptance evidence</td><td><code>CLAUDE.md</code>: name the check run against the running thing; attach a screenshot or served text</td><td>Evidence per risk class; a per-criterion table in the PR</td></tr>
-<tr><td>Lab for agents</td><td><code>challenges/S03E03/rehearsal/</code> (mock tracker, local Worker)</td><td>A shared, kept lab; routines that read job history; a list of active routines</td></tr>
-<tr><td>System diff</td><td>PR diff only</td><td>A skill that writes an answer-first page</td></tr>
-<tr><td>Review</td><td><code>.claude/agents/reviewer.md</code>, fresh context</td><td>Boundaries, a round limit, a one-way-door rule</td></tr>
-<tr><td>Quality gate</td><td><code>tools/check-all</code>, pre-commit hook, merge reminder hook</td><td>Turning a repeated review comment into a check</td></tr>
-<tr><td>After the merge</td><td><code>update.sh</code> on the NAS pulls main</td><td>Which commit is live (added today); flags; a restore drill; a report you read</td></tr></table>
-<h3>What was built today</h3>
+<p>A scheduling product's incident board came as a starter: a plan and four ready issues. The agent built them, deployed the board to its own https address, and sent product a recording and a short report that show it works. Product read the report and answered. The agent then changed the plan, rebuilt, deployed and proved the new build, and the course replayed the live board.</p>
+<table><tr><th>Issue</th><th>What it asked</th></tr>
+<tr><td>SCHED-4511</td><td>New incidents on top, newest first; an Ack button per row that marks the row acked</td></tr>
+<tr><td>SCHED-4512</td><td>A loader until incidents load</td></tr>
+<tr><td>SCHED-4513</td><td>The board refreshes itself every 2 seconds</td></tr>
+<tr><td>SCHED-4514</td><td>Times in the viewer's own zone, day before month for EU locales, UTC kept in <code>datetime</code></td></tr>
+<tr><td>R6 (in the plan)</td><td>The page names its build: the git sha in <code>&lt;meta name="build"&gt;</code> and the footer</td></tr>
+<tr><td>SCHED-4515 (after product)</td><td>The list holds still; a "N new" bar brings new incidents in on click; Ack stays on the row</td></tr></table>
+<h3>Four claims, one solve</h3>
+<table><tr><th>Claim</th><th>Result</th><th>Why</th></tr>
+<tr><td>1 (step 1)</td><td>Refused: "No incident landed near that ack"</td><td>The recording clicked 3 s after a new incident landed, on a page that held still, like a test runner.</td></tr>
+<tr><td>2 (step 1)</td><td>Refused: "Which row did you mean, and which got the ack?"</td><td>A race recording (meant INC-6881, got INC-4371), but the evidence block had no <code>expected</code> and <code>got</code> fields; the report text had them.</td></tr>
+<tr><td>3 (step 1)</td><td>Accepted as progress; product answered</td><td>Same report with the two fields added. Product: the list holds still, a "N new" bar brings new incidents in, Ack stays on the row.</td></tr>
+<tr><td>4 (step 2)</td><td><b>Solved</b> at 08:18:57 UTC</td><td>A System Diff, a recording of the new build, and the course's replay on GitHub Actions (three attempts, each acked the incident it meant, nothing unmet).</td></tr></table>
+<h3>How the pieces fit</h3>
 <table><tr><th>Part</th><th>What it does</th><th>Where</th></tr>
-<tr><td>Build stamp</td><td>The map build records the git commit, branch and time. The page footer shows it and <code>/version.json</code> returns it, so you can compare the served page with main.</td><td><code>tools/lesson-map/scripts/build-map.mjs</code>, <code>src/pages/version.json.ts</code></td></tr>
-<tr><td>Idea "Prove it after the merge"</td><td>A new recurring idea on the map, used by findings 8, 9 and 10.</td><td><code>tools/lesson-map/data/ideas.json</code></td></tr></table>
+<tr><td>Board</td><td>Static page: merge each poll into a waiting map, rebuild the list only on first load or a bar click, Ack changes only its own row. The session and sha are injected by the build script, so the public repo has placeholders.</td><td>Public repo <code>titusandronicu/sched-prod-board</code>, <code>app/</code></td></tr>
+<tr><td>Live address</td><td>One Cloudflare Worker that serves the five files. After each deploy the served files were compared byte for byte with <code>dist/</code>.</td><td>Cloudflare, workers.dev (the account the connected tool was signed in to, chosen by you)</td></tr>
+<tr><td>Local test</td><td>22 checks against a mock API in headless Chromium, including the race that failed; the same test fails on the old <code>app.js</code>. A second test covers the quiet night (empty answer).</td><td><code>test/local.mjs</code>, <code>test/empty.mjs</code></td></tr>
+<tr><td>Recorders</td><td>Playwright with video. <code>record.mjs</code> (the first, refused), <code>record-race.mjs</code> (aim, wait for the landing, click at the old spot 150 ms later), <code>record-hold.mjs</code> (the same race on the new build).</td><td><code>scripts/</code>; copies in <code>.claude/skills/prove-build/scripts/</code></td></tr>
+<tr><td>Videos</td><td>Release assets on the public repo: <code>recording-1</code> (refused), <code>recording-2</code> (the race), <code>recording-3</code> (the new build).</td><td>GitHub releases</td></tr>
+<tr><td>Replay</td><td>The course's replay, run by the starter's <code>prove.yml</code>, unedited. It sent three real acks on the session.</td><td>GitHub Actions run 43181580704</td></tr></table>
+<h3>What the recordings showed</h3>
+<table><tr><th>Build</th><th>What happened (moments read from video frames)</th></tr>
+<tr><td><code>3f4b86da16c2</code> (before)</td><td>Aimed at INC-6881 (sev1). At 8.2 s INC-4469 landed, every row moved down one slot, and the click hit INC-4371. The receipt named INC-4371.</td></tr>
+<tr><td><code>6d2b9816c228</code> (after)</td><td>Aimed at INC-6881. At 8.4 s the "1 new" bar appeared and no row moved. The click, 150 ms later at the same spot, acked INC-6881. The bar click at about 12 s brought INC-4469 in on top.</td></tr></table>
+<p class="m">Real acks on the session: 3 by the agent (first recording INC-4469, race INC-4371, new build INC-6881) and 3 by the course's replay (INC-4371, INC-6881, INC-8776). An ack cannot be undone.</p>
+<h3>Snags</h3>
+<ul><li>The first recording clicked on a still page. <code>check-lane</code> said to click like a person. Lesson 65.</li>
+<li>Claim 2 named the rows in prose only. The evidence block needs fields. Lesson 67.</li>
+<li>The connected Cloudflare tool was signed in as a different email than the owner's. The agent stopped and asked; the owner chose it.</li>
+<li>The replay sent three real acks that the agent had not known about when the owner said yes. Lesson 68.</li>
+<li>The video ran about 1 s off the agent's event log (ack at 12.2 s in the frames, 13.2 s in the log). Lesson 66.</li>
+<li><code>pkill -f</code> killed the agent's own shell again, although the playbook already forbade it. Proposed: a hook.</li></ul>
+<h3>What was applied</h3>
+<p><span class="pill v">applied</span> Lessons 65 to 68 in <code>docs/lessons-learned.md</code>; the section "Proving a build (from S03E04)" in <code>docs/playbook.md</code> (stamp the build, check the account, click like a person, read moments from frames, evidence fields, replay side effects, the quiet night, options not a fix); <code>tools/video-sheet</code> with a test; the project skill <code>.claude/skills/prove-build</code>; the quiet-night test in the board repo; refusals in <code>docs/didnt-work.md</code>, what worked in <code>docs/worked.md</code>.</p>
+<p><span class="pill n">proposed</span> only: a hook that blocks <code>pkill -f</code> (finding 19); a gate that needs a quoted detail from the page, not a bare "re-read done" (finding 20); and the lesson findings 1 to 11 that have no code behind them yet.</p>
 <h3>Gaps</h3>
-<ul><li><span class="n">Not checked:</span> course feedback (not pasted yet) and anything about the Challenge itself.</li>
-<li>No feature flag, restore drill or deploy report exists yet. They are proposals, not work done.</li></ul>
+<ul><li><span class="n">Not seen:</span> a real quiet night. The board has the empty state and a test, but the live board always had incidents.</li>
+<li><span class="n">Not alone:</span> the owner approved every outside step; the agent did not pick up product's answer and ship it unattended.</li>
+<li>Course feedback beyond the debrief is not pasted yet. The Rook artifact <code>prove</code> was installed by you in <code>~/.claude/skills/prove</code> at 09:24 local time on 2026-11-12 and has not been used or compared with <code>.claude/skills/prove-build</code> yet.</li></ul>
 </section>
 
 

@@ -1,0 +1,4 @@
+{"at": "2026-11-12T07:57:39Z", "status": "rejected", "message": "No incident landed near that ack.\ncheck-lane has a need for this: ack-race.", "desk": null}
+{"at": "2026-11-12T08:06:17Z", "status": "rejected", "message": "Which row did you mean, and which got the ack? Name them in the evidence block as expected and got (incident ids).", "desk": null}
+{"at": "2026-11-12T08:07:13Z", "status": "progress", "message": "Product has your report. They answer around 2026-11-12T08:11:34.094Z: by mail to your agent inbox (if you built one), and through resume-challenge with receipts { productReceipt } from then on. Keep productReceipt; it goes with your step-2 claim.", "desk": null}
+{"at": "2026-11-12T08:18:57.000Z", "status": "solved", "message": "Solved. Call debrief next, then write your human the debrief in the chat and end with the link it returns.", "desk": null}

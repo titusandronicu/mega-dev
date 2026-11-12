@@ -49,3 +49,7 @@
 
 ## 2026-11-09
 - S03E01 "status for the night" solved (08:39:07Z; list refused once for `missing_tag`). `challenges/S03E01/` holds the debrief, log, retro and the `capture` skill text. Findings 1, 2, 4, 5 and 7 written into `docs/lessons-learned.md` (57 to 61) and `docs/playbook.md` ("Mixed-file requirements"); status page live as its own Worker `s03e01-status` (public, no login, reads the ops feed live) until `wrangler delete`.
+## 2026-11-12 (S03E04, show me when)
+- S03E04 solved (2026-11-12 08:18:57Z, claims: 2 refused, 1 progress, 1 solved). Board `sched-prod-board` built and deployed to a Cloudflare Worker, public repo `titusandronicu/sched-prod-board`; two refusals in `docs/didnt-work.md`.
+- Lesson retro `challenges/S03E04/retro.md` (11 findings), then Challenge findings from the log and the debrief. Lessons 65-68, playbook "Proving a build", `tools/video-sheet` (+ test), skill `.claude/skills/prove-build`.
+- Lesson map: new idea "Prove it after the merge", S03E04 tab on "Tools by episode", build stamp (`/version.json`) on the page.

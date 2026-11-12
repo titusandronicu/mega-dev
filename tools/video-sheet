@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Usage: tools/video-sheet <video> <start> <end> <step> [crop W:H:X:Y] [out.png]
+# Makes one labeled contact sheet of frames from <start> to <end> seconds, one every <step> seconds (S03E04, lesson 66).
+# Why: read the moments of a recording from its frames, not from your own script's clock. The video ran about a second off my event log.
+# Each tile carries its time in red. <crop> trims every frame (default: whole frame). Output default: <video>.sheet.png.
+# Exit 0 sheet written, 1 ffmpeg failed or no frames, 64 usage. Needs ffmpeg.
+set -uo pipefail
+[ $# -ge 4 ] && [ -f "$1" ] || { echo "usage: tools/video-sheet <video> <start> <end> <step> [crop W:H:X:Y] [out.png]" >&2; exit 64; }
+video=$1; start=$2; end=$3; step=$4; crop=${5:-}; out=${6:-$video.sheet.png}
+command -v ffmpeg >/dev/null || { echo "ffmpeg not found" >&2; exit 1; }
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+times=$(awk -v s="$start" -v e="$end" -v st="$step" 'BEGIN{ if (st<=0) exit 1; for (t=s; t<=e+1e-9; t+=st) printf "%.2f\n", t }') || { echo "step must be > 0" >&2; exit 64; }
+n=0
+for t in $times; do
+  vf="scale=iw*min(1\,640/iw):-2"; [ -n "$crop" ] && vf="crop=$crop,$vf"
+  vf="$vf,drawtext=text='${t}s':x=w-tw-6:y=4:fontcolor=red:fontsize=22:box=1:boxcolor=white@0.7"
+  ffmpeg -v error -y -ss "$t" -i "$video" -frames:v 1 -vf "$vf" "$tmp/f_$(printf %04d $n).png" 2>/dev/null && n=$((n+1))
+done
+[ "$n" -gt 0 ] || { echo "no frames written (is <start> inside the video?)" >&2; exit 1; }
+cols=2; [ "$n" -eq 1 ] && cols=1
+rows=$(( (n + cols - 1) / cols ))
+ffmpeg -v error -y -i "$tmp/f_%04d.png" -filter_complex "tile=${cols}x${rows}" -frames:v 1 "$out" || { echo "tile failed" >&2; exit 1; }
+echo "sheet: $out ($n frames, $start..$end s every $step s)"

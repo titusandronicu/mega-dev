@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# bash tools/video-sheet.test : builds a 4 s test video whose colour changes at 2.0 s, then checks the sheet.
+set -uo pipefail
+command -v ffmpeg >/dev/null || { echo "video-sheet: ffmpeg missing, test skipped"; exit 0; }
+d=$(mktemp -d); trap 'rm -rf "$d"' EXIT
+ffmpeg -v error -y -f lavfi -i "color=c=blue:s=320x180:d=2:r=10" -f lavfi -i "color=c=green:s=320x180:d=2:r=10" -filter_complex "[0][1]concat=n=2:v=1:a=0" -pix_fmt yuv420p "$d/v.mp4" || { echo "FAIL: could not make the test video"; exit 1; }
+out=$(tools/video-sheet "$d/v.mp4" 0.5 3.5 1 "" "$d/s.png") || { echo "FAIL run: $out"; exit 1; }
+[ -s "$d/s.png" ] || { echo "FAIL: no sheet"; exit 1; }
+case "$out" in *"4 frames"*) ;; *) echo "FAIL: expected 4 frames, got: $out"; exit 1;; esac
+dim=$(ffprobe -v error -select_streams v -show_entries stream=width,height -of csv=p=0 "$d/s.png")
+[ "$dim" = "640,360" ] || { echo "FAIL: 2x2 tiles of 320x180 should be 640,360, got $dim"; exit 1; }
+echo ok-sheet
+tools/video-sheet "$d/v.mp4" 0 1 0 >/dev/null 2>&1 && { echo "FAIL: step 0 passed"; exit 1; }
+tools/video-sheet "$d/v.mp4" 90 91 1 >/dev/null 2>&1 && { echo "FAIL: a start past the end passed"; exit 1; }
+tools/video-sheet >/dev/null 2>&1; [ $? -eq 64 ] || { echo "FAIL: no args should exit 64"; exit 1; }
+echo "video-sheet: 4 cases ok"

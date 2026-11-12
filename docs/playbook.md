@@ -103,3 +103,13 @@ Verification, review, gates and upkeep (from the S03E03 lesson, "AI-Native Produ
 6. Research only as deep as it can be verified. Before you lean on a new service or method, write in the log how it will be verified: who can explain it, check it, cross-check it and sign it off.
 7. Schedules are part of the system. Before adding a scheduled or background agent on the NAS, read `free -h`, `df -h` and `docker system df` (it runs more than thirty containers). Start with one audit and one cleanup, queue peaks instead of running agents in parallel, and give an agent read-only production signals (logs, errors), not only container logs.
 
+
+Proving a build (from S03E04, the lesson "Verifying Product Outcomes"; skill `.claude/skills/prove-build`)
+1. Stamp the build: the git sha in `<meta name="build">` and in the footer, built only from committed code. After a deploy, fetch every served file and compare it byte for byte with `dist/`; do not trust the upload reply.
+2. Before a deploy, call the host's `whoami` and compare it with the owner's account. If it differs, stop and ask (S03E04: the connected Cloudflare tool was a different account).
+3. Record the moment that breaks, acting like a person: aim, wait for the real change, click at the old spot about 150 ms later, no stability wait, no mocked data (lesson 65). Say in the report which part of the video is a recorder caption.
+4. Read the moments from the frames with `tools/video-sheet`, never from your own event log (lesson 66).
+5. Put the facts in the evidence block as fields: `expected`, `got`, `at`, `receipt`, `sha`, `videoLink` (lesson 67).
+6. Before you approve or run a replay, read it or ask what it does to live data. Count every irreversible action (acks, sends, deletes), yours and the replay's, in `log.md` and tell the owner the number before the claim (lesson 68).
+7. Test the quiet night: run the product with an empty answer; the loader must end and the empty state must show.
+8. When the honest fix changes the plan, send the owner or product the evidence and options, not a fix. They decide, then you change the plan and add the new `data-testid` hooks to it.
