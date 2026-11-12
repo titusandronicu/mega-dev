@@ -402,6 +402,30 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <li>The course debrief says 1 try turned down; the claim log shows 7 claims (3 opens, 3 refusals, 1 solve).</li></ul>
 </section>
 
+<!-- ================= S03E04 ================= -->
+<section class="ep" id="S03E04" data-title="show me when (Verifying Product Outcomes)" data-tag="S03E04" hidden>
+<h2>S03E04 · show me when</h2>
+<p><span class="pill n">from records</span> the lesson text, the owner's transcript <code>s03e04-transcript.md</code> and a read of this repo on 2026-11-12. The Challenge "show me when" is not started, so nothing here is a solve. Findings are in <code>challenges/S03E04/retro.md</code>, all <span class="pill n">proposed</span>.</p>
+<h3>What it was about</h3>
+<p>Agents build the wrong thing fast, or stop too early or too late, and "done" from an agent is not proof. The lesson has five layers: acceptance (evidence matched to the risk of the change), verification (a lab where agents use the app like a user), system diff (one page for the person), review (separate reviewers with principles, sources and boundaries) and quality gates (deterministic checks that block a merge). The transcript adds what happens after a merge: feature flags, watching the deploy, and tested restores.</p>
+<h3>What we already had, and what was missing</h3>
+<table><tr><th>Idea</th><th>Have</th><th>Missing</th></tr>
+<tr><td>Acceptance evidence</td><td><code>CLAUDE.md</code>: name the check run against the running thing; attach a screenshot or served text</td><td>Evidence per risk class; a per-criterion table in the PR</td></tr>
+<tr><td>Lab for agents</td><td><code>challenges/S03E03/rehearsal/</code> (mock tracker, local Worker)</td><td>A shared, kept lab; routines that read job history; a list of active routines</td></tr>
+<tr><td>System diff</td><td>PR diff only</td><td>A skill that writes an answer-first page</td></tr>
+<tr><td>Review</td><td><code>.claude/agents/reviewer.md</code>, fresh context</td><td>Boundaries, a round limit, a one-way-door rule</td></tr>
+<tr><td>Quality gate</td><td><code>tools/check-all</code>, pre-commit hook, merge reminder hook</td><td>Turning a repeated review comment into a check</td></tr>
+<tr><td>After the merge</td><td><code>update.sh</code> on the NAS pulls main</td><td>Which commit is live (added today); flags; a restore drill; a report you read</td></tr></table>
+<h3>What was built today</h3>
+<table><tr><th>Part</th><th>What it does</th><th>Where</th></tr>
+<tr><td>Build stamp</td><td>The map build records the git commit, branch and time. The page footer shows it and <code>/version.json</code> returns it, so you can compare the served page with main.</td><td><code>tools/lesson-map/scripts/build-map.mjs</code>, <code>src/pages/version.json.ts</code></td></tr>
+<tr><td>Idea "Prove it after the merge"</td><td>A new recurring idea on the map, used by findings 8, 9 and 10.</td><td><code>tools/lesson-map/data/ideas.json</code></td></tr></table>
+<h3>Gaps</h3>
+<ul><li><span class="n">Not checked:</span> course feedback (not pasted yet) and anything about the Challenge itself.</li>
+<li>No feature flag, restore drill or deploy report exists yet. They are proposals, not work done.</li></ul>
+</section>
+
+
 </div>
 <script>
 (function(){

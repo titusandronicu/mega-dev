@@ -6,6 +6,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
+import { execSync } from 'node:child_process';
 const root = new URL('../', import.meta.url);
 const p = (f) => fileURLToPath(new URL(f, root));
 const json = (f) => JSON.parse(readFileSync(p(f), 'utf8'));
@@ -43,5 +44,8 @@ for (const ep of episodes) {
 for (const idea of ideas) idea.count = items.filter((i) => i.ideas.includes(idea.id)).length;
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
 mkdirSync(p('src/data'), { recursive: true });
-writeFileSync(p('src/data/map.json'), JSON.stringify({ topics, items, ideas }, null, 1));
+// Build stamp: which commit this page was built from, so the served page can be compared with main.
+const git = (c) => { try { return execSync(`git ${c}`, { cwd: p('./'), stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch { return 'unknown'; } };
+const build = { commit: git('rev-parse --short HEAD'), branch: git('rev-parse --abbrev-ref HEAD'), builtAt: new Date().toISOString() };
+writeFileSync(p('src/data/map.json'), JSON.stringify({ topics, items, ideas, build }, null, 1));
 console.log(`map: ${topics.length} topics, ${items.length} findings, ${ideas.length} ideas`);
