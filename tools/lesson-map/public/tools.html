@@ -416,6 +416,15 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <tr><td>SCHED-4514</td><td>Times in the viewer's own zone, day before month for EU locales, UTC kept in <code>datetime</code></td></tr>
 <tr><td>R6 (in the plan)</td><td>The page names its build: the git sha in <code>&lt;meta name="build"&gt;</code> and the footer</td></tr>
 <tr><td>SCHED-4515 (after product)</td><td>The list holds still; a "N new" bar brings new incidents in on click; Ack stays on the row</td></tr></table>
+<h3>From the lesson, before the Challenge: what we had, and what was missing</h3>
+<table><tr><th>Idea</th><th>Have</th><th>Missing</th></tr>
+<tr><td>Acceptance evidence</td><td><code>CLAUDE.md</code>: name the check run against the running thing; attach a screenshot or served text</td><td>Evidence per risk class; a per-criterion table in the PR</td></tr>
+<tr><td>Lab for agents</td><td><code>challenges/S03E03/rehearsal/</code> (mock tracker, local Worker)</td><td>A shared, kept lab; routines that read job history; a list of active routines</td></tr>
+<tr><td>System diff</td><td>PR diff only</td><td>A skill that writes an answer-first page</td></tr>
+<tr><td>Review</td><td><code>.claude/agents/reviewer.md</code>, fresh context</td><td>Boundaries, a round limit, a one-way-door rule</td></tr>
+<tr><td>Quality gate</td><td><code>tools/check-all</code>, pre-commit hook, merge reminder hook</td><td>Turning a repeated review comment into a check</td></tr>
+<tr><td>After the merge</td><td><code>update.sh</code> on the NAS pulls main</td><td>Which commit is live (added today); flags; a restore drill; a report you read</td></tr></table>
+<p class="m">That table is the state on the morning of 2026-11-12, from the lesson text and a read of the repo. Findings 1 to 11 in <code>retro.md</code> hold the detail.</p>
 <h3>Four claims, one solve</h3>
 <table><tr><th>Claim</th><th>Result</th><th>Why</th></tr>
 <tr><td>1 (step 1)</td><td>Refused: "No incident landed near that ack"</td><td>The recording clicked 3 s after a new incident landed, on a page that held still, like a test runner.</td></tr>
