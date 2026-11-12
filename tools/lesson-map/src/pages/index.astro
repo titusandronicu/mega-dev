@@ -67,6 +67,7 @@ const applied = items.filter((i) => i.status === 'applied').length;
       <aside class="panel" id="panel" aria-live="polite"></aside>
     </div>
   </div>
+  <footer class="stamp">Built from commit <code>{map.build.commit}</code> ({map.build.branch}) at {map.build.builtAt} · <a href="/version.json">version.json</a></footer>
   <script id="map-data" type="application/json" set:html={JSON.stringify(map)} />
   <script>
     import '../lib/mapView';
