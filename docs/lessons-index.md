@@ -60,6 +60,10 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 54 | Check the MCP spec revision and the course limits before building a server | prose (`docs/playbook.md`, "Remote workers" 9) |
 | 55 | Copy links and passphrases, never retype; rotate a printed passphrase | prose (`docs/playbook.md`, "Remote workers" 10) |
 | 56 | Take the enrolled address from the profile page | prose (`docs/playbook.md`, "Remote workers" 8) |
+| 65 | A race only shows when the click is timed like a person's | prose (`docs/playbook.md`, "Proving a build" 3) and the examples in `.claude/skills/prove-build` |
+| 66 | Read moments from the video, not your own clock | `tools/video-sheet` (+ test) |
+| 67 | Name evidence in the fields the course reads | prose (`docs/playbook.md`, "Proving a build" 5); no generic check, the fields differ per Challenge |
+| 68 | Ask what a replay does to live data before approving it | prose (`docs/playbook.md`, "Proving a build" 6); a human judgment on each replay |
 
 ## What's still prose, and why that's the right call
 

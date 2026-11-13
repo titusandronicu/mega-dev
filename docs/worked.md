@@ -7,3 +7,7 @@
 - 2026-11-02 (S02E01): a Stop-hook gate that re-lists the session archive caught the late session 5d8a1f37 (database `reorder_3hnq`) before the stop; tested with a real change and a forced change. Script: `~/s02e01/gate/archive-gate.py`.
 - 2026-11-02 (S02E01): verify against the NAS store printed PostgreSQL 17.11, md5 `8f03e343...`, port 5471 before the claim; the password stayed in `DATABASE_URL`, never in the files sent.
 - 2026-11-09 (S03E01): opened the canvas board in a signed-in browser and read it from a screenshot; decoded the spec PDF from its font maps with the standard library; checked the deployed Worker with `curl` (CORS and cache headers, heading, teal, "shown on tram 3 boards") before the claim.
+- 2026-11-12 (S03E04): read the moments of each recording from its frames, not from my event log. The video ran about a second behind the log; the ack was at 12.2 s, not 13.2 s. `tools/video-sheet` now does this in one command.
+- 2026-11-12 (S03E04): compared every served file with `dist/` byte for byte after each deploy, and kept the build sha in the page, the footer, the video and the report. The replay and both recordings named the same build.
+- 2026-11-12 (S03E04): a deliberate-break check on the test: the same test that passes on the new `app.js` fails (times out on the missing bar) on the old one, so it does catch the bug.
+- 2026-11-12 (S03E04): sent product the evidence and four options, not a fix; product's one-line decision (hold the list still, "N new" bar) was a smaller change than any of my options.
