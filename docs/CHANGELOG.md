@@ -53,3 +53,7 @@
 - S03E04 solved (2026-11-12 08:18:57Z, claims: 2 refused, 1 progress, 1 solved). Board `sched-prod-board` built and deployed to a Cloudflare Worker, public repo `titusandronicu/sched-prod-board`; two refusals in `docs/didnt-work.md`.
 - Lesson retro `challenges/S03E04/retro.md` (11 findings), then Challenge findings from the log and the debrief. Lessons 65-68, playbook "Proving a build", `tools/video-sheet` (+ test), skill `.claude/skills/prove-build`.
 - Lesson map: new idea "Prove it after the merge", S03E04 tab on "Tools by episode", build stamp (`/version.json`) on the page.
+## 2026-11-13 (S03E05, what came back)
+- S03E05 solved (2026-11-13 09:20:15Z). Batch 1 (smart suggestions v2, status page v3): 7 refusals, 1 format error, accepted on the 9th claim. Batch 2 (auto-close, bulk acknowledge): accepted on the first claim. `challenges/S03E05/` holds the log, the course debrief and the retro.
+- Lessons 69-75, playbook "Judging a release from signals", `tools/frame-scan` (+ test), project skill `.claude/skills/decide-from-signals`.
+- Lesson map: S02E05, S03E02 and S03E05 added (retros written from records for S02E05 and S03E02, which had none), S03E05 tab on "Tools by episode". S03E02 files added to the repo with the tokens left out.
