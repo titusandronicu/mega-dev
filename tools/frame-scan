@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Usage: tools/frame-scan <video.mp4> [--strip y0:y1] [--threshold N]
+# Scans EVERY frame of a recording and prints, as JSON, the bursts of frames whose header strip differs from the video's usual colour (S03E05, lesson 70).
+# Why: in the S03E05 replays an operator switched to a second tool (sched-admin, sched-desk) for about 1.4 s. A sample of 1 or 4 frames a second can miss a flash; every frame cannot.
+# Exit 0 scan done (bursts may be empty), 1 ffmpeg/ffprobe failed, 64 usage. Needs ffmpeg, ffprobe, node. See tools/frame-scan.mjs.
+exec node "$(dirname "$0")/frame-scan.mjs" "$@"

@@ -1,0 +1,17 @@
+# S03E02 retro
+Inputs: `challenges/S03E02/log.md` (2026-11-10), `claim-log.jsonl`, `reply1.json`, `reply2.json`, `live-recheck.log`, `check.mjs`, and `docs/prep-notes/2026-11-10.md`. Written from records on 2026-11-13, after the Challenge "nothing ships unmarked" was solved on 2026-11-10 at 09:16:59Z; the course debrief is not in this repo, so there is no debrief row to cite.
+
+## Feedback
+none recorded in this repo (the solved reply carried only its stats line: 22 requests in, 25 issues, 21 agent-ready, 3 needs-human)
+
+## Findings
+- Claim 1 was refused with "4 intents not accounted for · 1 issue open that should not be", because four requests arrived after my last poll (IN-4109, IN-1384, IN-8901, IN-9102). Channels keep delivering after a claim is prepared; poll again right before each claim. [evidence: `log.md` claim #1 entry; `reply1.json`; `claim-log.jsonl` 09:04:41Z] [fix: playbook] [status: proposed] [idea: look-again, contract-first]
+- A withdrawal was missed: IN-1384 withdrew IN-3541, so IN-3541 stayed open when it should have been closed not-planned. That is the "1 issue open that should not be". Reading each new request for withdrawals is not a step in the triage skill. [evidence: `log.md` claim #1 entry "IN-1384 withdrew IN-3541"; fix entry closing both not-planned] [fix: skill] [status: proposed] [idea: source-over-summary, look-again]
+- `check.mjs` passed (40 files, 22 requests, CHECK OK) while the board was wrong. It checks the shape of each issue file, not whether the channels have new messages, so a green check said nothing about the missing four. [evidence: `check.mjs` (shape rules only); `log.md` "check.mjs: 40 files, 22 requests, CHECK OK" after the fix] [fix: tool] [status: proposed] [idea: code-over-prompt, distrust-decoys]
+- `tools/pre-claim-gate` blocked claim 2 until a human re-read the live page, and `live-recheck.log` holds one line, "live page re-read, nothing new", which satisfied the gate. A line without a quoted detail from the page passes. [evidence: `log.md` "Blocked on tools/pre-claim-gate"; `live-recheck.log` 09:15:46Z] [fix: tool] [status: proposed] [idea: distrust-decoys, code-over-prompt]
+- Calling `start-challenge` again would have dealt a new set of requests and a new session, so the log warns not to. The rule lived only in `log.md`, written at the start; no tool or playbook line stops a second call. [evidence: `log.md` line 5 "Do NOT call start-challenge again"] [fix: playbook] [status: proposed] [idea: write-down-state, contract-first]
+- The Challenge folder holds session values (`session.txt`, and a copy inside the repo's `.sched/cursors.json`), but the `.gitignore` line for `session.txt` was added late and the folder stayed untracked. Nothing scans a Challenge folder for token-like strings before it is staged. [evidence: `.gitignore` line for `challenges/S03E02/session.txt` (uncommitted until 2026-11-13); `git status` shows the folder untracked] [fix: tool] [status: proposed] [idea: package-it, code-over-prompt]
+- The log header says "Tries used / left: claim 0 used so far (unknown total)". The number of tries was never recorded, so no one could weigh a second claim against the limit. [evidence: `log.md` line 2] [fix: playbook] [status: proposed] [idea: write-down-state]
+
+## Applied
+Nothing is applied by this step, which only writes the retro from records. Every finding is a proposal until the owner approves it; on approval, set the status to `applied` in the same commit as the change.

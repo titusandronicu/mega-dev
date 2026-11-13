@@ -64,6 +64,13 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 66 | Read moments from the video, not your own clock | `tools/video-sheet` (+ test) |
 | 67 | Name evidence in the fields the course reads | prose (`docs/playbook.md`, "Proving a build" 5); no generic check, the fields differ per Challenge |
 | 68 | Ask what a replay does to live data before approving it | prose (`docs/playbook.md`, "Proving a build" 6); a human judgment on each replay |
+| 69 | A summary is a claim, not evidence | prose (`docs/playbook.md`, "Judging a release from signals" 1-2) and `.claude/skills/decide-from-signals` |
+| 70 | Scan every frame of a replay, not a sample | `tools/frame-scan` (+ test) |
+| 71 | When log and screen disagree, the screen wins | prose (`docs/playbook.md`, "Judging a release from signals" 4); `.claude/skills/decide-from-signals` |
+| 72 | Ask who owns the call | prose (`docs/playbook.md`, "Judging a release from signals" 6); a human decision on each release |
+| 73 | A metric that counts items leaving a list can be met by hiding the work | prose (`docs/playbook.md`, "Judging a release from signals" 4); no generic check, the follow-up tool differs per product |
+| 74 | Tries are limited and a refusal carries no reason | prose (`docs/playbook.md`, "Judging a release from signals" 7); `tools/pre-claim-gate` already gates every claim after the first |
+| 75 | Mask a secret by what the file is, not by a pattern | prose only - a habit; `.gitignore` and the pre-commit hook already stop a token file being committed |
 
 ## What's still prose, and why that's the right call
 

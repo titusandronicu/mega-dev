@@ -76,6 +76,8 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <tr><td><code>tools/check-all</code>, <code>tools/retro-check</code>, <code>tools/whereami</code></td><td>Repo checks, retro checks, which host am I on.</td></tr>
 <tr><td><code>tools/mcp-call</code></td><td>Call a remote MCP server over HTTP without an MCP client.</td></tr>
 <tr><td><code>tools/video-sheet</code></td><td>Labeled contact sheet of video frames, to read the moments of a recording from its frames (S03E04).</td></tr>
+<tr><td><code>tools/frame-scan</code></td><td>Scans every frame of a recording and lists the bursts where the screen differs, to find a second tool that shows for about a second (S03E05).</td></tr>
+<tr><td><code>.claude/skills/decide-from-signals</code></td><td>Turns raw release signals into one verb per group, and splits what the agent settles from what the owner decides (S03E05).</td></tr>
 <tr><td><code>tools/lesson-map</code></td><td>The page you are on: lessons, findings, recurring ideas.</td></tr></table>
 <p class="m">Source: <code>docs/tools.md</code>, shortened.</p>
 <div class="note"><b>Keeping this page.</b> The NAS script <code>update.sh</code> rebuilds the lesson map and then deletes everything in the served folder before copying the new build. A file placed on the NAS by hand disappears at the next update. This page lives in the repo at <code>tools/lesson-map/public/tools.html</code>, which the build copies as it is, so it survives once it is merged to main.</div>
@@ -345,6 +347,63 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <li>The repo's <code>challenges/S02E05/log.md</code> has the 13:45 to 14:10 run, written afterwards from the journal and the course replies. The verdict of the 12:02 window is not recorded there.</li></ul>
 </section>
 
+<!-- ================= S03E01 ================= -->
+<section class="ep" id="S03E01" data-title="status for the night" data-tag="S03E01" hidden>
+<h2>S03E01 · status for the night</h2>
+<p><span class="pill n">from records</span> <code>challenges/S03E01/debrief.md</code>, <code>log.md</code> and <code>retro.md</code>, saved on 2026-11-09. Solved at 08:39:07 UTC. The course turned down one list before it accepted.</p>
+<h3>What it was about</h3>
+<p>Product wanted a public status page for the night. Six people sent what they wanted: a memo, a screenshot, a recording, a PDF, a whiteboard photo and a live board. The agent turned them into one cited requirements list, named where the sources disagreed, and then built and deployed the page from that list.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it did</th></tr>
+<tr><td>A signed-in browser and a screenshot</td><td>The live board was a canvas with no text, so its content was read from a screenshot.</td></tr>
+<tr><td>Video frames</td><td>Showed a requirement typed at about 14 s and deleted at about 24.5 s in the recording.</td></tr>
+<tr><td>Python standard library</td><td>Decoded the spec PDF from its font maps, because no PDF tool was installed.</td></tr>
+<tr><td><code>faster-whisper</code> in a throwaway container on the NAS</td><td>Transcribed the audio after you chose the install. The first run crashed on a newer <code>av</code> library and was pinned to 15.1.0.</td></tr>
+<tr><td>The <code>capture</code> skill</td><td>A folder of mixed files in, a tagged requirements list out, each tag cited by file and place, conflicts named. A copy is in <code>challenges/S03E01/capture-SKILL.md</code>.</td></tr>
+<tr><td>A Cloudflare Worker, checked with <code>curl</code></td><td>Served the page and <code>/status.json</code>; headers, heading, colour and the "shown on tram 3 boards" line were checked before the claim.</td></tr></table>
+<h3>Claims</h3>
+<table><tr><th>Claim</th><th>Result</th><th>Why</th></tr>
+<tr><td>1</td><td>Schema error</td><td><code>receipts</code> is required on every call, even <code>{}</code>.</td></tr>
+<tr><td>2</td><td>Rejected: <code>missing_tag: 1</code></td><td>R-Z4M, typed and then deleted in the recording, was left out of the list.</td></tr>
+<tr><td>3</td><td>Progress</td><td>R-Z4M added. Product ruled month first on the date conflict.</td></tr>
+<tr><td>4</td><td><b>Solved</b> at 08:39:07 UTC</td><td>The receipt and the build URL.</td></tr></table>
+<h3>Snags</h3>
+<ul><li>The first list dropped R-Z4M, a deleted requirement. List every tag you find, even a deleted one.</li>
+<li>No PDF or speech tool was installed. The PDF was decoded by hand; the audio was transcribed on the NAS after you chose that.</li>
+<li>Product answered only the dates conflict, so the build covered last night only and printed "no owner recorded" for the row with no author, and said so.</li></ul>
+<h3>What was applied</h3>
+<p><span class="pill v">applied</span> Findings 1, 2, 4, 5 and 7 as lessons 57 to 61 in <code>docs/lessons-learned.md</code> and the playbook section "Mixed-file requirements".</p>
+<h3>Gaps</h3>
+<ul><li>This tab is written from the saved records of 2026-11-09, not checked against the live page again. The Rook line was "your harness saw it first. check it anyway."</li></ul>
+</section>
+
+<!-- ================= S03E02 ================= -->
+<section class="ep" id="S03E02" data-title="nothing ships unmarked" data-tag="S03E02" hidden>
+<h2>S03E02 · nothing ships unmarked</h2>
+<p><span class="pill n">from records</span> <code>challenges/S03E02/log.md</code>, <code>claim-log.jsonl</code>, <code>reply1.json</code>, <code>reply2.json</code>, <code>live-recheck.log</code>, <code>check.mjs</code> and <code>retro.md</code>, written from records on 2026-11-13. The course debrief is not in the repo. Solved on 2026-11-10 at 09:16:59 UTC.</p>
+<h3>What it was about</h3>
+<p>Requests for a scheduling product arrived from support, clients, product, analytics and finance. They had to be triaged into the product's issue tracker, so that every open issue was either ready for an agent or marked for a person.</p>
+<h3>What was used and for what</h3>
+<table><tr><th>Tool</th><th>What it did</th></tr>
+<tr><td>The <code>triage</code> skill</td><td>Read each channel (desk, chat, backlog, mail) and wrote issues into the tracker.</td></tr>
+<tr><td><code>check.mjs</code></td><td>Checked the shape of each issue file (40 files, 22 requests, "CHECK OK").</td></tr>
+<tr><td><code>tools/pre-claim-gate</code></td><td>Blocked the second claim until a person re-read the live page.</td></tr></table>
+<h3>Two claims</h3>
+<table><tr><th>Claim</th><th>Result</th><th>Why</th></tr>
+<tr><td>1</td><td>Refused: "4 intents not accounted for · 1 issue open that should not be"</td><td>Four requests arrived after the last poll (IN-4109, IN-1384, IN-8901, IN-9102). IN-1384 withdrew IN-3541, so IN-3541 should have been closed.</td></tr>
+<tr><td>2</td><td><b>Solved</b></td><td>22 requests became 25 issues: 21 agent-ready and 3 needs-human, per the solved reply.</td></tr></table>
+<h3>What went wrong</h3>
+<ol><li>Channels keep delivering after a claim is prepared. The agent had not polled again right before claiming.</li>
+<li>A withdrawal was missed, because reading each new request for withdrawals was not a step in the skill.</li>
+<li><code>check.mjs</code> was green while the board was wrong. It checks shape, not whether the channels have new messages.</li>
+<li>The folder held session values and its <code>.gitignore</code> line was added late. It stayed untracked until 2026-11-13, and one session value sits inside <code>.sched/cursors.json</code>, so that file stays out of the repo.</li></ol>
+<h3>What was applied</h3>
+<p><span class="pill n">proposed</span> All seven findings are proposals. Nothing was applied from this retro.</p>
+<h3>Gaps</h3>
+<ul><li>No course debrief is saved in the repo. The solved reply carried only its stats line.</li></ul>
+</section>
+
+
 
 <!-- ================= S03E03 ================= -->
 <section class="ep" id="S03E03" data-title="out of office" data-tag="S03E03" hidden>
@@ -459,6 +518,51 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <li><span class="n">Not alone:</span> the owner approved every outside step; the agent did not pick up product's answer and ship it unattended.</li>
 <li>Course feedback beyond the debrief is not pasted yet. The Rook artifact <code>prove</code> was installed by you in <code>~/.claude/skills/prove</code> at 09:24 local time on 2026-11-12 and has not been used or compared with <code>.claude/skills/prove-build</code> yet.</li></ul>
 </section>
+
+<!-- ================= S03E05 ================= -->
+<section class="ep" id="S03E05" data-title="what came back (Products That Learn After Release)" data-tag="S03E05" hidden>
+<h2>S03E05 · what came back</h2>
+<p><span class="pill v">verified today</span> from the course replies, both packs and the debrief on 2026-11-13. Facts come from <code>challenges/S03E05/log.md</code>, <code>debrief.md</code> and <code>retro.md</code>. Solved at 09:20:15 UTC. The lesson part is <code>retro.md</code> findings 1 to 7; the Challenge part is findings 8 to 17.</p>
+<h3>What it was about</h3>
+<p>Two releases came back two weeks on, twice, with everything the team had collected: event logs, a funnel, errors, CI runs, support mail, calls and screen replays. The agent went through it, grouped what it found, picked one of six verbs per group (expand, revise, simplify, revert, investigate, stop) with cited signal ids, and brought the owner only the calls that were theirs, as numbered options.</p>
+<h3>The four releases and the calls</h3>
+<table><tr><th>Release</th><th>What the summary said</th><th>What the signals showed</th><th>Verb</th></tr>
+<tr><td>0008 smart suggestions v2</td><td>Clear win, expand</td><td>Restarts per bad night 2.75 to 2.42 (&minus;12%), but restarts done on a second tool never reached the log. The owner chose to hold at 50%.</td><td>investigate (owner's call)</td></tr>
+<tr><td>0009 status page v3</td><td>Shipped cleanly, 1.9% contact rate</td><td>The page dropped the <code>impact</code> line the feed carries; the gate (<code>ci-1222</code>, 41/41, "diff: none") never checked it.</td><td>revise (two groups: page, gate)</td></tr>
+<tr><td>0010 auto-close quiet incidents</td><td>Clear win, expand</td><td>Open at 06:00: 317 to 238 (&minus;25.2%), but stalled queues were closed and the work re-filed as tickets; 14.6% re-filed within 120 minutes against 9.6%.</td><td>revert</td></tr>
+<tr><td>0011 bulk acknowledge</td><td>Clear win, expand</td><td>Open to ack on bad nights 9.09 to 5.5 min (&minus;39.5%); every guardrail held; replays showed it working.</td><td>expand</td></tr></table>
+<h3>Claims</h3>
+<table><tr><th>Claim</th><th>Result</th><th>Why</th></tr>
+<tr><td>1 to 4, 6 to 8 (batch 1)</td><td>Refused: "suggestions: not accepted ..." with the same hint each time</td><td>The suggestions group needed an owner call that had never been put to the owner. More quoted evidence could not fix that.</td></tr>
+<tr><td>5 (batch 1)</td><td>Invalid: "not in the shape asked for"</td><td>The note was far too long.</td></tr>
+<tr><td>9 (batch 1)</td><td>Accepted as progress</td><td>The v2 decision marked as the owner's, and the owner's pick (hold at 50%) in <code>pick</code>.</td></tr>
+<tr><td>10 (batch 2)</td><td><b>Solved</b> at 09:20:15 UTC</td><td>Auto-close revert, bulk acknowledge expand, and the rule about hiding the work.</td></tr></table>
+<h3>What the replays showed</h3>
+<table><tr><th>Replay</th><th>Moments (read from every frame)</th></tr>
+<tr><td>02 and 04</td><td>A second tool, <code>sched-admin 4.2</code>, for about 1.4 s: row <code>booking-worker-2  b-08  stuck  11d 04h</code>, then <code>booking-worker-2 restarted 23:49:59</code> (replay-02) and <code>23:23:24</code> (replay-04). <code>events.csv</code> has no restart row for those incidents.</td></tr>
+<tr><td>05 and 06</td><td>After <code>auto-closed, quiet 45 minutes</code> the queue is still about 1,443 and 1,479 deep, and the operator creates a <code>sched-desk 2.1</code> ticket (<code>tk-6e41b2</code>, <code>tk-a93c58</code>).</td></tr>
+<tr><td>01, 03, 07, 08</td><td>No second tool. 07 and 08 show <code>3 incidents acknowledged</code> working as designed.</td></tr></table>
+<h3>How the pieces fit</h3>
+<table><tr><th>Part</th><th>What it does</th><th>Where</th></tr>
+<tr><td>Frame scan</td><td>Decodes every frame at 25 fps and lists the bursts where the header strip differs. Found the second tool each time; two independent scans agreed.</td><td><code>tools/frame-scan</code> (+ test)</td></tr>
+<tr><td>Call transcripts</td><td>Local speech-to-text with two model sizes. They differed on a few words, so only agreed lines were quoted.</td><td><code>tools/transcribe</code>; a throwaway environment</td></tr>
+<tr><td>Raw recompute</td><td>Medians, guardrails, re-filed incidents and bulk subgroups from the event files, with the release record's own definitions.</td><td>Small Python scripts</td></tr>
+<tr><td>Decide skill</td><td>The nine steps: record first, recompute, scan every frame, reach and age, log versus screen, one group per area, the verb, who decides, claim hygiene.</td><td><code>.claude/skills/decide-from-signals</code></td></tr></table>
+<h3>Snags</h3>
+<ul><li>The first claim said expand on a log that missed restarts made in a second tool. Lessons 69 to 71.</li>
+<li>The suggestions group was refused seven times because the hold-or-expand decision was the owner's. Lesson 72.</li>
+<li>You first said to trust the event log over the replay screen. The screen line "restarted 23:49:59" showed the log was incomplete.</li>
+<li>Tries were limited and each refusal gave no reason; "Tries left today: 3" appeared on the eighth claim. Lesson 74.</li>
+<li>A check command printed an expired S03E02 session value in full, because its masking pattern did not match a bare token. Lesson 75.</li>
+<li>The scratch folder was wiped between the two batches.</li></ul>
+<h3>What was applied</h3>
+<p><span class="pill v">applied</span> Lessons 69 to 75 in <code>docs/lessons-learned.md</code>; the section "Judging a release from signals (from S03E05)" in <code>docs/playbook.md</code>; <code>tools/frame-scan</code> with a test; the project skill <code>.claude/skills/decide-from-signals</code>; two memory notes that load at the start of every session.</p>
+<p><span class="pill n">proposed</span> only: a check that scans a Challenge folder for token-like strings before staging (finding 16); keeping the session value and receipt outside the scratch folder (finding 17); and the lesson findings 1 to 7, which have no code behind them yet.</p>
+<h3>Gaps</h3>
+<ul><li><span class="n">Not seen:</span> any control-arm replay. All four batch 1 replays are from the flag arm, so how often control operators restart on the second tool is not known.</li>
+<li>Course feedback beyond the debrief is the Rook lines in <code>retro.md</code>. The page at this address shows S03E05 only after the branch is merged and <code>update.sh</code> runs.</li></ul>
+</section>
+
 
 
 </div>

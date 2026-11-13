@@ -11,3 +11,7 @@
 - 2026-11-12 (S03E04): compared every served file with `dist/` byte for byte after each deploy, and kept the build sha in the page, the footer, the video and the report. The replay and both recordings named the same build.
 - 2026-11-12 (S03E04): a deliberate-break check on the test: the same test that passes on the new `app.js` fails (times out on the missing bar) on the old one, so it does catch the bug.
 - 2026-11-12 (S03E04): sent product the evidence and four options, not a fix; product's one-line decision (hold the list still, "N new" bar) was a smaller change than any of my options.
+- 2026-11-13 (S03E05): recomputed each success metric and guardrail from the raw event files before trusting the summary (restarts 2.75 to 2.42; time to close 24.3 vs 26.3 min; 29 of 199 auto-closed incidents re-filed within 120 minutes).
+- 2026-11-13 (S03E05): scanned every frame of the replays (25 fps, header colour) and found the second tool in replay-02, -04, -05 and -06 each time for about 1.4 s, then read three states of it at full size. Replays 01, 03, 07 and 08 had none.
+- 2026-11-13 (S03E05): offered the owner three numbered options with effort and a recommendation for the v2 decision, then sent the pick in `pick`; the course accepted batch 1 on that claim.
+- 2026-11-13 (S03E05): checked a hypothesis against the refusals before spending a try: the course had named "release gate" and "suggestions" as areas, and the gate passed once it had its own group.

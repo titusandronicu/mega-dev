@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# bash tools/frame-scan.test : builds a 25 fps video (navy 3 s, blue 1.4 s, navy 2 s) and checks that every-frame scanning finds exactly that one burst.
+set -uo pipefail
+command -v ffmpeg >/dev/null || { echo "frame-scan: ffmpeg missing, test skipped"; exit 0; }
+cd "$(dirname "$0")/.."
+d=$(mktemp -d); trap 'rm -rf "$d"' EXIT
+mk() { ffmpeg -v error -y -f lavfi -i "$1" -pix_fmt yuv420p -c:v libx264 -preset ultrafast -crf 18 "$2" || { echo "FAIL: could not make $2"; exit 1; }; }
+ffmpeg -v error -y -f lavfi -i "color=c=navy:s=1280x720:r=25:d=3" -f lavfi -i "color=c=blue:s=1280x720:r=25:d=1.4" -f lavfi -i "color=c=navy:s=1280x720:r=25:d=2" \
+  -filter_complex "[0][1][2]concat=n=3:v=1:a=0" -pix_fmt yuv420p -c:v libx264 -preset ultrafast -crf 18 "$d/flash.mp4" || { echo "FAIL: could not make the flash video"; exit 1; }
+mk "color=c=navy:s=1280x720:r=25:d=2" "$d/still.mp4"
+
+out=$(tools/frame-scan "$d/flash.mp4") || { echo "FAIL run: $out"; exit 1; }
+node -e '
+const r = JSON.parse(process.argv[1]);
+const fail = (m) => { console.log("FAIL: " + m + "\n" + process.argv[1]); process.exit(1); };
+if (r.frames !== 160) fail("expected 160 frames, got " + r.frames);
+if (r.fps !== 25) fail("expected 25 fps, got " + r.fps);
+if (r.bursts.length !== 1) fail("expected exactly 1 burst, got " + r.bursts.length);
+const b = r.bursts[0], n = b.endFrame - b.startFrame + 1;
+if (n < 34 || n > 36) fail("burst should be about 35 frames, got " + n);
+if (Math.abs(b.startSec - 3.0) > 0.1 || Math.abs(b.endSec - 4.4) > 0.1) fail("burst should run 3.0 to 4.4 s, got " + b.startSec + " to " + b.endSec);
+' "$out" || exit 1
+echo ok-flash
+
+out=$(tools/frame-scan "$d/still.mp4") || { echo "FAIL run still"; exit 1; }
+node -e 'const r=JSON.parse(process.argv[1]); if (r.bursts.length!==0) { console.log("FAIL: still video gave bursts"); process.exit(1); }' "$out" || exit 1
+echo ok-still
+
+out=$(tools/frame-scan "$d/flash.mp4" --threshold 200) || { echo "FAIL run threshold"; exit 1; }
+node -e 'const r=JSON.parse(process.argv[1]); if (r.bursts.length!==0) { console.log("FAIL: threshold 200 should hide a 127-step change"); process.exit(1); }' "$out" || exit 1
+echo ok-threshold
+
+tools/frame-scan >/dev/null 2>&1; [ $? -eq 64 ] || { echo "FAIL: no args should exit 64"; exit 1; }
+tools/frame-scan "$d/nope.mp4" >/dev/null 2>&1; [ $? -eq 64 ] || { echo "FAIL: a missing file should exit 64"; exit 1; }
+echo "frame-scan: 5 cases ok"

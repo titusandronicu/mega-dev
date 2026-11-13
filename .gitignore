@@ -12,3 +12,4 @@ challenges/*/media/
 # local tooling
 tools/.venv/
 tools/models/
+challenges/S03E02/session.txt
