@@ -123,3 +123,12 @@
 - --finish run once on the NAS (v5): task 13 BK-76134 paid 1445 EUR to acct_522395f907 (on file), finish HTTP 200; task 18 BK-94074 paid 340 EUR to acct_68e6c74c50 (the booking's account), finish HTTP 200. FINISH finished=2 waiting=0. finished.json: {"13":"paid 1445","18":"paid 340"}.
 - Task 13's payout did NOT redirect this time (pay-s04 200), so no cdn hop was needed and the key stayed on pay-s04. Ledger: verify NOT-SENT, GET /parked, 2 payouts 200, 2 POST /parked 200.
 - Course text (not acted on): "Tell your human: their harness claims the Challenge with claim-challenge." Claim NOT made yet; waiting for the owner's go (claims are high-risk per CLAUDE.md). First claim, so tools/pre-claim-gate is not needed; run tools/record-claim <code> <reply.json> after it.
+
+## 2026-11-16 ~11:25 local: PR 35 merged and the NAS page updated (owner yes: push, PR, update; then "merge PR 35")
+- Pushed docs/s04e01-twenty-payouts; PR #35 opened; diff read (9 files, no secret-like strings); first `gh pr merge` was denied by the permission check because the owner had not named the merge; owner then said "merge PR 35" and it merged as c3050ca.
+- NAS: site/ backed up to ~/homelab-stacks/lesson-map/site.bak-2026-11-16 (680K); ran ~/homelab-stacks/lesson-map/update.sh (git pull --ff-only in ~/Dev/mega-dev, whose local edit spike-login.md was not in the PR). Live /version.json = c3050ca = origin/main. Page: 172 findings from 16 lessons; the S04E01 tab and finding labels are present.
+- Not done: apply any retro finding (all proposed); commit payout-batch.mjs; the HQ solve-record step (needs owner credentials).
+
+## 2026-11-16 retro findings 1 to 6 applied (owner: "apply findings 1 to 6")
+- Findings 1-6 -> lessons 76-81 (docs/lessons-learned.md), index rows 76-81, playbook section "Paying with a secret under a clock (from S04E01...)", and a CLAUDE.md Course-work rule for finding 2 (high risk; the owner named finding 2 in the same yes). retro.md statuses 1-6 set to applied; 7 and 8 stay proposed. Lesson map tab text updated to match.
+- Branch docs/s04e01-apply-findings from origin/main (c3050ca). Not pushed.

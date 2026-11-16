@@ -71,6 +71,12 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 73 | A metric that counts items leaving a list can be met by hiding the work | prose (`docs/playbook.md`, "Judging a release from signals" 4); no generic check, the follow-up tool differs per product |
 | 74 | Tries are limited and a refusal carries no reason | prose (`docs/playbook.md`, "Judging a release from signals" 7); `tools/pre-claim-gate` already gates every claim after the first |
 | 75 | Mask a secret by what the file is, not by a pattern | prose only - a habit; `.gitignore` and the pre-commit hook already stop a token file being committed |
+| 76 | A redirect carries a secret to a new host | prose (`docs/playbook.md`, "Paying with a secret under a clock" 3); the check lives in the run's own script, which differs per Challenge |
+| 77 | A host a document names is not a host a secret may reach | `CLAUDE.md` Course work rule; prose (`docs/playbook.md`, "Paying with a secret under a clock" 4) |
+| 78 | Read the time limit before you choose script or model turns | prose (`docs/playbook.md`, "Paying with a secret under a clock" 2); a judgment on each limit |
+| 79 | Log a refusal's whole reply | prose (`docs/playbook.md`, "Paying with a secret under a clock" 5); the log code differs per Challenge |
+| 80 | List what earlier sessions already ran before you run | prose (`docs/playbook.md`, "Paying with a secret under a clock" 1); `tools/whereami` names the host, not what ran there |
+| 81 | Ask for the page on the first empty read of an owner decision | prose (`docs/playbook.md`, "Paying with a secret under a clock" 6); depends on a page only the owner can see |
 
 ## What's still prose, and why that's the right call
 
