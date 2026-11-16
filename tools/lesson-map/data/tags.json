@@ -226,5 +226,59 @@
   "ideas": [
    "human-at-fork"
   ]
+ },
+ "S04E01#1": {
+  "label": "A redirect carried the key on",
+  "ideas": [
+   "code-over-prompt",
+   "distrust-decoys"
+  ]
+ },
+ "S04E01#2": {
+  "label": "A manual named a host for the key",
+  "ideas": [
+   "distrust-decoys",
+   "human-at-fork"
+  ]
+ },
+ "S04E01#3": {
+  "label": "Model turns do not fit 6 seconds",
+  "ideas": [
+   "code-over-prompt",
+   "contract-first"
+  ]
+ },
+ "S04E01#4": {
+  "label": "The hint was cut off in the log",
+  "ideas": [
+   "source-over-summary",
+   "write-down-state"
+  ]
+ },
+ "S04E01#5": {
+  "label": "Earlier runs were not in the log",
+  "ideas": [
+   "write-down-state",
+   "look-again"
+  ]
+ },
+ "S04E01#6": {
+  "label": "Decisions did not reach the course",
+  "ideas": [
+   "look-again",
+   "human-at-fork"
+  ]
+ },
+ "S04E01#7": {
+  "label": "Owner chose against the advice",
+  "ideas": [
+   "human-at-fork"
+  ]
+ },
+ "S04E01#8": {
+  "label": "A wrong amount in a log note",
+  "ideas": [
+   "source-over-summary"
+  ]
  }
 }
