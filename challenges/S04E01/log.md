@@ -132,3 +132,13 @@
 ## 2026-11-16 retro findings 1 to 6 applied (owner: "apply findings 1 to 6")
 - Findings 1-6 -> lessons 76-81 (docs/lessons-learned.md), index rows 76-81, playbook section "Paying with a secret under a clock (from S04E01...)", and a CLAUDE.md Course-work rule for finding 2 (high risk; the owner named finding 2 in the same yes). retro.md statuses 1-6 set to applied; 7 and 8 stay proposed. Lesson map tab text updated to match.
 - Branch docs/s04e01-apply-findings from origin/main (c3050ca). Not pushed.
+
+## 2026-11-16 ~11:27 local: PR 36 merged, NAS page updated (owner: "push, open the PR, merge it and update the NAS page")
+- Pushed docs/s04e01-apply-findings; PR #36; diff read (7 files; CLAUDE.md +1 line; no secret-like strings). One transient classifier error on the first merge attempt, nothing ran; the retry merged as 6278e45.
+- NAS: site/ backed up to ~/homelab-stacks/lesson-map/site.bak-2026-11-16-b; update.sh ran; live /version.json = 6278e45 = origin/main. Page: 172 findings from 16 lessons, 105 applied; the S04E01 tab shows "Findings 1 to 6 at the owner's yes".
+- Still open: findings 7 and 8 proposed; payout-batch.mjs not in the repo; HQ solve-record step (owner credentials).
+
+## 2026-11-16 script committed (owner: "commit the script into the repo")
+- challenges/S04E01/payout-batch.mjs = the exact script that ran on the NAS (sha256 9e0a964f..., checked equal before copying). No secret values in it, only the names PAYOUT_KEY and TICKET read from the environment.
+- challenges/S04E01/payout-batch.test.mjs: 25 checks, run with `node challenges/S04E01/payout-batch.test.mjs` (egress allowlist, redirect handling incl. the cdn-s04 hop, amount and flag rules, finish mode). All ok. check-all does not run it (it only runs tools/*.test*), so run it by hand after any change to the script.
+- Branch feat/s04e01-payout-batch from origin/main (6278e45). Committed locally; not pushed.
