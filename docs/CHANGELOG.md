@@ -57,3 +57,4 @@
 - S03E05 solved (2026-11-13 09:20:15Z). Batch 1 (smart suggestions v2, status page v3): 7 refusals, 1 format error, accepted on the 9th claim. Batch 2 (auto-close, bulk acknowledge): accepted on the first claim. `challenges/S03E05/` holds the log, the course debrief and the retro.
 - Lessons 69-75, playbook "Judging a release from signals", `tools/frame-scan` (+ test), project skill `.claude/skills/decide-from-signals`.
 - Lesson map: S02E05, S03E02 and S03E05 added (retros written from records for S02E05 and S03E02, which had none), S03E05 tab on "Tools by episode". S03E02 files added to the repo with the tokens left out.
+2026-11-16: prep agent drafted challenges/2026-11-16/prep.md; hq.mega.dev unreachable (proxy 403 / DNS), repo-side checklist only.
