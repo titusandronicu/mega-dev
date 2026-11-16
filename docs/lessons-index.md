@@ -77,6 +77,8 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 79 | Log a refusal's whole reply | prose (`docs/playbook.md`, "Paying with a secret under a clock" 5); the log code differs per Challenge |
 | 80 | List what earlier sessions already ran before you run | prose (`docs/playbook.md`, "Paying with a secret under a clock" 1); `tools/whereami` names the host, not what ran there |
 | 81 | Ask for the page on the first empty read of an owner decision | prose (`docs/playbook.md`, "Paying with a secret under a clock" 6); depends on a page only the owner can see |
+| 82 | When the owner chooses against your advice, state the risk once and do as decided | prose (`docs/playbook.md`, "Paying with a secret under a clock" 7); a judgment on each decision |
+| 83 | Take every amount in a log from the script's own output | prose (`docs/playbook.md`, "Paying with a secret under a clock" 8); a habit, the script prints the numbers |
 
 ## What's still prose, and why that's the right call
 

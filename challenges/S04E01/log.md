@@ -142,3 +142,7 @@
 - challenges/S04E01/payout-batch.mjs = the exact script that ran on the NAS (sha256 9e0a964f..., checked equal before copying). No secret values in it, only the names PAYOUT_KEY and TICKET read from the environment.
 - challenges/S04E01/payout-batch.test.mjs: 25 checks, run with `node challenges/S04E01/payout-batch.test.mjs` (egress allowlist, redirect handling incl. the cdn-s04 hop, amount and flag rules, finish mode). All ok. check-all does not run it (it only runs tools/*.test*), so run it by hand after any change to the script.
 - Branch feat/s04e01-payout-batch from origin/main (6278e45). Committed locally; not pushed.
+
+## 2026-11-16 retro findings 7 and 8 applied (owner: "apply findings 7 and 8")
+- Both were tagged fix none; read the owner's yes as "make them lessons". Lessons 82 and 83, index rows, playbook items 7 and 8, retro fix tag set to playbook and status applied for both. All 8 findings are applied. Lesson map tab text updated.
+- Branch docs/s04e01-apply-7-8 from origin/main (2ece243). Committed locally; not pushed.
