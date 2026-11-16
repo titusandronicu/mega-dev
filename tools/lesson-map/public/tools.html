@@ -563,6 +563,42 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <li>Course feedback beyond the debrief is the Rook lines in <code>retro.md</code>. The page at this address shows S03E05 only after the branch is merged and <code>update.sh</code> runs.</li></ul>
 </section>
 
+<!-- ================= S04E01 ================= -->
+<section class="ep" id="S04E01" data-title="Twenty payouts (Software Factory Make an Agent)" data-tag="S04E01" hidden>
+<h2>S04E01 &middot; Twenty payouts</h2>
+<p><span class="pill v">verified today</span> from the course replies and the debrief on 2026-11-16. Facts come from <code>challenges/S04E01/log.md</code>, <code>debrief.md</code> and <code>retro.md</code>. Solved at 10:15:11 UTC. The lesson part is from the lesson text only; the owner's transcript <code>s04e01-transcript.md</code> was named at the start but is not summarised here.</p>
+<h3>What it was about</h3>
+<p>An agent paid out a pretend host's 20 bookings on its own, with a practice key, inside a 6-second limit for all 20 tasks together. A task whose payout account was not the account on file, or whose payout request moved to another host, was the owner's call. The lesson, "Software Factory Make an Agent", covers autonomy, runtime, state, control, and observation and recovery.</p>
+<h3>The runs</h3>
+<table><tr><th>Run</th><th>Result</th><th>What it showed</th></tr>
+<tr><td>Earlier session, same morning</td><td>19 paid, 1 flagged, refused</td><td>Found on the NAS before this session began; a different script, with no verify call.</td></tr>
+<tr><td>1, 2 and 3</td><td>19 paid, 1 flagged each, refused</td><td>"The course will not say why." Time was 2.9 to 4.1 s of 6 s. The hint was cut off in the log until run 3: "check-lane need <code>payout-run</code> asks the questions this line leaves open."</td></tr>
+<tr><td>4</td><td>Stopped by its own check</td><td>One payout request got a 307 redirect to <code>cdn-s04.mega.dev</code>. With redirects followed by hand and every hop checked, the script blocked it.</td></tr>
+<tr><td>5</td><td>Accepted, 18 paid, 2 parked</td><td>"All 20 tasks are answered." The owner's decisions never reached the course after three reads, so attempt 5 was left unpaid.</td></tr>
+<tr><td>6</td><td>Accepted, 18 paid, 2 parked, then finished</td><td>Decisions arrived at once. Task 13 on file, 1,445 EUR; task 18 new account, 340 EUR. The claim was <b>solved</b>.</td></tr></table>
+<h3>How the pieces fit</h3>
+<table><tr><th>Part</th><th>What it does</th><th>Where</th></tr>
+<tr><td>Batch script</td><td>Does the whole batch in one call: checks each task, pays once, answers, flags what is not its to do. The agent (Haiku 5.5 in Pi) only calls it once.</td><td><code>payout-batch.mjs</code> on the NAS (not in this repo yet)</td></tr>
+<tr><td>Host allowlist</td><td>The payout key goes only to <code>pay-s04.mega.dev</code>, the ticket and attempt only to <code>hq.mega.dev</code>. Every redirect hop is checked.</td><td>In the script</td></tr>
+<tr><td>Request ledger</td><td>One line per request and hop: host, path, header names, status. No values.</td><td>NAS <code>logs/ledger-*.jsonl</code></td></tr>
+<tr><td>Parked file and finish mode</td><td>A flagged task is kept on the NAS. After the owner decides, <code>--finish</code> pays only what was decided and never finishes a task twice.</td><td>NAS <code>logs/*.parked.json</code>, <code>finished.json</code></td></tr></table>
+<h3>Snags</h3>
+<ul><li>The manual asked for the payout key at a verify host. It was called fine, and on the owner's yes the key went there once.</li>
+<li>Three runs were refused with no reason. The cause was most likely the payout redirect, which a plain <code>fetch</code> follows with the key header; the course counted 3 redirect leaks and 1 verify leak.</li>
+<li>The owner's first parked decisions did not reach the course. A rerun on a new attempt fixed it.</li>
+<li>An earlier session's edited copy and runs were already on the NAS and in Downloads, and not in the log. The owner chose a clean start in a new folder.</li>
+<li>One log note held a wrong amount (2230 instead of 2010 EUR). The script was right.</li></ul>
+<h3>What was applied</h3>
+<p><span class="pill v">applied</span> Nothing from the retro yet. The script, the allowlist, the ledger and the finish mode were built during the solve and live on the NAS.</p>
+<p><span class="pill n">proposed</span> only: the retro's 8 findings, among them check every hop of a request, never send a secret to a host a document names, read the time limit before choosing script or model turns, log a refusal's full reply, and list earlier sessions' runs before the first run.</p>
+<h3>Gaps</h3>
+<ul><li><span class="n">Not proven:</span> that the redirect alone caused the first three refusals. It fits the course's questions and the later accepted runs, but the earlier ledger never showed the hop.</li>
+<li><span class="n">Not alone:</span> the owner approved every run and decided the parked tasks.</li>
+<li>Whether a second payout for the same task token is ignored by the payout host was not tested.</li>
+<li>The page at this address shows S04E01 only after the branch is merged and <code>update.sh</code> runs.</li></ul>
+</section>
+
+
 
 
 </div>
