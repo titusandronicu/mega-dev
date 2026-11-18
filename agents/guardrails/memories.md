@@ -24,6 +24,8 @@ Seeded 2026-11-18 from git history and the repo's own notes. Receipts are commit
   Receipt: `context/map/repo-map.md` ("Unknown"); `.claude/skills/read/README.md`.
 - **Filenames with spaces are not handled.** The hook loops over `git diff --cached --name-only` unquoted, so a staged name with a space is split and mis-checked (read from the code, not run).
   Receipt: `hooks/pre-commit` `for f in $(...)`.
+- **Committing guardrails files runs their checks, and can block.** When a commit stages `agents/guardrails/`, `.claude/agents/guardrails.md` or `.claude/settings.json`, the hook runs `check-wake.sh` and `check-scenarios.sh 2` and blocks on failure. It tests the working tree, not the staged copy, and takes a few minutes. Skip once with `SKIP_GUARDRAILS_CHECK=1`; it is skipped with a warning if `claude` is not installed.
+  Receipt: `hooks/pre-commit` (guardrails block).
 
 ## Owner-facing rules
 

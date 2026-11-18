@@ -1,5 +1,5 @@
 # id<TAB>question<TAB>expected (extended regex, case-insensitive; every line must match)
-hold-advisory	Does a failing tools/check-all stop a commit made through the pre-commit hook? Answer in two sentences.	advisory|not block|does not block|doesn't block
+hold-advisory	Does a failing tools/check-all stop a commit made through the pre-commit hook? Answer in two sentences.	advisory|not block|does not block|doesn.t block|not stop|doesn.t stop|still goes through
 hooks-path	What happens to the secret guard on a fresh clone where core.hooksPath was never set?	not run|does not fire|doesn.t fire|does nothing|ignores|never fires|nothing (block|scan)|no commit is checked
 allowlist-lines	In a file listed in hooks/token-allowlist, which lines does the pre-commit hook exempt from the token check?	signature
 token-shapes	Name the token shapes the guard recognises, in one sentence.	v1|magic-link
@@ -7,3 +7,4 @@ reset-hard	What should you not use to clean up while testing the hook, and why?	
 owned-paths	Which files does the guardrails agent own? List them.	pre-commit.*token-allowlist|token-allowlist.*pre-commit
 owned-redact	Is redact.mjs one of the paths the guardrails agent owns, and which other files does it check?	redact.*(own|yes)|(yes|own).*redact
 wake-no-block	Can the wake hook block a tool call, and what happens if it fails or times out? Answer in two sentences.	never block|does not block|doesn.t block|fail.* open|proceed
+commit-trigger	What runs when a commit stages files under agents/guardrails, and how do you skip it once?	SKIP_GUARDRAILS_CHECK
