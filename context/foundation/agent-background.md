@@ -12,6 +12,7 @@ Read this first in a new session. It is a short index; the details are in the li
 Maps and checks (generated, read-only evidence):
 - `context/map/repo-map.md`: mega-dev (capabilities, couplings, watch list, first-day files).
 - `context/map/mega-hq/repo-map.md`: mega-hq, same format.
+- `context/foundation/infrastructure.md`: the UGREEN NAS map (access paths, every running container and port, deploy and rollback story, risk register), verified 2026-11-18.
 - `context/foundation/health-check-mega-hq.md`: dependencies, tests, CI, config of mega-hq.
 - Evidence behind them: `context/map/evidence/`, `context/map/mega-hq/evidence/`.
 - Where each shell runs and what it has: `docs/environments.md`, and `tools/whereami` prints it live.
