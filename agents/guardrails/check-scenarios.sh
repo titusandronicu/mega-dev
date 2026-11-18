@@ -11,7 +11,9 @@ while IFS=$'\t' read -r id q re; do
   ok=0
   for i in $(seq "$runs"); do
     out=$(claude -p --agent guardrails --model haiku --settings '{"disableAllHooks":true}' "$q" </dev/null 2>&1)
-    if printf '%s' "$out" | grep -Eiq -- "$re"; then ok=$((ok+1)); fi
+    # one retry only when the run returned nothing (a transient failure); a wrong answer is never retried
+    if [ -z "$out" ]; then out=$(claude -p --agent guardrails --model haiku --settings '{"disableAllHooks":true}' "$q" </dev/null 2>&1); fi
+    if printf '%s' "$out" | grep -Eizq -- "$re"; then ok=$((ok+1)); fi
   done
   if [ "$ok" -eq "$runs" ]; then echo "PASS $id ($ok/$runs)"; else echo "FAIL $id ($ok/$runs)"; fail=1; fi
 done < agents/guardrails/scenarios.tsv

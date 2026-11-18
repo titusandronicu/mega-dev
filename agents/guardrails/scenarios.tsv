@@ -4,3 +4,6 @@ hooks-path	What happens to the secret guard on a fresh clone where core.hooksPat
 allowlist-lines	In a file listed in hooks/token-allowlist, which lines does the pre-commit hook exempt from the token check?	signature
 token-shapes	Name the token shapes the guard recognises, in one sentence.	v1|magic-link
 reset-hard	What should you not use to clean up while testing the hook, and why?	reset --hard|hard reset
+owned-paths	Which files does the guardrails agent own? List them.	pre-commit.*token-allowlist|token-allowlist.*pre-commit
+owned-redact	Is redact.mjs one of the paths the guardrails agent owns, and which other files does it check?	redact.*(own|yes)|(yes|own).*redact
+wake-no-block	Can the wake hook block a tool call, and what happens if it fails or times out? Answer in two sentences.	never block|does not block|doesn.t block|fail.* open|proceed
