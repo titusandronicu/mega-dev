@@ -81,6 +81,10 @@ see `challenges/S01E03/log.md` (Phase 8) for how.
 | 83 | Take every amount in a log from the script's own output | prose (`docs/playbook.md`, "Paying with a secret under a clock" 8); a habit, the script prints the numbers |
 | 84 | A global Stop hook also fires inside headless runs | `~/.agent-hooks/annoyance-stop.py` now skips non-interactive runs (outside this repo); `agents/guardrails/check-scenarios.sh` also disables hooks |
 | 85 | A blocked command does not say which part it objected to, so stop instead of retrying in pieces | prose only - a judgment on each denial; the agent cannot see the classifier's reason |
+| 86 | A copied Host Desk copies its guard state | prose only - the copy brings logs the script trusts; a habit to check dates before the one-try run |
+| 87 | A planner rule must tell a house setting from the host's own rule | prose only - lives in the planner role file of the Host Desk, outside this repo |
+| 88 | Give each request its own files and let one integrator wire them | prose only - a planning rule the planner role and the board check (disjoint files per job) |
+| 89 | Read the board, not the role's report | prose only - a habit; the board is the one source of what was posted |
 
 ## What's still prose, and why that's the right call
 
