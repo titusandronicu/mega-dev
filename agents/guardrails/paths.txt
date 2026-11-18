@@ -1,0 +1,6 @@
+# Paths the guardrails agent owns (fnmatch, relative to the repo root). The wake hook reads this file.
+hooks/pre-commit
+hooks/token-allowlist
+.claude/skills/read/scripts/redact.mjs
+tools/check-all
+CLAUDE.md
