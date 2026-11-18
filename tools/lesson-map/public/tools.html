@@ -598,6 +598,76 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <li>The page at this address shows S04E01 only after the branch is merged and <code>update.sh</code> runs.</li></ul>
 </section>
 
+<!-- ================= S04E02 ================= -->
+<section class="ep" id="S04E02" data-title="Looks good to me (Software Factory Build the workspace)" data-tag="S04E02" hidden>
+<h2>S04E02 &middot; Looks good to me</h2>
+<p><span class="pill v">verified today</span> from the course replies and the debrief on 2026-11-17. Facts come from <code>challenges/S04E02/log.md</code>, <code>debrief.md</code> and <code>retro.md</code>. Solved at 08:24:30 UTC. The lesson part is from the owner's transcript.</p>
+<h3>What it was about</h3>
+<p>A second role for the Host Desk: a reviewer that judges a co-host's three-hunk change and sends its findings. Then the day's payout batch, on a new attempt with its own commission.</p>
+<h3>The runs</h3>
+<table><tr><th>Run</th><th>Result</th><th>What it showed</th></tr>
+<tr><td>Reviewer 1, as given</td><td>Refused three times</td><td>It judged against 15 % copied into its own instructions; the live settings said 18 %, so it passed the commission cut. The refusal gave no reason.</td></tr>
+<tr><td>Reviewer 2, improved</td><td>Accepted: "every verdict is right"</td><td>Pass on the rename, flag on round-down to round-nearest, flag on 18 to 15 %. A refused review did not use up the attempt.</td></tr>
+<tr><td>Payout practice</td><td>3 of 3 paid, accepted</td><td>After two fixes to yesterday's script found by reading the diff: it pointed at the old challenge and paid the full stay total.</td></tr>
+<tr><td>Payout run</td><td>Accepted, 18 paid (12,846 EUR), 2 parked</td><td>2.2 s of 6 s. Task 6 was redirected to an unapproved host and blocked; task 16 named an account not on file. Owner: task 6 on file (306 EUR), task 16 new account (470 EUR).</td></tr></table>
+<h3>How the pieces fit</h3>
+<table><tr><th>Part</th><th>What it does</th><th>Where</th></tr>
+<tr><td>Reviewer role</td><td>Read-only. Reads live settings, then the house notes, then the patch, and judges the effect, not the commit message. Posts findings once.</td><td>Host Desk <code>roles/reviewer</code> (copy in <code>challenges/S04E02/host-desk</code>)</td></tr>
+<tr><td>House notes</td><td>Why each decision exists (round down, check-out day is not a night, commission read live, owner decides). Every role reads them at start.</td><td>Host Desk <code>why/</code></td></tr>
+<tr><td>Factory checklist</td><td>Rules for every role: read facts from their source; write down why next to the code.</td><td>Host Desk <code>factory/CHECKLIST.md</code></td></tr>
+<tr><td>Batch script</td><td>Reused from S04E01, with the base URL fixed and the commission read live; rounds down once.</td><td>NAS Host Desk, copy in the repo folder</td></tr></table>
+<h3>Snags</h3>
+<ul><li>The reviewer as given was refused three times and passed the commission cut from 18 to 15 %. The owner said to improve it; it then read live settings and the house notes.</li>
+<li>Yesterday's payout script still used yesterday's challenge URL and paid the full stay total. It was caught before the real run.</li>
+<li>Pi and the model key were missing in the first shell. The owner pointed to the NAS and yesterday's notes.</li>
+<li>The manual again asked for a key check at a verify host; the script refused to send it.</li></ul>
+<h3>What was applied</h3>
+<p><span class="pill v">applied</span> Debrief rules 4 and 5 in the Host Desk checklist, the house notes, startup reads in the payout role, and the live-settings read in the reviewer. Retro findings 1 to 3.</p>
+<p><span class="pill n">proposed</span> Retro findings 4 to 6: diff a reused script's base URL and money rule against the new manual; run a handed-over role once unchanged and read its failure; say in the log when a run was by hand, not through the agent.</p>
+<h3>Gaps</h3>
+<ul><li><span class="n">Not alone:</span> the owner chose the improvement and decided both parked tasks.</li>
+<li>The practice and the real run were started by hand, not by the Pi agent (logged as a deviation).</li>
+<li>This section is on the page only after its branch is merged and <code>update.sh</code> runs.</li></ul>
+</section>
+
+<!-- ================= S04E03 ================= -->
+<section class="ep" id="S04E03" data-title="Three small changes (Software Factory Staff the Team)" data-tag="S04E03" hidden>
+<h2>S04E03 &middot; Three small changes</h2>
+<p><span class="pill v">verified today</span> from the course replies, the board and the debrief on 2026-11-18. Facts come from <code>challenges/S04E03/log.md</code>, <code>debrief.md</code> and <code>retro.md</code>. Solved at 09:51:55 UTC, one claim. The lesson part is from the owner's transcript.</p>
+<h3>What it was about</h3>
+<p>The Host Desk got a team. The owner and the harness wrote a planner; critic, worker and integrator came as given. The team took the host's three change requests on a shared board: 10 % off stays of 7 nights or more, a city tax of 3 EUR per guest per night, and no commission on the cleaning fee. Then the payout batch ran on the merged work.</p>
+<h3>The steps</h3>
+<table><tr><th>Step</th><th>Result</th><th>What it showed</th></tr>
+<tr><td>Critics (3)</td><td>Five questions each on the board</td><td>The r2 critic's first post was refused (422) and recorded nothing; one rerun posted. The host answered the tax only: 5 nights at most, commission on it, bookings from 17 November. The other two: "build as written".</td></tr>
+<tr><td>Planner</td><td>First run did not post; second run posted four jobs</td><td>Its own Limits forbade copying tax or discount numbers into a file. Fixed: only house settings are read live; the host's own terms are constants in rule modules.</td></tr>
+<tr><td>Workers (3, haiku)</td><td>Each wrote its two planned files and posted</td><td>One rule module and one why note per request. No file shared.</td></tr>
+<tr><td>Reviewer</td><td>0 of 6, then 0 of 13 hunks flagged</td><td>It noted that excluding the cleaning fee from commission is in no house note.</td></tr>
+<tr><td>Integrator</td><td>Merged three jobs, wired them, posted last</td><td>Added the <code>day</code> field to the known fields; the payout script is its alone.</td></tr>
+<tr><td>Practice</td><td>3 paid (3,512 EUR), 0 flagged</td><td>The reply says only "done"; it does not confirm amounts.</td></tr>
+<tr><td>Run</td><td>18 paid (19,757 EUR), 2 parked, in 2.8 s</td><td>Live commission was 10 %. Task 15 was redirected to an unapproved host (key not sent on); task 16 named an account not on file.</td></tr>
+<tr><td>Finish and claim</td><td>15 declined; 16 paid 678 EUR to the account on file; solved</td><td>The owner decided both; the claim waited for the owner's yes.</td></tr></table>
+<h3>How the pieces fit</h3>
+<table><tr><th>Part</th><th>What it does</th><th>Where</th></tr>
+<tr><td>Board</td><td>Holds requests, the team's questions, the plan, jobs and results, so any agent reads one place instead of a chat.</td><td>The course, per attempt</td></tr>
+<tr><td>Planner role</td><td>Posts one plan: every request has a job, one job merges, no two jobs share a file. Never writes code or claims a job.</td><td>NAS Host Desk <code>roles/planner</code> (not in this repo yet)</td></tr>
+<tr><td>Rule modules</td><td>Discount, city tax and commission, each a pure function in integer cents. The integrator adds the parts and rounds down once.</td><td>NAS Host Desk <code>roles/payout-runner/scripts/rules</code></td></tr>
+<tr><td>Guardrails domain agent</td><td>The lesson's own experiment: a read-only agent that owns the secret guard, wakes when a file it owns is read, and has scenario checks run on commit.</td><td>This repo, <code>agents/guardrails</code></td></tr></table>
+<h3>Snags</h3>
+<ul><li>The Host Desk was copied from S04E02, so yesterday's run marker and finished-tasks list came along. The marker refused the first run; the list made task 16 look already paid.</li>
+<li>The planner refused to post because of its own rule.</li>
+<li>A role reported a failed post; only the board showed the truth.</li>
+<li>Claude Code's auto-mode check blocked one setup command and the first claim, each without a reason. Both went through after the owner's explicit yes.</li></ul>
+<h3>What was applied</h3>
+<p><span class="pill v">applied</span> Lessons 86 to 89 in <code>docs/lessons-learned.md</code>; rules 6 and 7 (plan by files, critic first) and two more checks in the Host Desk checklist; the global stop hook now skips non-interactive runs (lesson 84).</p>
+<p><span class="pill n">proposed</span> Retro finding 6: print rate, fee, guests and nights per task so a practice amount can be checked by hand.</p>
+<h3>Gaps</h3>
+<ul><li><span class="n">Assumed:</span> three readings the host did not confirm (discount on the nights part only, exactly 7 nights qualifies, no tax on the cleaning fee). The course accepted the claim.</li>
+<li><span class="n">Not alone:</span> the owner approved every step, answered the host's questions on the page and decided the parked tasks.</li>
+<li>The three practice amounts were not checked by hand; the maths of the rule modules was checked on seven worked examples.</li>
+<li>This section is on the page only after its branch is merged and <code>update.sh</code> runs.</li></ul>
+</section>
+
+
 
 
 
