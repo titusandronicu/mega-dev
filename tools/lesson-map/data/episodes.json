@@ -14,5 +14,7 @@
   {"id": "S03E03", "title": "out of office (lesson: AI-Native Product Development)"},
   {"id": "S03E04", "title": "show me when (lesson: Verifying Product Outcomes)"},
   {"id": "S03E05", "title": "what came back (lesson: Products That Learn After Release)"},
-  {"id": "S04E01", "title": "Twenty payouts (lesson: Software Factory Make an Agent)"}
+  {"id": "S04E01", "title": "Twenty payouts (lesson: Software Factory Make an Agent)"},
+  {"id": "S04E02", "title": "Looks good to me (lesson: Software Factory Build the workspace)"},
+  {"id": "S04E03", "title": "Three small changes (lesson: Software Factory Staff the Team)"}
 ]
