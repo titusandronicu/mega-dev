@@ -280,5 +280,89 @@
   "ideas": [
    "source-over-summary"
   ]
+ },
+ "S04E02#1": {
+  "label": "A role copied a fact that went stale",
+  "ideas": [
+   "look-again",
+   "source-over-summary"
+  ]
+ },
+ "S04E02#2": {
+  "label": "The role read no house notes",
+  "ideas": [
+   "write-down-state",
+   "source-over-summary"
+  ]
+ },
+ "S04E02#3": {
+  "label": "The payout role had no startup reads",
+  "ideas": [
+   "contract-first",
+   "code-over-prompt"
+  ]
+ },
+ "S04E02#4": {
+  "label": "A reused script pointed at the old challenge",
+  "ideas": [
+   "contract-first",
+   "look-again"
+  ]
+ },
+ "S04E02#5": {
+  "label": "Run the given role once, then change one read",
+  "ideas": [
+   "rehearse-the-shape",
+   "look-again"
+  ]
+ },
+ "S04E02#6": {
+  "label": "Runs were by hand, not through the agent",
+  "ideas": [
+   "human-at-fork",
+   "write-down-state"
+  ]
+ },
+ "S04E03#1": {
+  "label": "A copied folder carried yesterday's guard files",
+  "ideas": [
+   "write-down-state",
+   "look-again"
+  ]
+ },
+ "S04E03#2": {
+  "label": "The planner refused to post",
+  "ideas": [
+   "contract-first",
+   "code-over-prompt"
+  ]
+ },
+ "S04E03#3": {
+  "label": "One owner per file, one integrator",
+  "ideas": [
+   "contract-first",
+   "package-it"
+  ]
+ },
+ "S04E03#4": {
+  "label": "The host answered only the tax",
+  "ideas": [
+   "human-at-fork",
+   "contract-first"
+  ]
+ },
+ "S04E03#5": {
+  "label": "A role's report was not the board",
+  "ideas": [
+   "source-over-summary",
+   "prove-after-merge"
+  ]
+ },
+ "S04E03#6": {
+  "label": "The practice reply did not confirm amounts",
+  "ideas": [
+   "rehearse-the-shape",
+   "prove-after-merge"
+  ]
  }
 }
