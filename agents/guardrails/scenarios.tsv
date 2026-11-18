@@ -1,0 +1,6 @@
+# id<TAB>question<TAB>expected (extended regex, case-insensitive; every line must match)
+hold-advisory	Does a failing tools/check-all stop a commit made through the pre-commit hook? Answer in two sentences.	advisory|not block|does not block|doesn't block
+hooks-path	What happens to the secret guard on a fresh clone where core.hooksPath was never set?	not run|does not fire|doesn.t fire|does nothing|ignores|never fires|nothing (block|scan)|no commit is checked
+allowlist-lines	In a file listed in hooks/token-allowlist, which lines does the pre-commit hook exempt from the token check?	signature
+token-shapes	Name the token shapes the guard recognises, in one sentence.	v1|magic-link
+reset-hard	What should you not use to clean up while testing the hook, and why?	reset --hard|hard reset
