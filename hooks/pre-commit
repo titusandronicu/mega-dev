@@ -15,6 +15,20 @@ done
 if [ "$status" -ne 0 ]; then
   echo "pre-commit: blocked. Redact with: node $CHECK <file> > clean, or unstage the file." >&2
 fi
+# Guardrails agent: when its files change, run its checks (blocking). Skip once: SKIP_GUARDRAILS_CHECK=1 git commit ...
+# It tests the working tree, not the staged copy, and takes a few minutes (it calls the agent on a small model).
+if git diff --cached --name-only | grep -Eq '^(agents/guardrails/|\.claude/agents/guardrails\.md$|\.claude/settings\.json$)'; then
+  if [ -n "${SKIP_GUARDRAILS_CHECK:-}" ]; then
+    echo "pre-commit: guardrails checks skipped (SKIP_GUARDRAILS_CHECK is set)." >&2
+  elif ! command -v claude >/dev/null 2>&1; then
+    echo "pre-commit: claude not found, guardrails checks skipped." >&2
+  elif agents/guardrails/check-wake.sh >&2 && agents/guardrails/check-scenarios.sh 2 >&2; then
+    echo "pre-commit: guardrails checks passed." >&2
+  else
+    echo "pre-commit: blocked. The guardrails checks failed; fix them, or skip once with SKIP_GUARDRAILS_CHECK=1." >&2
+    status=1
+  fi
+fi
 # Advisory: the other repo checks. They report but do not block yet (exit status stays as above).
 if [ -x tools/check-all ]; then
   tools/check-all --quiet >&2 || echo "pre-commit: tools/check-all reported problems (advisory, commit not blocked)." >&2
