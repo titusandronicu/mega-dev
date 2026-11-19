@@ -15,3 +15,5 @@
 - 2026-11-13 (S03E05): scanned every frame of the replays (25 fps, header colour) and found the second tool in replay-02, -04, -05 and -06 each time for about 1.4 s, then read three states of it at full size. Replays 01, 03, 07 and 08 had none.
 - 2026-11-13 (S03E05): offered the owner three numbered options with effort and a recommendation for the v2 decision, then sent the pick in `pick`; the course accepted batch 1 on that claim.
 - 2026-11-13 (S03E05): checked a hypothesis against the refusals before spending a try: the course had named "release gate" and "suggestions" as areas, and the gate passed once it had its own group.
+
+- 2026-11-19 S04E04: a poller on the NAS with retries, an answered-events file and conflict rows; running the payout batch as a script (not through the model) with the night's attempt.

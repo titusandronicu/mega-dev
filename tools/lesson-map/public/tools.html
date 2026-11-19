@@ -667,6 +667,38 @@ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;paddin
 <li>This section is on the page only after its branch is merged and <code>update.sh</code> runs.</li></ul>
 </section>
 
+<!-- ================= S04E04 ================= -->
+<section class="ep" id="S04E04" data-title="Leave it running (Software Factory Wake the Team)" data-tag="S04E04" hidden>
+<h2>S04E04 &middot; Leave it running</h2>
+<p><span class="pill v">verified today</span> from the course replies, the board and the debrief on 2026-11-19. Facts come from <code>challenges/S04E04/log.md</code>, <code>debrief.md</code> and <code>retro.md</code>. Solved at 10:53:22 UTC, on the sixth night. The lesson part is from the owner's transcript.</p>
+<h3>What it was about</h3>
+<p>The Host Desk got a night desk: a poller that pulls booking events (a change, a cancel, a guest message), starts a role once per event and posts its result, while nobody types. Then the payout batch ran on the bookings as the night left them. Each night lasts 10 minutes and a refused run needs a new manual fetch, so a new attempt and a new night.</p>
+<h3>The nights</h3>
+<table><tr><th>Night</th><th>Result</th><th>What it showed</th></tr>
+<tr><td>1</td><td>Role fetched the manual again; poller died</td><td>A second fetch makes a new attempt with no night. A 10-second network timeout ended the poller. The batch then ran as a script.</td></tr>
+<tr><td>2</td><td>Refused at task 4</td><td>Hint: who decides which version holds when an event comes back saying something else. "Later wins" was wrong; the owner decides.</td></tr>
+<tr><td>3 to 4</td><td>Refused at task 2</td><td>Event 5 never reached the feed. Hints: who else takes events from your outbox; which running jobs no role of yours owns.</td></tr>
+<tr><td>5</td><td>"Not accepted"</td><td>With the foreign jobs stopped, event 5 came. Hint: how many times did your desk tell the course it applied that event. Redeliveries were answered twice.</td></tr>
+<tr><td>6</td><td>Accepted: all 20 answered, 4 parked</td><td>Each event answered once, repeats acked, changes under one id and guest requests parked.</td></tr></table>
+<h3>How the pieces fit</h3>
+<table><tr><th>Part</th><th>What it does</th><th>Where</th></tr>
+<tr><td>Poller</td><td>Claims a job on the board, keeps it beating, pulls events, acks them, posts results. Retries on a network error. Remembers each answered event.</td><td>NAS <code>host-desk-s04e04</code>, copy in <code>challenges/S04E04/host-desk</code></td></tr>
+<tr><td>Night-desk role</td><td>One event per start: records a change, a refund, a conflict or a guest ask, and answers applied, conflict or parked.</td><td>Host Desk <code>roles/night-desk</code></td></tr>
+<tr><td>Batch and finish scripts</td><td>Pay each booking as the night left it; park conflicts, guest asks and other accounts; finish with the course's own decided amount.</td><td>Host Desk <code>roles/payout-runner/scripts</code></td></tr>
+<tr><td>Stop script</td><td>Stops the two board jobs no role of yours owns. Run by the owner, because the auto-mode check blocked the call.</td><td><code>challenges/S04E04/tools-stop-foreign-jobs.py</code></td></tr></table>
+<h3>Snags</h3>
+<ul><li>The payout role's startup read fetched the manual again, so the batch ran on an attempt with no night.</li>
+<li>The poller died on a network timeout, twice.</li>
+<li>The desk applied a guest's request for a night as a change; the course says it is the owner's call.</li>
+<li>The auto-mode check denied a key check and the stop call even after the owner's yes in chat. The owner ran a script instead.</li></ul>
+<h3>What was applied</h3>
+<p><span class="pill v">applied</span> Lessons 90 to 94 in <code>docs/lessons-learned.md</code> and the fixes in the Host Desk: one fetch, retries, one answer per event, conflicts and guest asks parked.</p>
+<p><span class="pill n">proposed</span> Retro findings 6 to 8: read the board for jobs no role owns before the window opens; read the whole API listing before the first run; hand the owner a script after a denied call.</p>
+<h3>Gaps</h3>
+<ul><li><span class="n">Not alone:</span> the owner ran the stop script and decided the four parked tasks (137 and 2,381 EUR as booked, the account on file, 902 EUR keep the first version).</li>
+<li>Five nights were refused before one was accepted; each cost 10 minutes.</li>
+<li>This section is on the page only after its branch is merged and <code>update.sh</code> runs.</li></ul>
+</section>
 
 
 
