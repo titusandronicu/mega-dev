@@ -364,5 +364,61 @@
    "rehearse-the-shape",
    "prove-after-merge"
   ]
+ },
+ "S04E04#1": {
+  "label": "The role fetched the manual again",
+  "ideas": [
+   "look-again",
+   "contract-first"
+  ]
+ },
+ "S04E04#2": {
+  "label": "The poller died on one network timeout",
+  "ideas": [
+   "write-down-state",
+   "code-over-prompt"
+  ]
+ },
+ "S04E04#3": {
+  "label": "A redelivered event was answered twice",
+  "ideas": [
+   "contract-first",
+   "code-over-prompt"
+  ]
+ },
+ "S04E04#4": {
+  "label": "A changed repeat is for the owner",
+  "ideas": [
+   "human-at-fork",
+   "contract-first"
+  ]
+ },
+ "S04E04#5": {
+  "label": "A guest request or a missing target is parked",
+  "ideas": [
+   "human-at-fork",
+   "distrust-decoys"
+  ]
+ },
+ "S04E04#6": {
+  "label": "Jobs no role owns took an event",
+  "ideas": [
+   "look-again",
+   "distrust-decoys"
+  ]
+ },
+ "S04E04#7": {
+  "label": "Part of the API listing was read late",
+  "ideas": [
+   "source-over-summary",
+   "look-again"
+  ]
+ },
+ "S04E04#8": {
+  "label": "A denied call: hand the owner a script",
+  "ideas": [
+   "human-at-fork",
+   "package-it"
+  ]
  }
 }
