@@ -133,3 +133,11 @@ Paying with a secret under a clock (from S04E01, the lesson "Software Factory Ma
 6. When an owner decision does not show up on the second empty read, ask what the page shows and offer a rerun on a new attempt (lesson 81).
 7. When the owner decides against your advice, say the risk once in one line before the finish step, then do as decided. It is their call (lesson 82).
 8. Copy every amount and count into `log.md` from the run's own output, never from your own sum (lesson 83).
+
+A night desk that handles events while nobody types (from S04E04, the lesson "Software Factory Wake the Team")
+1. Fetch the manual once and keep one attempt for the night and the payout batch; a role never fetches it again (lesson 90).
+2. Before the window opens, read the whole API listing and the board; stop every job no role of yours owns, by job id (lessons 95, 96). If the call is denied, give the owner a script and wait (lesson 97).
+3. Run the poller where it stays up, with retries on every request (lesson 91).
+4. Answer each event once: keep its id and body on disk, ack a repeat and answer nothing (lesson 92). The same id with other content goes to the owner (lesson 93).
+5. Never apply a guest's request or guess a missing booking; park it (lesson 94).
+6. Run the payout batch as a script on the same attempt after the night closes. Finish each parked task once with the course's own amount.

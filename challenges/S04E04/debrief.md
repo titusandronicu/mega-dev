@@ -15,4 +15,4 @@ Solved on 2026-11-19 at 10:53:22Z. The course accepted the claim on the sixth ni
 4. The auto-mode check blocked the stop call after the owner's yes; the owner ran a script instead.
 
 ## Lessons added
-90 to 94 in docs/lessons-learned.md.
+90 to 97 in docs/lessons-learned.md.
