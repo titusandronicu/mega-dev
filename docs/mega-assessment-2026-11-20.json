@@ -1,0 +1,1588 @@
+{
+  "traits": [
+    {
+      "trait_id": "T01",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 26,
+        "applied": 20,
+        "declined": 0,
+        "missed": 6,
+        "verified_outcome": 8
+      }
+    },
+    {
+      "trait_id": "T02",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 7,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "trait_id": "T03",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 6,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "trait_id": "T04",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 18,
+        "applied": 14,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 9
+      }
+    },
+    {
+      "trait_id": "T05",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 22,
+        "applied": 17,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 11
+      }
+    },
+    {
+      "trait_id": "T06",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 16,
+        "applied": 8,
+        "declined": 0,
+        "missed": 8,
+        "verified_outcome": 6
+      }
+    },
+    {
+      "trait_id": "T07",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 4,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "trait_id": "T08",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 3,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "trait_id": "T09",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 7,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 5
+      }
+    },
+    {
+      "trait_id": "T10",
+      "measurement_status": "unmeasured",
+      "counts": {
+        "eligible": 0,
+        "applied": 0,
+        "declined": 0,
+        "missed": 0,
+        "verified_outcome": 0
+      }
+    },
+    {
+      "trait_id": "T11",
+      "measurement_status": "unmeasured",
+      "counts": {
+        "eligible": 0,
+        "applied": 0,
+        "declined": 0,
+        "missed": 0,
+        "verified_outcome": 0
+      }
+    },
+    {
+      "trait_id": "T12",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 12,
+        "applied": 7,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 5
+      }
+    },
+    {
+      "trait_id": "T13",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 11,
+        "applied": 5,
+        "declined": 0,
+        "missed": 6,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "trait_id": "T14",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 6,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 5
+      }
+    },
+    {
+      "trait_id": "T15",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 8,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 5
+      }
+    },
+    {
+      "trait_id": "T16",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 6,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "trait_id": "T17",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 12,
+        "applied": 7,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "trait_id": "T18",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 16,
+        "applied": 12,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 8
+      }
+    },
+    {
+      "trait_id": "T19",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 4,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "trait_id": "T20",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 9,
+        "applied": 6,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "trait_id": "T21",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 4,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "trait_id": "T22",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 6,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "trait_id": "T23",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 14,
+        "applied": 6,
+        "declined": 0,
+        "missed": 8,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "trait_id": "T24",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 3,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 2
+      }
+    }
+  ],
+  "indicators": [
+    {
+      "indicator_id": "outcome-stated-at-opening",
+      "trait_id": "T01",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 26,
+        "applied": 20,
+        "declined": 0,
+        "missed": 6,
+        "verified_outcome": 7
+      }
+    },
+    {
+      "indicator_id": "problem-level-framing",
+      "trait_id": "T02",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 7,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "no-phantom-context-assumptions",
+      "trait_id": "T03",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 6,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "session-boundary-awareness",
+      "trait_id": "T03",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 6,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "indicator_id": "references-resolve-and-used",
+      "trait_id": "T04",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 18,
+        "applied": 14,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 9
+      }
+    },
+    {
+      "indicator_id": "constraints-stated-and-honored",
+      "trait_id": "T05",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 22,
+        "applied": 17,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 11
+      }
+    },
+    {
+      "indicator_id": "reversible-boundary-stated",
+      "trait_id": "T05",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 13,
+        "applied": 8,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 5
+      }
+    },
+    {
+      "indicator_id": "acceptance-stated-before-work",
+      "trait_id": "T06",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 15,
+        "applied": 7,
+        "declined": 0,
+        "missed": 8,
+        "verified_outcome": 5
+      }
+    },
+    {
+      "indicator_id": "acceptance-checkable-by-third-party",
+      "trait_id": "T06",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 16,
+        "applied": 8,
+        "declined": 0,
+        "missed": 8,
+        "verified_outcome": 6
+      }
+    },
+    {
+      "indicator_id": "baseline-and-followup-measurement-observed",
+      "trait_id": "T06",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 3,
+        "applied": 2,
+        "declined": 0,
+        "missed": 1,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "reproduction-before-repair",
+      "trait_id": "T07",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 4,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "hypothesis-tested-before-mutation",
+      "trait_id": "T07",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 7,
+        "applied": 3,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "mechanism-supported-by-evidence",
+      "trait_id": "T08",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 3,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "symptom-patch-rejected",
+      "trait_id": "T08",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 4,
+        "applied": 1,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 1
+      }
+    },
+    {
+      "indicator_id": "fix-does-not-recur",
+      "trait_id": "T08",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 4,
+        "applied": 1,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 0
+      }
+    },
+    {
+      "indicator_id": "evidence-injected-at-decision-point",
+      "trait_id": "T09",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 7,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 5
+      }
+    },
+    {
+      "indicator_id": "evidence-source-used-before-requirement",
+      "trait_id": "T09",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 3,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "context-staged-not-dumped",
+      "trait_id": "T10",
+      "measurement_status": "unmeasured",
+      "counts": {
+        "eligible": 0,
+        "applied": 0,
+        "declined": 0,
+        "missed": 0,
+        "verified_outcome": 0
+      }
+    },
+    {
+      "indicator_id": "low-duplication-context",
+      "trait_id": "T11",
+      "measurement_status": "unmeasured",
+      "counts": {
+        "eligible": 0,
+        "applied": 0,
+        "declined": 0,
+        "missed": 0,
+        "verified_outcome": 0
+      }
+    },
+    {
+      "indicator_id": "decision-becomes-durable-artifact",
+      "trait_id": "T12",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 12,
+        "applied": 7,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 5
+      }
+    },
+    {
+      "indicator_id": "rationale-recorded",
+      "trait_id": "T12",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 9,
+        "applied": 4,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "measurement-used-before-next-decision",
+      "trait_id": "T12",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 3,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "inspection-before-first-mutation",
+      "trait_id": "T13",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 11,
+        "applied": 5,
+        "declined": 0,
+        "missed": 6,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "capability-provisioned-before-need",
+      "trait_id": "T14",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 7,
+        "applied": 5,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "indicator_id": "external-capability-scoped",
+      "trait_id": "T14",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 6,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "indicator_id": "delegation-user-initiated",
+      "trait_id": "T15",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 8,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 5
+      }
+    },
+    {
+      "indicator_id": "units-independently-verifiable",
+      "trait_id": "T16",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 6,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "brief-restates-non-inheritable-context",
+      "trait_id": "T17",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 12,
+        "applied": 7,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "indicator_id": "brief-includes-stop-conditions",
+      "trait_id": "T17",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 11,
+        "applied": 6,
+        "declined": 0,
+        "missed": 5,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "indicator_id": "decision-rights-stated",
+      "trait_id": "T18",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 16,
+        "applied": 12,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 8
+      }
+    },
+    {
+      "indicator_id": "escalation-rules-stated",
+      "trait_id": "T18",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 9,
+        "applied": 5,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "worktree-isolation-for-concurrent-writes",
+      "trait_id": "T19",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 3,
+        "applied": 1,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 1
+      }
+    },
+    {
+      "indicator_id": "ownership-no-collisions",
+      "trait_id": "T19",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 4,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "returns-reconciled-into-decision",
+      "trait_id": "T20",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 9,
+        "applied": 6,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "indicator_id": "correction-carries-evidence",
+      "trait_id": "T21",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 4,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "correction-preserves-objective",
+      "trait_id": "T21",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 4,
+        "declined": 0,
+        "missed": 4,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "autonomy-scaled-to-risk",
+      "trait_id": "T22",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 6,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "verification-density-scaled-to-risk",
+      "trait_id": "T22",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 8,
+        "applied": 6,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "product-risk-checkpoint-observed",
+      "trait_id": "T22",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 4,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "diff-review-before-accept",
+      "trait_id": "T22",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 3,
+        "applied": 1,
+        "declined": 0,
+        "missed": 2,
+        "verified_outcome": 0
+      }
+    },
+    {
+      "indicator_id": "acceptance-path-reruns-after-final-mutation",
+      "trait_id": "T23",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 14,
+        "applied": 6,
+        "declined": 0,
+        "missed": 8,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "indicator_id": "independent-verification-channel",
+      "trait_id": "T23",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 11,
+        "applied": 5,
+        "declined": 0,
+        "missed": 6,
+        "verified_outcome": 4
+      }
+    },
+    {
+      "indicator_id": "human-review-supplements-synthetic-check",
+      "trait_id": "T23",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 10,
+        "applied": 4,
+        "declined": 0,
+        "missed": 6,
+        "verified_outcome": 3
+      }
+    },
+    {
+      "indicator_id": "failing-approach-reversed",
+      "trait_id": "T24",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 3,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "lesson-becomes-durable-change",
+      "trait_id": "T24",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 3,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "manual-check-becomes-safeguard",
+      "trait_id": "T24",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 5,
+        "applied": 2,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 2
+      }
+    },
+    {
+      "indicator_id": "strategic-restart",
+      "trait_id": "T24",
+      "measurement_status": "measured",
+      "counts": {
+        "eligible": 6,
+        "applied": 3,
+        "declined": 0,
+        "missed": 3,
+        "verified_outcome": 2
+      }
+    }
+  ],
+  "coverage": {
+    "task_episodes": 26,
+    "distinct_active_days": 23,
+    "task_classes_covered": 7,
+    "window_days": 69
+  },
+  "limitations": [
+    {
+      "code": "harness-capability-missing",
+      "trait_id": null,
+      "indicator_id": null
+    },
+    {
+      "code": "extraction-gap",
+      "trait_id": "T10",
+      "indicator_id": null
+    },
+    {
+      "code": "extraction-gap",
+      "trait_id": "T10",
+      "indicator_id": "context-staged-not-dumped"
+    },
+    {
+      "code": "extraction-gap",
+      "trait_id": "T11",
+      "indicator_id": null
+    },
+    {
+      "code": "extraction-gap",
+      "trait_id": "T11",
+      "indicator_id": "low-duplication-context"
+    }
+  ],
+  "observations": [
+    {
+      "trait_id": "T01",
+      "indicator_id": "outcome-stated-at-opening",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "Opens most requests by naming the result they want, such as a filed mailbox, a visible artifact, or a job that ends in a stated status."
+    },
+    {
+      "trait_id": "T01",
+      "indicator_id": "outcome-stated-at-opening",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "Short status requests are often just the name of a command, with no statement of what a good answer would contain."
+    },
+    {
+      "trait_id": "T02",
+      "indicator_id": "problem-level-framing",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "When a planned approach fails, they ask for a new framing and compare competing explanations before approving the next attempt."
+    },
+    {
+      "trait_id": "T02",
+      "indicator_id": "problem-level-framing",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "They sometimes raise the goal from finishing one task to building a repeatable system that can do that class of work."
+    },
+    {
+      "trait_id": "T02",
+      "indicator_id": "problem-level-framing",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "On a time-sensitive miss they first asked to repeat the same plan for several days before revisiting the underlying frame."
+    },
+    {
+      "trait_id": "T03",
+      "indicator_id": "session-boundary-awareness",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "They regularly ask what the assistant can see across inboxes, browsers, and remote connectors, and notice when the session is not the environment they expected."
+    },
+    {
+      "trait_id": "T03",
+      "indicator_id": "no-phantom-context-assumptions",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "They sometimes assume a remote confirmation step can be completed from this chat, then have to correct that after the step fails."
+    },
+    {
+      "trait_id": "T04",
+      "indicator_id": "references-resolve-and-used",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "They attach screenshots, paste identifiers, and point at live pages so the assistant works from the actual artifact rather than a recollection."
+    },
+    {
+      "trait_id": "T04",
+      "indicator_id": "references-resolve-and-used",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "once",
+      "confidence": "high",
+      "statement": "A design review was opened before the full source text was provided, so the first pass could only comment on summaries and labels."
+    },
+    {
+      "trait_id": "T05",
+      "indicator_id": "constraints-stated-and-honored",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "They state prohibitions up front, including what must not be deleted, clicked, sent, merged, or changed on a live system, and they expect those limits to be kept."
+    },
+    {
+      "trait_id": "T05",
+      "indicator_id": "reversible-boundary-stated",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "When an action would be public or done in their name, they pause to ask whether that is wanted before it proceeds."
+    },
+    {
+      "trait_id": "T06",
+      "indicator_id": "acceptance-checkable-by-third-party",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "For scheduled work they define a clock window and a visible success signal, then ask for a screenshot or a dry run before the real attempt."
+    },
+    {
+      "trait_id": "T06",
+      "indicator_id": "acceptance-stated-before-work",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "On longer tidy-up work they name the end state in broad terms and do not give a check that a third party could rerun to confirm completion."
+    },
+    {
+      "trait_id": "T06",
+      "indicator_id": "baseline-and-followup-measurement-observed",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "most-episodes",
+      "confidence": "medium",
+      "statement": "A watch task included a saved baseline and later comparison, but most other deliverables had no before-and-after measurement."
+    },
+    {
+      "trait_id": "T07",
+      "indicator_id": "reproduction-before-repair",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "They often ask to investigate a failure and check current state before changing anything, especially after a connector or scheduled attempt goes wrong."
+    },
+    {
+      "trait_id": "T07",
+      "indicator_id": "hypothesis-tested-before-mutation",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "After some failures they approve another attempt first and only later ask what mechanism caused the miss."
+    },
+    {
+      "trait_id": "T08",
+      "indicator_id": "mechanism-supported-by-evidence",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "They eventually accepted a concrete timing mechanism and asked to test it, rather than treating a missed result as plain bad luck."
+    },
+    {
+      "trait_id": "T08",
+      "indicator_id": "fix-does-not-recur",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "The first several retries of a time-sensitive task were scheduled the same way, without a test that could confirm or reject the suspected cause."
+    },
+    {
+      "trait_id": "T09",
+      "indicator_id": "evidence-injected-at-decision-point",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "When a decision depends on what a page or run actually showed, they supply the capture, the pasted excerpt, or a comparison example and ask for a reading."
+    },
+    {
+      "trait_id": "T09",
+      "indicator_id": "evidence-injected-at-decision-point",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "They drop large evidence packets into the thread when they want a plan ranked from counts rather than from impression."
+    },
+    {
+      "trait_id": "T12",
+      "indicator_id": "decision-becomes-durable-artifact",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "They turn repeated corrections into standing rules, saved filters, and scheduled routines so the decision outlives the chat."
+    },
+    {
+      "trait_id": "T12",
+      "indicator_id": "decision-becomes-durable-artifact",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "Some operating decisions stay only as chat agreement and are not written into a durable rule, so later sessions have to reconstruct them."
+    },
+    {
+      "trait_id": "T13",
+      "indicator_id": "inspection-before-first-mutation",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "Before a risky or one-shot run they ask for a dry check that the session is signed in and the needed tools actually work."
+    },
+    {
+      "trait_id": "T13",
+      "indicator_id": "inspection-before-first-mutation",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "Edit-and-commit checks sometimes start with the change request itself, without a prior instruction to inspect current state first."
+    },
+    {
+      "trait_id": "T14",
+      "indicator_id": "capability-provisioned-before-need",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "When work is blocked on access, they provision it: they approve connectors, point to a mailed login, and confirm after they have finished the human step."
+    },
+    {
+      "trait_id": "T14",
+      "indicator_id": "external-capability-scoped",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "They also scope access downward, telling one assistant to work only from pasted text and to call no external tools."
+    },
+    {
+      "trait_id": "T15",
+      "indicator_id": "delegation-user-initiated",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "They initiate delegation themselves, naming the worker, the session, and whether the job may edit or only read."
+    },
+    {
+      "trait_id": "T15",
+      "indicator_id": "delegation-user-initiated",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "Broad handle-this-for-me requests sometimes arrive before the work has been split, so coordination has to be negotiated after the fact."
+    },
+    {
+      "trait_id": "T16",
+      "indicator_id": "units-independently-verifiable",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "Multi-agent checks are issued as separate units with their own done conditions, rather than as one combined prompt."
+    },
+    {
+      "trait_id": "T16",
+      "indicator_id": null,
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "once",
+      "confidence": "high",
+      "statement": "A large tidy-up was staged in sequence: first the existing items, then future rules, then the remaining unread set."
+    },
+    {
+      "trait_id": "T17",
+      "indicator_id": "brief-includes-stop-conditions",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "Delegated briefs often include the goal, the context to read, hard constraints, and a stop condition such as a clean status or a line limit."
+    },
+    {
+      "trait_id": "T17",
+      "indicator_id": "brief-restates-non-inheritable-context",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "A few handoffs only say to pull what is needed from a source, leaving acceptance criteria and exclusions unstated."
+    },
+    {
+      "trait_id": "T18",
+      "indicator_id": "decision-rights-stated",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "They keep approval on consequential moves: live restarts, public visibility, acting in their name, and irreversible choices stay with them."
+    },
+    {
+      "trait_id": "T18",
+      "indicator_id": "escalation-rules-stated",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "most-episodes",
+      "confidence": "medium",
+      "statement": "Escalation rules are less often stated than the initial permission, so the assistant has to infer when to stop and ask again."
+    },
+    {
+      "trait_id": "T19",
+      "indicator_id": "ownership-no-collisions",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "Parallel jobs are usually given distinct session names and told not to push shared branches until a review finishes."
+    },
+    {
+      "trait_id": "T19",
+      "indicator_id": "worktree-isolation-for-concurrent-writes",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "The same shared note was sometimes the target of several workers in one sitting, with isolation depending on waiting rather than on separate workspaces."
+    },
+    {
+      "trait_id": "T20",
+      "indicator_id": "returns-reconciled-into-decision",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "They read the returned options, ask which is recommended, and then give a clear yes or a clear drop, rather than leaving rival findings unresolved."
+    },
+    {
+      "trait_id": "T20",
+      "indicator_id": "returns-reconciled-into-decision",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "Status questions sometimes follow a completed handoff without a recorded decision on the findings themselves."
+    },
+    {
+      "trait_id": "T21",
+      "indicator_id": "correction-carries-evidence",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "Corrections usually name what they expected to see and what they actually saw, such as a missing dashboard item or the wrong artifact."
+    },
+    {
+      "trait_id": "T21",
+      "indicator_id": "correction-carries-evidence",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "A few redirects are only a short refusal or an ask to improve it, with no detail of the mismatch, so the assistant has to guess what failed."
+    },
+    {
+      "trait_id": "T22",
+      "indicator_id": "autonomy-scaled-to-risk",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "most-episodes",
+      "confidence": "high",
+      "statement": "Read-only scouts and live-system changes are treated differently: the first may be dispatched, the second is refused and left to them."
+    },
+    {
+      "trait_id": "T22",
+      "indicator_id": "verification-density-scaled-to-risk",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "After missed scheduled runs they raise the verification density, asking for a dry test and a screenshot rather than another unwatched attempt."
+    },
+    {
+      "trait_id": "T22",
+      "indicator_id": "diff-review-before-accept",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "most-episodes",
+      "confidence": "medium",
+      "statement": "They rarely ask to read a diff before accepting a commit, relying on job status and a later review instead."
+    },
+    {
+      "trait_id": "T23",
+      "indicator_id": "acceptance-path-reruns-after-final-mutation",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "They often require a post-check: poll until the job ends, confirm the connector works, or show the visible result after the final action."
+    },
+    {
+      "trait_id": "T23",
+      "indicator_id": "human-review-supplements-synthetic-check",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "They sometimes supply an independent check themselves by looking at a dashboard or confirmation screen and reporting what is missing."
+    },
+    {
+      "trait_id": "T23",
+      "indicator_id": "independent-verification-channel",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "Completion of long background tidy-up work was accepted on progress reports, without a closing pass that independently verified the end state."
+    },
+    {
+      "trait_id": "T24",
+      "indicator_id": "failing-approach-reversed",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "After repeated misses they ask how to improve the next run, and they will pause or drop a failing approach until a missing piece is in place."
+    },
+    {
+      "trait_id": "T24",
+      "indicator_id": "lesson-becomes-durable-change",
+      "disposition": "applied",
+      "polarity": "supporting",
+      "frequency": "some-episodes",
+      "confidence": "medium",
+      "statement": "They ask that insights from a finished exercise be turned into follow-up work so the lesson is not left in the thread."
+    },
+    {
+      "trait_id": "T24",
+      "indicator_id": "failing-approach-reversed",
+      "disposition": "missed",
+      "polarity": "counter",
+      "frequency": "some-episodes",
+      "confidence": "high",
+      "statement": "The same failing schedule was repeated across several days before the underlying assumption was replaced."
+    }
+  ],
+  "practices": [
+    {
+      "area": "planning",
+      "frequency": "most-episodes",
+      "statement": "States constraints and the desired result before work starts, then approves a plan rather than diving straight into a risky action."
+    },
+    {
+      "area": "context-management",
+      "frequency": "most-episodes",
+      "statement": "Supplies screenshots, identifiers, and source text when the next decision depends on them, instead of asking the assistant to recall."
+    },
+    {
+      "area": "delegation",
+      "frequency": "some-episodes",
+      "statement": "Writes explicit briefs for workers, with session names, read-only or commit limits, and a done condition."
+    },
+    {
+      "area": "verification",
+      "frequency": "some-episodes",
+      "statement": "Asks for dry runs, job polling, and visible proof after scheduled or delegated work."
+    },
+    {
+      "area": "review",
+      "frequency": "most-episodes",
+      "statement": "Holds merge, live change, and in-their-name actions for personal approval rather than granting open-ended authority."
+    },
+    {
+      "area": "tooling",
+      "frequency": "some-episodes",
+      "statement": "Provisions connectors and mail access when the assistant cannot finish without them, and scopes tools away when they are not needed."
+    },
+    {
+      "area": "automation",
+      "frequency": "some-episodes",
+      "statement": "Turns recurring watches and time-window tasks into scheduled routines with a stated success signal."
+    },
+    {
+      "area": "knowledge-capture",
+      "frequency": "some-episodes",
+      "statement": "Asks for process notes and standing rules after a lesson, including filters and assistant instructions that should persist."
+    },
+    {
+      "area": "recovery",
+      "frequency": "some-episodes",
+      "statement": "Improves the next attempt after a miss, or pauses the approach until a dependency is ready instead of forcing a broken path."
+    },
+    {
+      "area": "environment",
+      "frequency": "some-episodes",
+      "statement": "Distinguishes this chat from remote consoles and browsers, and checks sign-in state before a one-shot window."
+    }
+  ],
+  "anti_patterns": [
+    {
+      "trait_id": "T06",
+      "frequency": "some-episodes",
+      "cost": "stalled-thread",
+      "statement": "Accepts long tidy-up work as done from a progress narrative, so unfinished queues can linger without a closing check."
+    },
+    {
+      "trait_id": "T08",
+      "frequency": "some-episodes",
+      "cost": "rework",
+      "statement": "Retries a time-sensitive procedure on the same schedule before testing the suspected cause."
+    },
+    {
+      "trait_id": "T21",
+      "frequency": "some-episodes",
+      "cost": "rework",
+      "statement": "Occasional one-word redirects force a guess at the mismatch and a second clarification turn."
+    },
+    {
+      "trait_id": "T19",
+      "frequency": "some-episodes",
+      "cost": "rework",
+      "statement": "Several workers were aimed at one shared note in the same sitting, leaving isolation to timing rather than separate workspaces."
+    },
+    {
+      "trait_id": "T13",
+      "frequency": "some-episodes",
+      "cost": "undetected-defect",
+      "statement": "Some mutation tasks start with the edit request and only get an inspection if the assistant already would have done one."
+    },
+    {
+      "trait_id": "T12",
+      "frequency": "some-episodes",
+      "cost": "wasted-context",
+      "statement": "A few operating decisions remain chat-only and have to be rediscovered in a later session."
+    },
+    {
+      "trait_id": "T23",
+      "frequency": "some-episodes",
+      "cost": "undetected-defect",
+      "statement": "Independent verification is uneven; some completions rely on the same channel that produced the work."
+    },
+    {
+      "trait_id": "T18",
+      "frequency": "some-episodes",
+      "cost": "stalled-thread",
+      "statement": "Broad handle-this requests sometimes precede stated decision rights, which then have to be tightened mid-work."
+    }
+  ],
+  "work_mix": {
+    "bug-fix": 0,
+    "feature-build": 1,
+    "refactor": 1,
+    "investigation": 10,
+    "release-operations": 0,
+    "documentation": 2,
+    "configuration-maintenance": 4,
+    "research": 2,
+    "other": 6
+  },
+  "window": {
+    "first_episode_date": "2026-09-13",
+    "last_episode_date": "2026-11-20"
+  },
+  "trend": [
+    {
+      "bucket": 1,
+      "episodes": 2,
+      "corrections": 2,
+      "durable_artifacts": 1
+    },
+    {
+      "bucket": 2,
+      "episodes": 1,
+      "corrections": 0,
+      "durable_artifacts": 0
+    },
+    {
+      "bucket": 3,
+      "episodes": 0,
+      "corrections": 0,
+      "durable_artifacts": 0
+    },
+    {
+      "bucket": 4,
+      "episodes": 0,
+      "corrections": 0,
+      "durable_artifacts": 0
+    },
+    {
+      "bucket": 5,
+      "episodes": 4,
+      "corrections": 0,
+      "durable_artifacts": 2
+    },
+    {
+      "bucket": 6,
+      "episodes": 10,
+      "corrections": 2,
+      "durable_artifacts": 2
+    },
+    {
+      "bucket": 7,
+      "episodes": 3,
+      "corrections": 8,
+      "durable_artifacts": 2
+    },
+    {
+      "bucket": 8,
+      "episodes": 2,
+      "corrections": 2,
+      "durable_artifacts": 2
+    },
+    {
+      "bucket": 9,
+      "episodes": 2,
+      "corrections": 0,
+      "durable_artifacts": 0
+    },
+    {
+      "bucket": 10,
+      "episodes": 2,
+      "corrections": 2,
+      "durable_artifacts": 1
+    }
+  ],
+  "interests": [
+    {
+      "episode_id": "S01E03",
+      "signal": "used",
+      "frequency": "some-episodes"
+    },
+    {
+      "episode_id": "S04E03",
+      "signal": "used",
+      "frequency": "once"
+    },
+    {
+      "episode_id": "S04E04",
+      "signal": "used",
+      "frequency": "once"
+    },
+    {
+      "episode_id": "S04E05",
+      "signal": "used",
+      "frequency": "once"
+    }
+  ],
+  "environment": {
+    "harness_id": "grok-bot",
+    "harness_version": null,
+    "model_families": [
+      "other",
+      "claude",
+      "gpt",
+      "gemini"
+    ]
+  },
+  "collaboration_shape": {
+    "total_corrections": 16,
+    "total_re_instructions": 10,
+    "episodes_restarted": 3,
+    "median_turns_per_episode": 5,
+    "max_concurrent_agents": 4
+  },
+  "profile": {
+    "role": "engineer",
+    "experience_band": "unknown",
+    "team_size_band": "solo",
+    "primary_goal": "automate-work",
+    "confidence": "medium"
+  },
+  "stack": {
+    "languages": [
+      {
+        "language": "shell",
+        "episodes": 12
+      },
+      {
+        "language": "javascript",
+        "episodes": 3
+      },
+      {
+        "language": "python",
+        "episodes": 1
+      }
+    ],
+    "runtimes": [
+      "python",
+      "browser"
+    ],
+    "surfaces": [
+      "cli",
+      "infra"
+    ]
+  },
+  "style": {
+    "paradigm": {
+      "value": "unknown",
+      "confidence": "low"
+    },
+    "type_discipline": {
+      "value": "unknown",
+      "confidence": "low"
+    },
+    "testing": {
+      "value": "unknown",
+      "confidence": "low"
+    },
+    "architecture": {
+      "value": "unknown",
+      "confidence": "low"
+    },
+    "error_handling": {
+      "value": "unknown",
+      "confidence": "low"
+    },
+    "abstraction": {
+      "value": "unknown",
+      "confidence": "low"
+    }
+  },
+  "context": {
+    "history_notes": "Compaction events are not systematically recorded in this harness, so two traits were left unmeasured. One long main chat was read from the harness message index because a nested run could not open that chat through the transcript tool."
+  }
+}
