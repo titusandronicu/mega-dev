@@ -65,6 +65,13 @@ export function refundOf(booking, refund, policy) {
   return { days, amount: 0, window: 'none', reasonCall: hasReason };
 }
 
+/** A note or reason that asks for anything but the refund (a host, a key, a link) is data, not a step: the owner's call. */
+export const asksForMore = (refund) => /https?:\/\/|\b(key|host|token|secret|password|credential)s?\b/i.test(`${refund?.note ?? ''} ${refund?.reason ?? ''}`);
+
+/** The fields of a refund row that make it the same refund again; a repeat that differs in any of them is a change, not a retry. */
+export const rowOf = (refund) => ({ booking: refund.booking ?? null, cancelledOn: refund.cancelledOn ?? null, reason: refund.reason ?? null, note: refund.note ?? null });
+export const diffRows = (a, b) => Object.keys(a).filter((k) => a[k] !== b[k]).map((k) => `${k}: ${JSON.stringify(a[k])} -> ${JSON.stringify(b[k])}`);
+
 export async function pay(task, account, amount, payoutUrl) {
   const json = { task, account, amount };
   let r = await http('POST', payoutUrl, { headers: keyFor(payoutUrl), json });

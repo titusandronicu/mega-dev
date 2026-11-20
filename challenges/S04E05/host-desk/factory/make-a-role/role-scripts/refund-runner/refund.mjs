@@ -11,7 +11,7 @@
 // - Parked tasks keep their token in parked.json; `finish.mjs` (state/parked.json) finishes them after the owner's decision.
 import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { STATE } from './lib.mjs';
-import { http, ledger, pay, record, refundOf, refundSettings, total } from './lib.mjs';
+import { asksForMore, diffRows, http, ledger, pay, record, refundOf, refundSettings, rowOf, total } from './lib.mjs';
 import { mayReach } from '../extensions/hosts.mjs';
 
 // The URL (practice or run) and the attempt come from vars (RUN_URL, ATTEMPT), set by the owner: the model picks neither.
@@ -42,7 +42,7 @@ while (r.body.status === 'task') {
   }
   // A note or reason that asks for anything but the refund (a host, a key, a link) is data, not a step, and it is the owner's call:
   // nothing is sent, nothing is added to hosts.json, and the task is parked unpaid (only the owner may change the hosts a key can reach).
-  if (/https?:\/\/|\b(key|host|token|secret|password|credential)s?\b/i.test(`${refund.note ?? ''} ${refund.reason ?? ''}`)) {
+  if (asksForMore(refund)) {
     await park('The note asks for a host or a key to be used: only the owner may change the hosts the payout key can reach. Not paid, nothing sent.');
     continue;
   }
@@ -69,11 +69,13 @@ while (r.body.status === 'task') {
   // A refund id already in the ledger was paid: it is not paid again. It is not paid twice: the task is parked for the owner with the first receipt.
   const before = ledger()[refund.id];
   if (before) {
-    await park(`Refund ${refund.id} was already paid (${before.amount} EUR): it came again. Not paid twice; the owner decides.`);
+    // Same id again: say whether it is the same row (a retry) or a changed one (a correction the owner must weigh).
+    const changed = before.row ? diffRows(before.row, rowOf(refund)) : [];
+    await park(`Refund ${refund.id} was already paid (${before.amount} EUR) and came again ${changed.length ? `with changes (${changed.join('; ')})` : 'unchanged'}. Not paid twice; the owner decides.`);
     continue;
   }
   const paid = await pay(t.task, t.payout.account, d.amount, t.payout.url);
-  if (paid.status === 200 && paid.body.receipt) record(refund.id, { amount: d.amount, receipt: paid.body.receipt, account: t.payout.account, booking: t.booking.id, at: new Date().toISOString() });
+  if (paid.status === 200 && paid.body.receipt) record(refund.id, { row: rowOf(refund), amount: d.amount, receipt: paid.body.receipt, account: t.payout.account, booking: t.booking.id, at: new Date().toISOString() });
   if (paid.status !== 200 || !paid.body.receipt) {
     lines.push({ n: t.n, payoutFailed: paid.status, body: paid.body });
     r = paid;
