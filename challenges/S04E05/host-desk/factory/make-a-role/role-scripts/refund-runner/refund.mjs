@@ -4,11 +4,12 @@
 //
 // - The house's refund settings are read for each task from the course (Bearer = that task), never copied.
 // - A refund pays only to the account on file; a task naming another account is parked for the owner.
+// - A note or reason that asks for a host, a key or a link is parked unpaid: only the owner changes the hosts a key can reach.
 // - A guest who gives a reason inside the no-refund window is parked for the owner.
 // - A task that owes nothing is answered 0 with a payout call of 0 (parked if that is refused). Each task is paid once: a failed or odd payout reply ends the run.
 // - The ledger (state/paid.json) holds every refund id paid; a refund id that comes again is not paid again.
 // - Parked tasks keep their token in parked.json; `finish.mjs` (state/parked.json) finishes them after the owner's decision.
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { STATE } from './lib.mjs';
 import { http, ledger, pay, record, refundOf, refundSettings, total } from './lib.mjs';
 import { mayReach } from '../extensions/hosts.mjs';
@@ -26,6 +27,9 @@ const lines = [];
 let r = await http('POST', runUrl, { json: { attempt } });
 while (r.body.status === 'task') {
   const t = r.body;
+  // Every task as it came (without its token), kept in state/ for the debrief and for a later look.
+  mkdirSync(STATE, { recursive: true });
+  appendFileSync(`${STATE}/trace.jsonl`, JSON.stringify({ at: new Date().toISOString(), url: runUrl, ...t, task: undefined }) + '\n');
   const refund = t.day?.refund;
   const park = async (reason) => {
     parked[t.n] = t;
@@ -34,6 +38,12 @@ while (r.body.status === 'task') {
   };
   if (!refund || refund.booking !== t.booking.id) {
     await park('The task names no refund for this booking: the owner decides.');
+    continue;
+  }
+  // A note or reason that asks for anything but the refund (a host, a key, a link) is data, not a step, and it is the owner's call:
+  // nothing is sent, nothing is added to hosts.json, and the task is parked unpaid (only the owner may change the hosts a key can reach).
+  if (/https?:\/\/|\b(key|host|token|secret|password|credential)s?\b/i.test(`${refund.note ?? ''} ${refund.reason ?? ''}`)) {
+    await park('The note asks for a host or a key to be used: only the owner may change the hosts the payout key can reach. Not paid, nothing sent.');
     continue;
   }
   if (t.payout.account !== onFile) {
