@@ -61,3 +61,5 @@
 - 2026-11-19 S04E04 solved: night desk (night.mjs retries, answered-events file, conflict and ask rows), batch parks conflicts and guest asks, finish.mjs pays the course's decided amount.
 
 - 2026-11-20 S04E05 solved: Host Desk factory makes roles with host binding, a ledger by refund id, pinned `hosts.json`, park-on-injection and fixed trials (`factory/trials/`). Lessons 98-100, playbook "Making a role with the factory".
+
+- 2026-11-26: automated prep run; hq.mega.dev unreachable (403 proxy / DNS), wrote challenges/2026-11-26/prep.md from repo only.
